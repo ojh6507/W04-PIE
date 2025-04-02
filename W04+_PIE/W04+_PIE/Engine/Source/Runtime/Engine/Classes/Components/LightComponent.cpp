@@ -16,7 +16,7 @@ ULightComponentBase::~ULightComponentBase()
 }
 ULightComponentBase* ULightComponentBase::Duplicate()
 {
-    ULightComponentBase* NewObject = new ULightComponentBase();
+    ULightComponentBase* NewObject = reinterpret_cast<ULightComponentBase*>(Super::Duplicate());
     NewObject->color = color;
     NewObject->radius = radius;
     NewObject->AABB = AABB;

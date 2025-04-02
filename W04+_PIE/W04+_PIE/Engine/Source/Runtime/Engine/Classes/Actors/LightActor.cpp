@@ -28,5 +28,6 @@ ULightBaseActor* ULightBaseActor::Duplicate()
 
     newActor->LightComponent = LightComponent->Duplicate();
     newActor->SpriteComponent = SpriteComponent->Duplicate();
-    return nullptr;
+
+    return newActor;
 }

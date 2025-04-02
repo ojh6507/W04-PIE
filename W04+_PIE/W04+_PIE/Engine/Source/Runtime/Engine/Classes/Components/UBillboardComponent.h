@@ -27,7 +27,7 @@ public:
         return Sprite;
     }
 
-
+    UBillboardComponent* GetValue(UPrimitiveComponent* comp);
     void SetUUIDParent(USceneComponent* _parent);
     FMatrix CreateBillboardMatrix();
 

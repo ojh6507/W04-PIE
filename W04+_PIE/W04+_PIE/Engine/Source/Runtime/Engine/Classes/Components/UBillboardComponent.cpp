@@ -32,8 +32,9 @@ UBillboardComponent::~UBillboardComponent()
 
 UBillboardComponent* UBillboardComponent::Duplicate()
 {
-    UBillboardComponent* newComponent = new UBillboardComponent();
-    newComponent->SetSprite(Sprite);
+    UBillboardComponent* newComponent = GetValue(Super::Duplicate());
+
+    newComponent->Sprite = Sprite;
     newComponent->vertexTextureBuffer = vertexTextureBuffer;
     newComponent->indexTextureBuffer = indexTextureBuffer;
     newComponent->numVertices = numVertices;
@@ -81,6 +82,15 @@ void UBillboardComponent::SetSprite(FWString _fileName)
 void UBillboardComponent::SetSprite(std::shared_ptr<FTexture> _Sprite)
 {
     Sprite = _Sprite;
+}
+
+UBillboardComponent* UBillboardComponent::GetValue(UPrimitiveComponent* comp)
+{
+    UBillboardComponent* billboard = new UBillboardComponent ();
+
+    billboard->AABB = comp->AABB;
+    billboard->SetType(StaticClass()->GetName());
+    return billboard;
 }
 
 void UBillboardComponent::SetUUIDParent(USceneComponent* _parent)
