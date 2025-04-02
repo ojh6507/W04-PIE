@@ -1,27 +1,20 @@
 #pragma once
 #include "EngineLoop.h"
 #include "NameTypes.h"
+#include "UObjectArray.h"
 
 extern FEngineLoop GEngineLoop;
 
 class UClass;
 class UWorld;
 
-
 class UObject
 {
-private:
-    UObject(const UObject&) = delete;
-    UObject& operator=(const UObject&) = delete;
-    UObject(UObject&&) = delete;
-    UObject& operator=(UObject&&) = delete;
-
 public:
     using Super = UObject;
     using ThisClass = UObject;
 
     static UClass* StaticClass();
-
 private:
     friend class FObjectFactory;
     friend class FSceneMgr;
@@ -46,7 +39,36 @@ public:
     {
         return GEngineLoop;
     }
+    
+    template<typename T>
+        requires std::derived_from<T, UObject>
+    void DuplicateSubObjects()
+    {
+        for (auto& SubObject : SubObjects.GetObjectItemArrayUnsafe())
+        {
+             SubObject = SubObject->Duplicate<T>();
+        }
+    }
+    
+    template<typename T>
+        requires std::derived_from<T, UObject>
+    T* Duplicate()
+    {
+        // 현재 객체가 T 타입인지 확인
+        if (T* ThisAsT = dynamic_cast<T*>(this)) {
+            T* NewObject = new T(); // 안전하게 복사 생성자 호출
+            NewObject->CopyFrom(*ThisAsT); // 사용자 정의 메서드로 데이터 복사
+            NewObject->DuplicateSubObjects<T>();
+            return NewObject;
+        }
+        
+        return nullptr;
+    }
 
+    virtual void CopyFrom(const UObject& Other) {
+        *this = Other;
+    }
+    
     FName GetFName() const { return NamePrivate; }
     FString GetName() const { return NamePrivate.ToString(); }
 

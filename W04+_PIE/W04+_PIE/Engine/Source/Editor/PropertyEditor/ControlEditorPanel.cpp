@@ -90,6 +90,7 @@ void ControlEditorPanel::CreateMenuButton(ImVec2 ButtonSize, ImFont* IconFont)
         if (ImGui::MenuItem("New Scene"))
         {
             // TODO: New Scene
+            GEngineLoop.StartPIE();
         }
 
         if (ImGui::MenuItem("Load Scene"))

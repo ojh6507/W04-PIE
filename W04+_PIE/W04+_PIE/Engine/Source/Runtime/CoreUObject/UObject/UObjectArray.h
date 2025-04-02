@@ -14,19 +14,15 @@ public:
 
     void ProcessPendingDestroyObjects();
 
-    TSet<UObject*>& GetObjectItemArrayUnsafe()
-    {
-        return ObjObjects;
-    }
-
-    const TSet<UObject*>& GetObjectItemArrayUnsafe() const
+    TArray<UObject*>& GetObjectItemArrayUnsafe()
     {
         return ObjObjects;
     }
 
 private:
-    TSet<UObject*> ObjObjects;
+    TArray<UObject*> ObjObjects;
     TArray<UObject*> PendingDestroyObjects;
 };
 
 extern FUObjectArray GUObjectArray;
+extern FUObjectArray SubObjects;

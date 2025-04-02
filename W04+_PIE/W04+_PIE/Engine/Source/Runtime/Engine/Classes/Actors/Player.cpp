@@ -95,7 +95,6 @@ int AController::RayIntersectsObject(const FVector& pickPosition, USceneComponen
 
 void AEditorController::Tick(float DeltaTime)
 {
-    Super::Tick(DeltaTime);
     Input(DeltaTime);
 }
 
@@ -503,7 +502,6 @@ void AEditorController::ControlScale(USceneComponent* pObj, UGizmoBaseComponent*
 
 void APlayerController::Tick(float DeltaTime)
 {
-    Super::Tick(DeltaTime);
     Input(DeltaTime);
 }
 

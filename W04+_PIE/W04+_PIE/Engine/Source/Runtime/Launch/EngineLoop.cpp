@@ -196,7 +196,8 @@ void FEngineLoop::Tick()
         if (PlayWorldType == EPlayWorldType::Play)
         {
             GWorld->PIETick(elapsedTime);
-        }else if (PlayWorldType == EPlayWorldType::Edit)
+        }
+        else if (PlayWorldType == EPlayWorldType::Edit)
         {
             GWorld->Tick(elapsedTime);
         }
@@ -288,10 +289,13 @@ void FEngineLoop::WindowInit(HINSTANCE hInstance)
 void FEngineLoop::StartPIE(){
     PlayWorldType = EPlayWorldType::Play;
 
-    UWorld* PIEWorld = EditWorld.DuplicateForPIE(); //DuplicateForPIE 아마 필요한 정보만..? 내생각엔 Tick을 진행하면서 생긴 정보는 날리고 최초의 초기정보만 가져와야하는듯, 그리고 깊은복사
-    GWorld = PIEWorld;
+     //DuplicateForPIE 아마 필요한 정보만..? 내생각엔 Tick을 진행하면서 생긴 정보는 날리고 최초의 초기정보만 가져와야하는듯, 그리고 깊은복사
+    if (UWorld* PIEWorld = EditWorld->Duplicate<UWorld>())
+    {
+        GWorld = PIEWorld;
 
-    GWorld->InitializePIE();    
+        GWorld->InitializePIE();    
+    }
 }
 
 void FEngineLoop::EndPIE(){

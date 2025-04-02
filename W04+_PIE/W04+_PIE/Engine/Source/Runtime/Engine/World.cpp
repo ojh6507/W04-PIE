@@ -99,7 +99,7 @@ void UWorld::PIETick(float DeltaTime)
 
     // 매 틱마다 Actor->Tick(...) 호출
 	
-    for (AActor* Actor : Level->Actors)
+    for (AActor* Actor : ActorsArray)
     {
         if (Actor && Actor->IsActorTickEnabled())
         {

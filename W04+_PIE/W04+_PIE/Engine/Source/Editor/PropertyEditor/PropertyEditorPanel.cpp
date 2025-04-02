@@ -156,6 +156,7 @@ void PropertyEditorPanel::Render()
         }
         ImGui::PopStyleColor();
     }
+    
 
     // TODO: 추후에 RTTI를 이용해서 프로퍼티 출력하기
     if (PickedActor)
