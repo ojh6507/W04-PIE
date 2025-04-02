@@ -3,6 +3,7 @@
 #include "Container/Set.h"
 #include "UObject/ObjectFactory.h"
 #include "UObject/ObjectMacros.h"
+#include "Engine/Level.h"
 
 class FObjectFactory;
 class AActor;
@@ -42,9 +43,6 @@ public:
 private:
     const FString defaultMapName = "Default";
 
-    /** World에서 관리되는 모든 Actor의 목록 */
-    TSet<AActor*> ActorsArray;
-
     /** Actor가 Spawn되었고, 아직 BeginPlay가 호출되지 않은 Actor들 */
     TArray<AActor*> PendingBeginPlayActors;
 
@@ -53,6 +51,8 @@ private:
     USceneComponent* pickingGizmo = nullptr;
     UCameraComponent* camera = nullptr;
     AEditorPlayer* EditorPlayer = nullptr;
+
+    ULevel* Level;
 
 public:
     UObject* worldGizmo = nullptr;
