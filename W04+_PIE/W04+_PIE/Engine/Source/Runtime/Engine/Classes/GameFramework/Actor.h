@@ -114,16 +114,7 @@ private:
 
     //struct FActorTickFunction PrimaryActorTick;
 
-    AActor* PushValue(UObject* Other) {
-        AActor* NewObject = new AActor();
-
-        NewObject->SetUUID(Other->GetUUID());
-        NewObject->SetInternalIndex(Other->GetInternalIndex());
-        NewObject->SetFName(Other->GetFName());
-        NewObject->SetClass(Other->GetClass());
-        
-        return NewObject;
-    }
+    AActor* PushValue(UObject* Other);
 
 #if 1 // TODO: WITH_EDITOR 추가
 public:

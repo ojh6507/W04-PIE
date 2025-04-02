@@ -20,16 +20,14 @@ ULightComponentBase* ULightComponentBase::Duplicate()
     {
         return reinterpret_cast<ULightComponentBase*>(DuplicateObjects[GetUUID()]);
     }
-    ULightComponentBase* NewObject1 = new ULightComponentBase();
-    ULightComponentBase* NewObject = reinterpret_cast<ULightComponentBase*>(Super::Duplicate());
+    ULightComponentBase* NewObject1 = FObjectFactory::ConstructObject<ULightComponentBase>();
+  
     NewObject1->color = color;
     NewObject1->radius = radius;
     NewObject1->AABB = AABB;
-    NewObject1->SetUUID(NewObject->GetUUID());
-    NewObject1->SetInternalIndex(NewObject->GetInternalIndex());
-    NewObject1->SetClass(NewObject->GetClass());
-    NewObject1->SetFName(NewObject->GetFName());
 
+    NewObject1->SetInternalIndex(GetInternalIndex());
+    
     return NewObject1;
 }
 void ULightComponentBase::SetColor(FVector4 newColor)

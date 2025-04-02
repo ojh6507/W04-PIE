@@ -1,4 +1,4 @@
-﻿#include "UObjectHash.h"
+#include "UObjectHash.h"
 #include <cassert>
 #include "Object.h"
 #include "UClass.h"
@@ -72,7 +72,7 @@ void AddToClassMap(UObject* Object)
 
 void RemoveFromClassMap(UObject* Object)
 {
-    assert(Object->GetClass());
+    //assert(Object->GetClass());
     FUObjectHashTables& HashTable = FUObjectHashTables::Get();
 
     TSet<UObject*>& ObjectSet = HashTable.ClassToObjectListMap.FindOrAdd(Object->GetClass());

@@ -155,14 +155,10 @@ void UWorld::Release()
 
 UWorld* UWorld::Duplicate()
 {
-    UWorld* newWorld = new UWorld();
+    UWorld* newWorld = FObjectFactory::ConstructObject<UWorld>();
 
-    UWorld* NewWorld = reinterpret_cast<UWorld*>(Super::Duplicate());
+    newWorld->SetInternalIndex(GetInternalIndex());
 
-    newWorld->SetUUID(NewWorld->GetUUID());
-    newWorld->SetInternalIndex(NewWorld->GetInternalIndex());
-    newWorld->SetFName(NewWorld->GetFName());
-    newWorld->SetClass(NewWorld->GetClass());
     newWorld->camera = camera;
 
 

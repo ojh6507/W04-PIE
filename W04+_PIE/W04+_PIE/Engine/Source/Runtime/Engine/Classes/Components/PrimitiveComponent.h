@@ -25,12 +25,13 @@ public:
             return reinterpret_cast<UPrimitiveComponent*>(DuplicateObjects[GetUUID()]);
         }
 
-        UPrimitiveComponent* NewObject = GetValue(Super::Duplicate());
+        UPrimitiveComponent* NewObject = FObjectFactory::ConstructObject<UPrimitiveComponent>();
 
         NewObject->AABB = AABB;
 
         NewObject->m_Type = m_Type;
-      
+
+
         DuplicateObjects[GetUUID()] = NewObject;
 
         return NewObject;

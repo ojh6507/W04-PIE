@@ -120,11 +120,15 @@ UStaticMeshComponent* UStaticMeshComponent::Duplicate()
         return reinterpret_cast<UStaticMeshComponent*>(DuplicateObjects[GetUUID()]);
     }
 
-    UStaticMeshComponent* NewObject = PushValue(Super::Duplicate());
+    UStaticMeshComponent* NewObject = FObjectFactory::ConstructObject<UStaticMeshComponent>();
+
     NewObject->SetStaticMesh(FManagerOBJ::GetStaticMesh(staticMesh->GetRenderData()->ObjectName));
 
     NewObject->selectedSubMeshIndex = selectedSubMeshIndex;
+    
 
+    NewObject->SetInternalIndex(GetInternalIndex());
+    
     DuplicateObjects[GetUUID()] = NewObject;
 
     return NewObject;

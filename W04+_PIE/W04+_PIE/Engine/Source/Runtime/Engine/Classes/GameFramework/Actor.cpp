@@ -10,7 +10,7 @@ AActor* AActor::Duplicate()
         return reinterpret_cast<AActor*>(DuplicateObjects[GetUUID()]);
     }
 
-    AActor* NewObject = PushValue(Super::Duplicate());
+    AActor* NewObject = FObjectFactory::ConstructObject<AActor>();
 
     NewObject->RootComponent = RootComponent->Duplicate();
 

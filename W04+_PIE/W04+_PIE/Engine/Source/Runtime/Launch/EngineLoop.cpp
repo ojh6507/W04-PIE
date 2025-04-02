@@ -24,6 +24,14 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
     case WM_DESTROY:
         PostQuitMessage(0);
         break;
+    case WM_KEYDOWN:
+
+        if (wParam == VK_ESCAPE)
+        {
+            GEngineLoop.EndPIE();
+        }
+        break;
+
     case WM_SIZE:
         if (wParam != SIZE_MINIMIZED)
         {
@@ -43,12 +51,12 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
                 }
             }
         }
-     Console::GetInstance().OnResize(hWnd);
-    // ControlPanel::GetInstance().OnResize(hWnd);
-    // PropertyPanel::GetInstance().OnResize(hWnd);
-    // Outliner::GetInstance().OnResize(hWnd);
-    // ViewModeDropdown::GetInstance().OnResize(hWnd);
-    // ShowFlags::GetInstance().OnResize(hWnd);
+        Console::GetInstance().OnResize(hWnd);
+        // ControlPanel::GetInstance().OnResize(hWnd);
+        // PropertyPanel::GetInstance().OnResize(hWnd);
+        // Outliner::GetInstance().OnResize(hWnd);
+        // ViewModeDropdown::GetInstance().OnResize(hWnd);
+        // ShowFlags::GetInstance().OnResize(hWnd);
         if (GEngineLoop.GetUnrealEditor())
         {
             GEngineLoop.GetUnrealEditor()->OnResize(hWnd);
@@ -147,7 +155,7 @@ void FEngineLoop::Render()
             // renderer.UpdateLightBuffer();
             // RenderWorld();
             renderer.PrepareRender();
-            renderer.Render(GetWorld(),LevelEditor->GetActiveViewportClient());
+            renderer.Render(GetWorld(), LevelEditor->GetActiveViewportClient());
         }
         GetLevelEditor()->SetViewportClient(viewportClient);
     }
@@ -160,7 +168,7 @@ void FEngineLoop::Render()
         // renderer.UpdateLightBuffer();
         // RenderWorld();
         renderer.PrepareRender();
-        renderer.Render(GetWorld(),LevelEditor->GetActiveViewportClient());
+        renderer.Render(GetWorld(), LevelEditor->GetActiveViewportClient());
     }
 }
 
@@ -221,8 +229,7 @@ void FEngineLoop::Tick()
             Sleep(0);
             QueryPerformanceCounter(&endTime);
             elapsedTime = (endTime.QuadPart - startTime.QuadPart) * 1000.0 / frequency.QuadPart;
-        }
-        while (elapsedTime < targetFrameTime);
+        } while (elapsedTime < targetFrameTime);
     }
 }
 
@@ -273,7 +280,7 @@ void FEngineLoop::WindowInit(HINSTANCE hInstance)
 
     WCHAR Title[] = L"Game Tech Lab";
 
-    WNDCLASSW wndclass = {0};
+    WNDCLASSW wndclass = { 0 };
     wndclass.lpfnWndProc = WndProc;
     wndclass.hInstance = hInstance;
     wndclass.lpszClassName = WindowClass;
@@ -287,10 +294,10 @@ void FEngineLoop::WindowInit(HINSTANCE hInstance)
     );
 }
 
-void FEngineLoop::StartPIE(){
+void FEngineLoop::StartPIE() {
     PlayWorldType = EPlayWorldType::Play;
 
-     //DuplicateForPIE 아마 필요한 정보만..? 내생각엔 Tick을 진행하면서 생긴 정보는 날리고 최초의 초기정보만 가져와야하는듯, 그리고 깊은복사
+    //DuplicateForPIE 아마 필요한 정보만..? 내생각엔 Tick을 진행하면서 생긴 정보는 날리고 최초의 초기정보만 가져와야하는듯, 그리고 깊은복사
     if (UWorld* PIEWorld = dynamic_cast<UWorld*>(EditWorld->Duplicate()))
     {
         GWorld = PIEWorld;
@@ -299,12 +306,12 @@ void FEngineLoop::StartPIE(){
     }
 }
 
-void FEngineLoop::EndPIE(){
+void FEngineLoop::EndPIE() {
     if (PlayWorldType != EPlayWorldType::Play)
     {
         return;
     }
-    
+
     PlayWorldType = EPlayWorldType::Edit;
     if (GWorld)
     {
@@ -312,6 +319,6 @@ void FEngineLoop::EndPIE(){
     }
 
     DuplicateObjects.Empty();
-    
+
     GWorld = EditWorld; //포인터만 이동
 }

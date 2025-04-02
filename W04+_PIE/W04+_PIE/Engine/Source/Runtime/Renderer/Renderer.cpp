@@ -998,6 +998,7 @@ void FRenderer::PrepareRender()
 {
     for (const auto iter : TObjectRange<USceneComponent>())
     {
+        if (!iter) continue;
         if (UStaticMeshComponent* pStaticMeshComp = Cast<UStaticMeshComponent>(iter))
         {
             if (!Cast<UGizmoBaseComponent>(iter))
