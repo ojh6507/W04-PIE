@@ -18,6 +18,16 @@ public:
     );
     FBoundingBox AABB;
 
+    virtual UPrimitiveComponent* Duplicate() override
+    {
+        UPrimitiveComponent* NewObject = reinterpret_cast<UPrimitiveComponent*>(Super::Duplicate());
+
+        NewObject->AABB = AABB;
+
+        NewObject->m_Type = m_Type;
+
+        return NewObject;
+    }
 private:
     FString m_Type;
 

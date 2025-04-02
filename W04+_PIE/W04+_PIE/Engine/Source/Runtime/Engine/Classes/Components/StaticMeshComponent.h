@@ -18,10 +18,22 @@ public:
     virtual void GetUsedMaterials(TArray<UMaterial*>& Out) const override;
 
     virtual int CheckRayIntersection(FVector& rayOrigin, FVector& rayDirection, float& pfNearHitDistance) override;
-    
+
+    virtual UStaticMeshComponent* Duplicate() override
+    {
+       
+        UStaticMeshComponent* NewObject = reinterpret_cast<UStaticMeshComponent*>(Super::Duplicate());
+        
+        NewObject->staticMesh = staticMesh;
+
+        NewObject->selectedSubMeshIndex = selectedSubMeshIndex;
+
+        return NewObject;
+    }
+
     UStaticMesh* GetStaticMesh() const { return staticMesh; }
     void SetStaticMesh(UStaticMesh* value)
-    { 
+    {
         staticMesh = value;
         OverrideMaterials.SetNum(value->GetMaterials().Num());
         AABB = FBoundingBox(staticMesh->GetRenderData()->BoundingBoxMin, staticMesh->GetRenderData()->BoundingBoxMax);

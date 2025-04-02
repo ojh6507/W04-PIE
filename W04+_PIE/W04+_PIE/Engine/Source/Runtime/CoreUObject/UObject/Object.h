@@ -44,7 +44,7 @@ public:
     {
         if (DuplicateObjects.Contains(GetUUID()))
         {
-            return nullptr;
+            return DuplicateObjects[GetUUID()];
         }
         
         // 현재 객체가 T 타입인지 확인
@@ -55,7 +55,7 @@ public:
         NewObject->NamePrivate = this->NamePrivate;
         NewObject->ClassPrivate = this->ClassPrivate;
 
-        DuplicateObjects.Add(NewObject->GetUUID());
+        DuplicateObjects[NewObject->GetUUID()] = NewObject;
         
         return NewObject;
     }

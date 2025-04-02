@@ -55,6 +55,22 @@ public:
     void Activate();
     void Deactivate();
 
+    virtual UActorComponent* Duplicate() override
+    {
+        UActorComponent* NewObject = reinterpret_cast<UActorComponent*>(Super::Duplicate());
+
+        NewObject->Owner = Owner->Duplicate();
+        
+        NewObject->bHasBegunPlay = bHasBegunPlay;
+        
+        NewObject->bIsBeingDestroyed = bIsBeingDestroyed;
+        
+        NewObject->bIsActive = bIsActive;
+      
+        NewObject->bAutoActive = bAutoActive;
+
+        return NewObject;
+    }
 private:
     AActor* Owner;
 

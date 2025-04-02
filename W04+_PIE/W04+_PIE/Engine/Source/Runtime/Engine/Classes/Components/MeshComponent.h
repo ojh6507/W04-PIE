@@ -17,6 +17,14 @@ public:
     virtual void SetMaterial(uint32 ElementIndex, UMaterial* Material);
     virtual void SetMaterialByName(FName MaterialSlotName, class UMaterial* Material);
     virtual void GetUsedMaterials(TArray<UMaterial*>& Out) const;
+    virtual UMeshComponent* Duplicate() override
+    {
+        UMeshComponent* NewObject = reinterpret_cast<UMeshComponent*>(Super::Duplicate());
+
+        NewObject->OverrideMaterials = OverrideMaterials;
+
+        return NewObject;
+    }
 #pragma endregion
 protected:
     TArray<UMaterial*> OverrideMaterials;
