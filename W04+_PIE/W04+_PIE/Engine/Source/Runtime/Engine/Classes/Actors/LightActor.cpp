@@ -24,21 +24,22 @@ ULightBaseActor::ULightBaseActor()
 
 ULightBaseActor* ULightBaseActor::Duplicate()
 {
-    if (DuplicateObjects.Contains(GetUUID()))
-    {
-        return reinterpret_cast<ULightBaseActor*>(DuplicateObjects[GetUUID()]);
-    }
-    ULightBaseActor* newActor = new ULightBaseActor();
+
+    ULightBaseActor* newActor = FObjectFactory::ConstructObject<ULightBaseActor>();
+
+    UObject* SuperObject = Super::Duplicate();
+
+    newActor->SetInternalIndex(SuperObject->GetInternalIndex());
     
     newActor->LightComponent = LightComponent->Duplicate();
     newActor->SpriteComponent = SpriteComponent->Duplicate();
+    
+    newActor->SetActorLocation(GetActorLocation());
+    newActor->SetActorRotation(GetActorRotation());
+    newActor->SetActorScale(GetActorScale());
 
-    newActor->SetUUID(GetUUID());
     newActor->SetInternalIndex(GetInternalIndex());
-    newActor->SetFName(GetFName());
-    newActor->SetClass(GetClass());
 
-    DuplicateObjects[GetUUID()] = newActor;
 
     return newActor;
 }

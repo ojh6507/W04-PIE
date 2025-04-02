@@ -19,16 +19,16 @@ public:
     virtual void GetUsedMaterials(TArray<UMaterial*>& Out) const;
     virtual UMeshComponent* Duplicate() override
     {
-        if (DuplicateObjects.Contains(GetUUID()))
-        {
-            return static_cast<UMeshComponent*>(DuplicateObjects[GetUUID()]);
-        }
-        
-        UMeshComponent* NewObject = PushValue(Super::Duplicate());
-        
+        UMeshComponent* NewObject = FObjectFactory::ConstructObject<UMeshComponent>();
+
+        UPrimitiveComponent* Comp = Super::Duplicate();
+
+        NewObject->AABB = Comp->AABB;
+
+        NewObject->SetType(Comp->GetType());
+  
         NewObject->OverrideMaterials = this->OverrideMaterials;
         
-        DuplicateObjects[GetUUID()] = NewObject;
         return NewObject;
     }
 

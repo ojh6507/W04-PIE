@@ -32,10 +32,7 @@ UBillboardComponent::~UBillboardComponent()
 
 UBillboardComponent* UBillboardComponent::Duplicate()
 {
-    if (DuplicateObjects.Contains(GetUUID()))
-    {
-        return reinterpret_cast<UBillboardComponent*>(DuplicateObjects[GetUUID()]);
-    }
+
     UBillboardComponent* newComponent = GetValue(Super::Duplicate());
 
     newComponent->Sprite = Sprite;
@@ -46,9 +43,6 @@ UBillboardComponent* UBillboardComponent::Duplicate()
     newComponent->numIndices = numIndices;
     newComponent->finalIndexU = finalIndexU;
     newComponent->finalIndexV = finalIndexV;
-
-
-    DuplicateObjects[GetUUID()] = newComponent;
 
     return newComponent;
 }

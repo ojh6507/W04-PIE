@@ -3,6 +3,23 @@
 #include "Math/JungleMath.h"
 #include "UObject/ObjectFactory.h"
 #include "UTextUUID.h"
+#include "UObject/ObjectFactory.h"
+
+USceneComponent* USceneComponent::Duplicate()
+{
+
+   
+    USceneComponent* NewObject = FObjectFactory::ConstructObject<USceneComponent>();
+
+    NewObject->RelativeLocation = RelativeLocation;
+    NewObject->RelativeRotation = RelativeRotation;
+    NewObject->RelativeScale3D = RelativeScale3D;
+    NewObject->QuatRotation = QuatRotation;
+
+    NewObject->AttachParent = AttachParent;
+
+    return NewObject;
+}
 USceneComponent::USceneComponent() :RelativeLocation(FVector(0.f, 0.f, 0.f)), RelativeRotation(FVector(0.f, 0.f, 0.f)), RelativeScale3D(FVector(1.f, 1.f, 1.f))
 {
 }

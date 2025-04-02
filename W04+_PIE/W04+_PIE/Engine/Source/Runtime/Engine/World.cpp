@@ -20,7 +20,9 @@ void UWorld::Initialize()
     FManagerOBJ::CreateStaticMesh("Assets/SkySphere.obj");
     AActor* SpawnedActor = SpawnActor<AActor>();
     USkySphereComponent* skySphere = SpawnedActor->AddComponent<USkySphereComponent>();
+
     skySphere->SetStaticMesh(FManagerOBJ::GetStaticMesh(L"SkySphere.obj"));
+
     skySphere->GetStaticMesh()->GetMaterials()[0]->Material->SetDiffuse(FVector((float)32 / 255, (float)171 / 255, (float)191 / 255));
 }
 
@@ -33,12 +35,12 @@ void UWorld::InitializePIE()
 
     GEngineLoop.GetLevelEditor()->GetActiveViewportClient()->ViewTransformPerspective.SetLocation(FVector(8.0f, 8.0f, 8.f));
     GEngineLoop.GetLevelEditor()->GetActiveViewportClient()->ViewTransformPerspective.SetRotation(FVector(0.0f, 45.0f, -135.0f));
-    
+
     TSet<AActor*> Actors = GetActors();
 
     for (AActor* Actor : Actors)
     {
-        if(Actor)
+        if (Actor)
             Actor->BeginPlay();
     }
 }
@@ -50,12 +52,6 @@ void UWorld::CreateBaseObject()
         EditorPlayer = FObjectFactory::ConstructObject<AEditorController>();
     }
 
-    if (camera == nullptr)
-    {
-        camera = FObjectFactory::ConstructObject<UCameraComponent>();
-        camera->SetLocation(FVector(8.0f, 8.0f, 8.f));
-        camera->SetRotation(FVector(0.0f, 45.0f, -135.0f));
-    }
 
     if (LocalGizmo == nullptr)
     {
@@ -65,30 +61,27 @@ void UWorld::CreateBaseObject()
 
 void UWorld::ReleaseBaseObject()
 {
-    if (LocalGizmo)
-    {
-        delete LocalGizmo;
-        LocalGizmo = nullptr;
-    }
+    if (GEngineLoop.GetPlayWorldType() == EPlayWorldType::Edit) {
 
-    if (worldGizmo)
-    {
-        delete worldGizmo;
-        worldGizmo = nullptr;
-    }
+        if (LocalGizmo)
+        {
+            delete LocalGizmo;
+            LocalGizmo = nullptr;
+        }
 
-    if (camera)
-    {
-        delete camera;
-        camera = nullptr;
-    }
+        if (worldGizmo)
+        {
+            delete worldGizmo;
+            worldGizmo = nullptr;
+        }
 
-    if (EditorPlayer)
-    {
-        delete EditorPlayer;
-        EditorPlayer = nullptr;
-    }
+        if (EditorPlayer)
+        {
+            delete EditorPlayer;
+            EditorPlayer = nullptr;
+        }
 
+    }
 }
 
 void UWorld::PIETick(float DeltaTime)
@@ -133,8 +126,26 @@ void UWorld::Tick(float DeltaTime)
     }
 }
 
+void UWorld::ReleasePIE()
+{
+    for (AActor* Actor : ActorsArray)
+    {
+        Actor->EndPlay(EEndPlayReason::WorldTransition);
+        TSet<UActorComponent*> Components = Actor->GetComponents();
+        for (UActorComponent* Component : Components)
+        {
+            GUObjectArray.MarkRemoveObject(Component);
+        }
+        GUObjectArray.MarkRemoveObject(Actor);
+    }
+    ActorsArray.Empty();
+
+    GUObjectArray.ProcessPendingDestroyObjects();
+}
+
 void UWorld::Release()
 {
+
     for (AActor* Actor : ActorsArray)
     {
         Actor->EndPlay(EEndPlayReason::WorldTransition);
@@ -156,18 +167,9 @@ void UWorld::Release()
 UWorld* UWorld::Duplicate()
 {
     UWorld* newWorld = new UWorld();
-
-    UWorld* NewWorld = reinterpret_cast<UWorld*>(Super::Duplicate());
-
-    newWorld->SetUUID(NewWorld->GetUUID());
-    newWorld->SetInternalIndex(NewWorld->GetInternalIndex());
-    newWorld->SetFName(NewWorld->GetFName());
-    newWorld->SetClass(NewWorld->GetClass());
-    newWorld->camera = camera;
-
-
+    
     for (auto Actor : ActorsArray) {
-
+        
         newWorld->ActorsArray.Add(Actor->Duplicate());
     }
 

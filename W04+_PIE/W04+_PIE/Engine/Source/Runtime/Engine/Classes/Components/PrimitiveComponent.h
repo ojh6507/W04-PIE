@@ -20,39 +20,29 @@ public:
 
     virtual UPrimitiveComponent* Duplicate() override
     {
-        if (DuplicateObjects.Contains(GetUUID()))
-        {
-            return reinterpret_cast<UPrimitiveComponent*>(DuplicateObjects[GetUUID()]);
-        }
 
-        UPrimitiveComponent* NewObject = GetValue(Super::Duplicate());
+        USceneComponent* SuperComp = Super::Duplicate();
 
+        UPrimitiveComponent* NewObject = FObjectFactory::ConstructObject<UPrimitiveComponent>();
+
+        NewObject->SetLocation(SuperComp->GetWorldLocation());
+        NewObject->SetScale(SuperComp->GetWorldScale());
+        NewObject->SetRotation(SuperComp->GetWorldRotation());
+        
         NewObject->AABB = AABB;
 
         NewObject->m_Type = m_Type;
-      
-        DuplicateObjects[GetUUID()] = NewObject;
+
 
         return NewObject;
     }
-private:
-    UPrimitiveComponent* GetValue(USceneComponent* comp) 
-    {
-        UPrimitiveComponent* NewObj = new UPrimitiveComponent();
-        NewObj->SetLocation(GetWorldLocation());
-        NewObj->SetScale(GetWorldScale());
-        NewObj->SetRotation(GetWorldRotation());
-
-        return NewObj;
-    }
-
 
 private:
     FString m_Type;
 
 public:
     FString GetType() { return m_Type; }
-
+    
     void SetType(const FString& _Type)
     {
         m_Type = _Type;

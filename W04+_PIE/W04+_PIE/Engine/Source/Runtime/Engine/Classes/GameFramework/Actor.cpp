@@ -5,21 +5,25 @@
 
 AActor* AActor::Duplicate()
 {
-    if (DuplicateObjects.Contains(GetUUID()))
-    {
-        return reinterpret_cast<AActor*>(DuplicateObjects[GetUUID()]);
-    }
+    AActor* NewObject = FObjectFactory::ConstructObject<AActor>();
 
-    AActor* NewObject = PushValue(Super::Duplicate());
+    UObject* SuperObject = Super::Duplicate();
 
+    NewObject->SetInternalIndex(SuperObject->GetInternalIndex());
+    
     NewObject->RootComponent = RootComponent->Duplicate();
+    /** 현재 Actor가 삭제 처리중인지 여부 */
+    NewObject->bActorIsBeingDestroyed = bActorIsBeingDestroyed;
+    
+    NewObject->SetActorLocation(GetActorLocation());
+    NewObject->SetActorRotation(GetActorRotation());
+    NewObject->SetActorScale(GetActorScale());
 
     for (UActorComponent* Comp : OwnedComponents)
     {
         NewObject->OwnedComponents.Add(Comp->Duplicate());
     }
 
-    DuplicateObjects[GetUUID()] = NewObject;
 
     return NewObject;
 }

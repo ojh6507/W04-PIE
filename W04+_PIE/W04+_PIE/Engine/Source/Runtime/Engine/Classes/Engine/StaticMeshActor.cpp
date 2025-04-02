@@ -10,7 +10,11 @@ AStaticMeshActor::AStaticMeshActor()
 
 AStaticMeshActor* AStaticMeshActor::Duplicate()
 {
-    AStaticMeshActor* newActor = reinterpret_cast<AStaticMeshActor*>(Super::Duplicate());
+    AStaticMeshActor* newActor = FObjectFactory::ConstructObject<AStaticMeshActor>();
+    AActor* DuplicatedActor = Super::Duplicate();
+
+    newActor->RootComponent = DuplicatedActor->GetRootComponent()->Duplicate();
+    
     newActor->StaticMeshComponent = StaticMeshComponent->Duplicate();
     return newActor;
 }
