@@ -1,10 +1,8 @@
 #pragma once
 #include "Define.h"
 #include "Actors/Player.h"
-#include "Container/Set.h"
 #include "UObject/ObjectFactory.h"
 #include "UObject/ObjectMacros.h"
-#include "Classes/Engine/Level.h"
 
 class FObjectFactory;
 class AActor;
@@ -14,6 +12,10 @@ class UCameraComponent;
 class AEditorController;
 class USceneComponent;
 class UTransformGizmo;
+class ULevel;
+
+template <typename T, typename Hasher , typename Allocator>
+class TSet;
 
 class UWorld : public UObject
 {
@@ -30,6 +32,7 @@ public:
     void PIETick(float DeltaTime);
     void Release();
     UWorld* Duplicate();
+
     /**
      * World에 Actor를 Spawn합니다.
      * @tparam T AActor를 상속받은 클래스
@@ -61,32 +64,19 @@ public:
     const TSet<AActor*>& GetActors() const;
 
     UTransformGizmo* LocalGizmo = nullptr;
-    AEditorController* GetEditorPlayer() const { return EditorPlayer; }
-    ULevel* GetLevel() const { return SelectedLevel; }
+    AEditorController* GetEditorPlayer() const;
+    ULevel* GetLevel() const;
 
 
     // EditorManager 같은데로 보내기
-    AActor* GetSelectedActor() const { return SelectedActor; }
-    void SetPickedActor(AActor* InActor)
-    {
-        SelectedActor = InActor;
-    }
+    AActor* GetSelectedActor() const;
+    void SetPickedActor(AActor* InActor);
 
-    class UActorComponent* GetSelectedComponent() const { return SelectedComponent; }
-    void SetSelectedComponent(class UActorComponent* InComponent)
-    {
-        SelectedComponent = InComponent;
-    }
-
+    class UActorComponent* GetSelectedComponent() const;
+    void SetSelectedComponent(class UActorComponent* InComponent);
     UObject* GetWorldGizmo() const { return worldGizmo; }
     USceneComponent* GetPickingGizmo() const { return pickingGizmo; }
     void SetPickingGizmo(UObject* Object);
 };
 
-template <typename T>
-    requires std::derived_from<T, AActor>
-T* UWorld::SpawnActor()
-{
-    T* Actor = SelectedLevel->SpawnActor<T>();
-    return Actor;
-}
+#include "UWorld_Impl.inl"

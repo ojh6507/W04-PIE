@@ -116,6 +116,9 @@ private:
     /** 현재 Actor가 삭제 처리중인지 여부 */
     uint8 bActorIsBeingDestroyed : 1;
 
+    // 이 Actor가 속한 레벨
+    ULevel* Level = nullptr;
+
     //struct FActorTickFunction PrimaryActorTick;
 
     AActor* PushValue(UObject* Other);

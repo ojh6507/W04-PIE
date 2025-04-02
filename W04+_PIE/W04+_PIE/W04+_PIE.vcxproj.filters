@@ -701,4 +701,7 @@
       <Filter>Engine\Source\Runtime\Engine\Classes\Actors</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="UWorld_Impl.inl" />
+  </ItemGroup>
 </Project>

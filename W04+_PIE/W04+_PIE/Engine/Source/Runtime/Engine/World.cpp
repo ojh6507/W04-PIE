@@ -9,7 +9,7 @@
 #include "Engine/StaticMeshActor.h"
 #include "Components/SkySphereComponent.h"
 #include "UnrealEd/EditorViewportClient.h"
-#include "Classes/Engine/Level.h"
+#include "Engine/Classes/Engine/Level.h"
 
 void UWorld::Initialize()
 {
@@ -87,11 +87,12 @@ void UWorld::ReleaseBaseObject()
             EditorPlayer = nullptr;
         }
 
-    if (SelectedLevel)
-    {
-        SelectedLevel->Release();
-        GUObjectArray.MarkRemoveObject(SelectedLevel);
-        SelectedLevel = nullptr;
+        if (SelectedLevel)
+        {
+            SelectedLevel->Release();
+            GUObjectArray.MarkRemoveObject(SelectedLevel);
+            SelectedLevel = nullptr;
+        }
     }
 }
 
@@ -137,6 +138,37 @@ bool UWorld::DestroyActor(AActor* ThisActor)
 const TSet<AActor*>& UWorld::GetActors() const
 {
     return SelectedLevel->GetActors();
+}
+
+AEditorController* UWorld::GetEditorPlayer() const 
+{ 
+    return EditorPlayer; 
+}
+
+ULevel* UWorld::GetLevel() const
+{
+    return SelectedLevel;
+}
+
+AActor* UWorld::GetSelectedActor() const
+{
+    return SelectedActor;
+}
+
+void UWorld::SetPickedActor(AActor* InActor)
+{
+    SelectedActor = InActor;
+}
+
+UActorComponent* UWorld::GetSelectedComponent() const
+{
+    return SelectedComponent;
+
+}
+
+void UWorld::SetSelectedComponent(UActorComponent* InComponent)
+{
+    SelectedComponent = InComponent;
 }
 
 void UWorld::SetPickingGizmo(UObject* Object)
