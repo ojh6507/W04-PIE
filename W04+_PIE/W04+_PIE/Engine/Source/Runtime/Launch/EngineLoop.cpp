@@ -294,7 +294,9 @@ void FEngineLoop::StartPIE(){
     {
         GWorld = PIEWorld;
 
-        GWorld->InitializePIE();    
+        
+        
+        GWorld->InitializePIE();
     }
 }
 
@@ -309,6 +311,8 @@ void FEngineLoop::EndPIE(){
     {
         GWorld->Release();
     }
+
+    DuplicateObjects.Empty();
     
     GWorld = EditWorld; //포인터만 이동
 }

@@ -19,6 +19,11 @@ public:
 
     virtual AActor* Duplicate() override
     {
+        if (DuplicateObjects.Contains(GetUUID()))
+        {
+            return reinterpret_cast<AActor*>(DuplicateObjects[GetUUID()]);
+        }
+        
         AActor* NewObject = reinterpret_cast<AActor*>(Super::Duplicate());
 
         NewObject->RootComponent = RootComponent->Duplicate();
@@ -27,6 +32,8 @@ public:
         {
             NewObject->OwnedComponents.Add(Comp->Duplicate());
         }
+
+        DuplicateObjects[GetUUID()] = NewObject;
         
         return NewObject;
     }

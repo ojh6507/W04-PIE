@@ -10,6 +10,11 @@ class USceneComponent : public UActorComponent
 
     virtual USceneComponent* Duplicate() override
     {
+        if (DuplicateObjects.Contains(GetUUID()))
+        {
+            return reinterpret_cast<USceneComponent*>(DuplicateObjects[GetUUID()]);
+        }
+        
         USceneComponent* NewObject = reinterpret_cast<USceneComponent*>(Super::Duplicate());
         NewObject->RelativeLocation = RelativeLocation;
         NewObject->RelativeRotation = RelativeRotation;
@@ -17,6 +22,8 @@ class USceneComponent : public UActorComponent
         NewObject->QuatRotation = QuatRotation;
 
         NewObject->AttachParent = AttachParent;
+
+        DuplicateObjects[GetUUID()] = NewObject;
         
         return NewObject;
     }

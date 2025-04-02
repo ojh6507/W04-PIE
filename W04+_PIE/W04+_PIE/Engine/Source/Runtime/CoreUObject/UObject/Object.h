@@ -55,7 +55,7 @@ public:
         NewObject->NamePrivate = this->NamePrivate;
         NewObject->ClassPrivate = this->ClassPrivate;
 
-        DuplicateObjects[NewObject->GetUUID()] = NewObject;
+        DuplicateObjects[GetUUID()] = NewObject;
         
         return NewObject;
     }
