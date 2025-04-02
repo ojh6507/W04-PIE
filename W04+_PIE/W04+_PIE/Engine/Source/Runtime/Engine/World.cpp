@@ -8,20 +8,14 @@
 #include "Classes/Components/StaticMeshComponent.h"
 #include "Engine/StaticMeshActor.h"
 #include "Components/SkySphereComponent.h"
+#include "Classes/Engine/Level.h"
 
 
 void UWorld::Initialize()
 {
     // TODO: Load Scene
     CreateBaseObject();
-    //SpawnObject(OBJ_CUBE);
-    FManagerOBJ::CreateStaticMesh("Assets/Dodge/Dodge.obj");
 
-    FManagerOBJ::CreateStaticMesh("Assets/SkySphere.obj");
-    AActor* SpawnedActor = SpawnActor<AActor>();
-    USkySphereComponent* skySphere = SpawnedActor->AddComponent<USkySphereComponent>();
-    skySphere->SetStaticMesh(FManagerOBJ::GetStaticMesh(L"SkySphere.obj"));
-    skySphere->GetStaticMesh()->GetMaterials()[0]->Material->SetDiffuse(FVector((float)32 / 255, (float)171 / 255, (float)191 / 255));
 }
 
 void UWorld::CreateBaseObject()
@@ -41,6 +35,13 @@ void UWorld::CreateBaseObject()
     if (LocalGizmo == nullptr)
     {
         LocalGizmo = FObjectFactory::ConstructObject<UTransformGizmo>();
+    }
+
+    if (SelectedLevel == nullptr)
+    {
+        SelectedLevel = FObjectFactory::ConstructObject<ULevel>();
+        SelectedLevel->SetWorld(this);
+        SelectedLevel->Initialize();
     }
 }
 
@@ -70,6 +71,12 @@ void UWorld::ReleaseBaseObject()
         EditorPlayer = nullptr;
     }
 
+    if (SelectedLevel)
+    {
+        SelectedLevel->Release();
+        GUObjectArray.MarkRemoveObject(SelectedLevel);
+        SelectedLevel = nullptr;
+    }
 }
 
 void UWorld::Tick(float DeltaTime)
@@ -78,34 +85,11 @@ void UWorld::Tick(float DeltaTime)
     EditorPlayer->Tick(DeltaTime);
     LocalGizmo->Tick(DeltaTime);
 
-    // SpawnActor()에 의해 Actor가 생성된 경우, 여기서 BeginPlay 호출
-    for (AActor* Actor : PendingBeginPlayActors)
-    {
-        Actor->BeginPlay();
-    }
-    PendingBeginPlayActors.Empty();
-
-    // 매 틱마다 Actor->Tick(...) 호출
-    for (AActor* Actor : ActorsArray)
-    {
-        Actor->Tick(DeltaTime);
-    }
+    SelectedLevel->Tick(DeltaTime);
 }
 
 void UWorld::Release()
 {
-    for (AActor* Actor : ActorsArray)
-    {
-        Actor->EndPlay(EEndPlayReason::WorldTransition);
-        TSet<UActorComponent*> Components = Actor->GetComponents();
-        for (UActorComponent* Component : Components)
-        {
-            GUObjectArray.MarkRemoveObject(Component);
-        }
-        GUObjectArray.MarkRemoveObject(Actor);
-    }
-    ActorsArray.Empty();
-
     pickingGizmo = nullptr;
     ReleaseBaseObject();
 
@@ -114,36 +98,12 @@ void UWorld::Release()
 
 bool UWorld::DestroyActor(AActor* ThisActor)
 {
-    if (ThisActor->GetWorld() == nullptr)
-    {
-        return false;
-    }
+    return SelectedLevel->DestroyActor(ThisActor);
+}
 
-    if (ThisActor->IsActorBeingDestroyed())
-    {
-        return true;
-    }
-
-    // 액터의 Destroyed 호출
-    ThisActor->Destroyed();
-
-    if (ThisActor->GetOwner())
-    {
-        ThisActor->SetOwner(nullptr);
-    }
-
-    TSet<UActorComponent*> Components = ThisActor->GetComponents();
-    for (UActorComponent* Component : Components)
-    {
-        Component->DestroyComponent();
-    }
-
-    // World에서 제거
-    ActorsArray.Remove(ThisActor);
-
-    // 제거 대기열에 추가
-    GUObjectArray.MarkRemoveObject(ThisActor);
-    return true;
+const TSet<AActor*>& UWorld::GetActors() const
+{
+    return SelectedLevel->GetActors();
 }
 
 void UWorld::SetPickingGizmo(UObject* Object)

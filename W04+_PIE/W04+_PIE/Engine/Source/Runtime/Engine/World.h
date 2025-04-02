@@ -3,6 +3,7 @@
 #include "Container/Set.h"
 #include "UObject/ObjectFactory.h"
 #include "UObject/ObjectMacros.h"
+#include "Classes/Engine/Level.h"
 
 class FObjectFactory;
 class AActor;
@@ -12,7 +13,6 @@ class UCameraComponent;
 class AEditorPlayer;
 class USceneComponent;
 class UTransformGizmo;
-
 
 class UWorld : public UObject
 {
@@ -42,26 +42,23 @@ public:
 private:
     const FString defaultMapName = "Default";
 
-    /** World에서 관리되는 모든 Actor의 목록 */
-    TSet<AActor*> ActorsArray;
-
-    /** Actor가 Spawn되었고, 아직 BeginPlay가 호출되지 않은 Actor들 */
-    TArray<AActor*> PendingBeginPlayActors;
-
     AActor* SelectedActor = nullptr;
 
     USceneComponent* pickingGizmo = nullptr;
     UCameraComponent* camera = nullptr;
     AEditorPlayer* EditorPlayer = nullptr;
 
+    ULevel* SelectedLevel = nullptr;
+
 public:
     UObject* worldGizmo = nullptr;
 
-    const TSet<AActor*>& GetActors() const { return ActorsArray; }
+    const TSet<AActor*>& GetActors() const;
 
     UTransformGizmo* LocalGizmo = nullptr;
     UCameraComponent* GetCamera() const { return camera; }
     AEditorPlayer* GetEditorPlayer() const { return EditorPlayer; }
+    ULevel* GetLevel() const { return SelectedLevel; }
 
 
     // EditorManager 같은데로 보내기
@@ -76,16 +73,10 @@ public:
     void SetPickingGizmo(UObject* Object);
 };
 
-
 template <typename T>
     requires std::derived_from<T, AActor>
 T* UWorld::SpawnActor()
 {
-    T* Actor = FObjectFactory::ConstructObject<T>();
-    // TODO: 일단 AddComponent에서 Component마다 초기화
-    // 추후에 RegisterComponent() 만들어지면 주석 해제
-    // Actor->InitializeComponents();
-    ActorsArray.Add(Actor);
-    PendingBeginPlayActors.Add(Actor);
+    T* Actor = SelectedLevel->SpawnActor<T>();
     return Actor;
 }

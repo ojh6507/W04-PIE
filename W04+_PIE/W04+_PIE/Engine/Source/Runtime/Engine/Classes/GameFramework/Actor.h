@@ -9,6 +9,7 @@
 
 
 class UActorComponent;
+class ULevel;
 
 class AActor : public UObject
 {
@@ -79,6 +80,9 @@ public:
     AActor* GetOwner() const { return Owner; }
     void SetOwner(AActor* NewOwner) { Owner = NewOwner; }
 
+    ULevel* GetLevel() const { return Level; }
+    void SetLevel(ULevel* InLevel) { Level = InLevel; }
+
 public:
     FVector GetActorLocation() const { return RootComponent ? RootComponent->GetWorldLocation() : FVector::ZeroVector; }
     FVector GetActorRotation() const { return RootComponent ? RootComponent->GetWorldRotation() : FVector::ZeroVector; }
@@ -107,6 +111,9 @@ private:
     uint8 bActorIsBeingDestroyed : 1;
 
     //struct FActorTickFunction PrimaryActorTick;
+
+    // 이 Actor가 속해있는 ULevel
+    ULevel* Level = nullptr;
 
 
 #if 1 // TODO: WITH_EDITOR 추가
