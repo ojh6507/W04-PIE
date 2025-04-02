@@ -24,22 +24,25 @@ ULightBaseActor::ULightBaseActor()
 
 ULightBaseActor* ULightBaseActor::Duplicate()
 {
-
     ULightBaseActor* newActor = FObjectFactory::ConstructObject<ULightBaseActor>();
 
-    UObject* SuperObject = Super::Duplicate();
+    AActor* SActor = Super::Duplicate();
+    
+    newActor->RootComponent = SActor->GetRootComponent()->Duplicate();
+    /** 현재 Actor가 삭제 처리중인지 여부 */
+    newActor->SetActorLocation(SActor->GetActorLocation());
+    newActor->SetActorRotation(SActor->GetActorRotation());
+    newActor->SetActorScale(SActor->GetActorScale());
 
-    newActor->SetInternalIndex(SuperObject->GetInternalIndex());
+    for (UActorComponent* Comp : SActor->OwnedComponents)
+    {
+        newActor->OwnedComponents.Add(Comp->Duplicate());
+    }
+    
+    newActor->SetInternalIndex(SActor->GetInternalIndex());
     
     newActor->LightComponent = LightComponent->Duplicate();
     newActor->SpriteComponent = SpriteComponent->Duplicate();
-    
-    newActor->SetActorLocation(GetActorLocation());
-    newActor->SetActorRotation(GetActorRotation());
-    newActor->SetActorScale(GetActorScale());
-
-    newActor->SetInternalIndex(GetInternalIndex());
-
 
     return newActor;
 }

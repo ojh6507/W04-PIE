@@ -32,18 +32,22 @@ UBillboardComponent::~UBillboardComponent()
 
 UBillboardComponent* UBillboardComponent::Duplicate()
 {
+    UBillboardComponent* newComponent = FObjectFactory::ConstructObject<UBillboardComponent>();
 
-    UBillboardComponent* newComponent = GetValue(Super::Duplicate());
-
+    UPrimitiveComponent* PriComp = Super::Duplicate();
+    
+    newComponent->AABB = PriComp->AABB;
+    newComponent->SetType(StaticClass()->GetName());
+    newComponent->SetLocation(PriComp->GetWorldLocation());
+    newComponent->SetScale(PriComp->GetWorldScale());
+    newComponent->SetRotation(PriComp->GetWorldRotation());
+    
     newComponent->Sprite = Sprite;
-    newComponent->vertexTextureBuffer = vertexTextureBuffer;
-    newComponent->indexTextureBuffer = indexTextureBuffer;
-    newComponent->numVertices = numVertices;
-
-    newComponent->numIndices = numIndices;
     newComponent->finalIndexU = finalIndexU;
     newComponent->finalIndexV = finalIndexV;
 
+    newComponent->CreateQuadTextureVertexBuffer();
+    
     return newComponent;
 }
 
@@ -81,15 +85,6 @@ void UBillboardComponent::SetSprite(FWString _fileName)
 void UBillboardComponent::SetSprite(std::shared_ptr<FTexture> _Sprite)
 {
     Sprite = _Sprite;
-}
-
-UBillboardComponent* UBillboardComponent::GetValue(UPrimitiveComponent* comp)
-{
-    UBillboardComponent* billboard = new UBillboardComponent ();
-
-    billboard->AABB = comp->AABB;
-    billboard->SetType(StaticClass()->GetName());
-    return billboard;
 }
 
 void UBillboardComponent::SetUUIDParent(USceneComponent* _parent)

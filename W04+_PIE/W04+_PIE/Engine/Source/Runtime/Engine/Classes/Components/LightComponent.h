@@ -13,7 +13,7 @@ public:
 
     virtual ULightComponentBase* Duplicate() override;
 
-
+    
 
 
     virtual void TickComponent(float DeltaTime) override;

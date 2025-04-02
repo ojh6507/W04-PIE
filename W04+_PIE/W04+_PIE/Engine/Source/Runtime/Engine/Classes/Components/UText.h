@@ -9,6 +9,8 @@ class UTextRenderComponent : public UBillboardComponent
 public:
     UTextRenderComponent();
     virtual ~UTextRenderComponent() override;
+    
+    virtual UTextRenderComponent* Duplicate() override;
 
     virtual void InitializeComponent() override;
     virtual void TickComponent(float DeltaTime) override;
