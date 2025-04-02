@@ -26,3 +26,22 @@ enum ELevelViewportType
     LVT_MAX,
     LVT_None = 255,
 };
+
+enum EWorldType
+{
+    Editor,
+    EditorPreview,
+    PIE,
+    Game,
+};
+
+struct FTickFunction
+{
+    uint8 bCanEverTick : 1;
+};
+
+struct FActorTickFunction : public FTickFunction
+{
+    class AActor* Target;
+
+};

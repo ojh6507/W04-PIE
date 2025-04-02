@@ -7,6 +7,8 @@ class ULevel : public UObject
     DECLARE_CLASS(ULevel, UObject)
 
 public:
-    TArray <AActor*> Actors;
+
+    /** ULevel에서 관리되는 모든 Actor의 목록 */
+    TSet<AActor*> Actors;
 
 };

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Components/SceneComponent.h"
 #include "Container/Set.h"
 #include "Engine/EngineTypes.h"
@@ -35,6 +35,12 @@ public:
     virtual void EndPlay(const EEndPlayReason::Type EndPlayReason);
 
 public:
+
+    uint8 IsActorTickEnabled() const 
+    {
+        return PrimaryActorTick.bCanEverTick;
+    }
+
     /** 이 Actor를 제거합니다. */
     virtual bool Destroy();
 
@@ -99,6 +105,9 @@ private:
 
     /** 현재 Actor가 삭제 처리중인지 여부 */
     uint8 bActorIsBeingDestroyed : 1;
+
+    struct FActorTickFunction PrimaryActorTick;
+
 
 #if 1 // TODO: WITH_EDITOR 추가
 public:
