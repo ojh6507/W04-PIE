@@ -50,6 +50,8 @@ private:
 
     AActor* SelectedActor = nullptr;
 
+    class UActorComponent* SelectedComponent = nullptr;
+
     USceneComponent* pickingGizmo = nullptr;
     UCameraComponent* camera = nullptr;
     AEditorPlayer* EditorPlayer = nullptr;
@@ -69,6 +71,12 @@ public:
     void SetPickedActor(AActor* InActor)
     {
         SelectedActor = InActor;
+    }
+
+    class UActorComponent* GetSelectedComponent() const { return SelectedComponent; }
+    void SetSelectedComponent(class UActorComponent* InComponent)
+    {
+        SelectedComponent = InComponent;
     }
 
     UObject* GetWorldGizmo() const { return worldGizmo; }

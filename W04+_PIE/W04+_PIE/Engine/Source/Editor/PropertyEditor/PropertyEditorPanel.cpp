@@ -61,12 +61,21 @@ void PropertyEditorPanel::Render()
 
         FString actorName = PickedActor->GetFName().ToString();
 
+
         if (ImGui::TreeNodeEx(*actorName, ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_DefaultOpen))
         {
             // --- 기존 컴포넌트 목록 표시 (이 부분은 별도 구현 필요) ---
             ImGui::Text("Components:");
-            for (const auto& comp : PickedActor->GetComponents()) { // GetComponents() 함수가 있다고 가정
-                ImGui::Text(" - %s", *comp->GetFName().ToString());
+
+            UWorld* World = GEngineLoop.GetWorld();
+            for ( UActorComponent* comp : PickedActor->GetComponents()) {
+
+                if (ImGui::Selectable(*comp->GetFName().ToString(), World->GetSelectedComponent() == comp))
+                {
+                    World->SetSelectedComponent(comp);
+                    break;
+                }
+                //ImGui::Text(" - %s", *comp->GetFName().ToString());
             }
 
             // --- 컴포넌트 추가 UI ---
@@ -184,33 +193,72 @@ void PropertyEditorPanel::Render()
         ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.1f, 0.1f, 0.1f, 1.0f));
         if (ImGui::TreeNodeEx("Transform", ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_DefaultOpen)) // 트리 노드 생성
         {
-            Location = PickedActor->GetActorLocation();
-            Rotation = PickedActor->GetActorRotation();
-            Scale = PickedActor->GetActorScale();
-            
-            FImGuiWidget::DrawVec3Control("Location", Location, 0, 85);
-            ImGui::Spacing();
 
-            FImGuiWidget::DrawVec3Control("Rotation", Rotation, 0, 85);
-            ImGui::Spacing();
+            UWorld* World = GEngineLoop.GetWorld();
 
-            FImGuiWidget::DrawVec3Control("Scale", Scale, 0, 85);
-            ImGui::Spacing();
 
-            PickedActor->SetActorLocation(Location);
-            PickedActor->SetActorRotation(Rotation);
-            PickedActor->SetActorScale(Scale);
-            
-            std::string coordiButtonLabel;
-            if (player->GetCoordiMode() == CoordiMode::CDM_WORLD)
-                coordiButtonLabel = "World";
-            else if (player->GetCoordiMode() == CoordiMode::CDM_LOCAL)
-                coordiButtonLabel = "Local";
-            
-            if (ImGui::Button(coordiButtonLabel.c_str(), ImVec2(ImGui::GetWindowContentRegionMax().x * 0.9f, 32)))
+            //만일 컴포넌트가 없으면
+            if (World->GetSelectedComponent() == nullptr)
             {
-                player->AddCoordiMode();
+                Location = PickedActor->GetActorLocation();
+                Rotation = PickedActor->GetActorRotation();
+                Scale = PickedActor->GetActorScale();
+
+                FImGuiWidget::DrawVec3Control("Location", Location, 0, 85);
+                ImGui::Spacing();
+
+                FImGuiWidget::DrawVec3Control("Rotation", Rotation, 0, 85);
+                ImGui::Spacing();
+
+                FImGuiWidget::DrawVec3Control("Scale", Scale, 0, 85);
+                ImGui::Spacing();
+
+                PickedActor->SetActorLocation(Location);
+                PickedActor->SetActorRotation(Rotation);
+                PickedActor->SetActorScale(Scale);
+
+                std::string coordiButtonLabel;
+                if (player->GetCoordiMode() == CoordiMode::CDM_WORLD)
+                    coordiButtonLabel = "World";
+                else if (player->GetCoordiMode() == CoordiMode::CDM_LOCAL)
+                    coordiButtonLabel = "Local";
+
+                if (ImGui::Button(coordiButtonLabel.c_str(), ImVec2(ImGui::GetWindowContentRegionMax().x * 0.9f, 32)))
+                {
+                    player->AddCoordiMode();
+                }
             }
+            else if(USceneComponent* Comp = Cast<USceneComponent>(World->GetSelectedComponent()))
+            {
+                Location = Comp->GetLocalLocation();
+                Rotation = Comp->GetLocalRotation();
+                Scale = Comp->GetLocalScale();
+
+                FImGuiWidget::DrawVec3Control("Location", Location, 0, 85);
+                ImGui::Spacing();
+
+                FImGuiWidget::DrawVec3Control("Rotation", Rotation, 0, 85);
+                ImGui::Spacing();
+
+                FImGuiWidget::DrawVec3Control("Scale", Scale, 0, 85);
+                ImGui::Spacing();
+
+                Comp->SetLocation(Location);
+                Comp->SetRotation(Rotation);
+                Comp->SetScale(Scale);
+
+                std::string coordiButtonLabel;
+                if (player->GetCoordiMode() == CoordiMode::CDM_WORLD)
+                    coordiButtonLabel = "World";
+                else if (player->GetCoordiMode() == CoordiMode::CDM_LOCAL)
+                    coordiButtonLabel = "Local";
+
+                if (ImGui::Button(coordiButtonLabel.c_str(), ImVec2(ImGui::GetWindowContentRegionMax().x * 0.9f, 32)))
+                {
+                    player->AddCoordiMode();
+                }
+            }
+            
             ImGui::TreePop(); // 트리 닫기
         }
         ImGui::PopStyleColor();

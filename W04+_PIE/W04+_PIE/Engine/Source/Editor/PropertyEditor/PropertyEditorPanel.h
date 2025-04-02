@@ -34,4 +34,5 @@ private:
     UStaticMeshComponent* SelectedStaticMeshComp = nullptr;
     FObjMaterialInfo tempMaterialInfo;
     bool IsCreateMaterial;
+
 };

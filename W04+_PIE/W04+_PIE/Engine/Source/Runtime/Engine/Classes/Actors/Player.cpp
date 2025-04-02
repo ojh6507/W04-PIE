@@ -358,18 +358,25 @@ void AEditorPlayer::PickedObjControl()
 
         // USceneComponent* pObj = GetWorld()->GetPickingObj();
         AActor* PickedActor = GetWorld()->GetSelectedActor();
+        USceneComponent* pObj = PickedActor->GetRootComponent();
+
+        if (Cast<USceneComponent>(GetWorld()->GetSelectedComponent()))
+        {
+            pObj = Cast<USceneComponent>(GetWorld()->GetSelectedComponent());
+        }
+
         UGizmoBaseComponent* Gizmo = static_cast<UGizmoBaseComponent*>(GetWorld()->GetPickingGizmo());
         switch (cMode)
         {
         case CM_TRANSLATION:
-            ControlTranslation(PickedActor->GetRootComponent(), Gizmo, deltaX, deltaY);
+            ControlTranslation(pObj, Gizmo, deltaX, deltaY);
             break;
         case CM_SCALE:
-            ControlScale(PickedActor->GetRootComponent(), Gizmo, deltaX, deltaY);
+            ControlScale(pObj, Gizmo, deltaX, deltaY);
 
             break;
         case CM_ROTATION:
-            ControlRotation(PickedActor->GetRootComponent(), Gizmo, deltaX, deltaY);
+            ControlRotation(pObj, Gizmo, deltaX, deltaY);
             break;
         default:
             break;
