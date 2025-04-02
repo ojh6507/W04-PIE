@@ -16,12 +16,21 @@ ULightComponentBase::~ULightComponentBase()
 }
 ULightComponentBase* ULightComponentBase::Duplicate()
 {
+    if (DuplicateObjects.Contains(GetUUID()))
+    {
+        return reinterpret_cast<ULightComponentBase*>(DuplicateObjects[GetUUID()]);
+    }
+    ULightComponentBase* NewObject1 = new ULightComponentBase();
     ULightComponentBase* NewObject = reinterpret_cast<ULightComponentBase*>(Super::Duplicate());
-    NewObject->color = color;
-    NewObject->radius = radius;
-    NewObject->AABB = AABB;
+    NewObject1->color = color;
+    NewObject1->radius = radius;
+    NewObject1->AABB = AABB;
+    NewObject1->SetUUID(NewObject->GetUUID());
+    NewObject1->SetInternalIndex(NewObject->GetInternalIndex());
+    NewObject1->SetClass(NewObject->GetClass());
+    NewObject1->SetFName(NewObject->GetFName());
 
-    return NewObject;
+    return NewObject1;
 }
 void ULightComponentBase::SetColor(FVector4 newColor)
 {
