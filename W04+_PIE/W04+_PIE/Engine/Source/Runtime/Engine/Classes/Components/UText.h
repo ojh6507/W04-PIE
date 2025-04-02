@@ -1,13 +1,14 @@
 #pragma once
 #include "UBillboardComponent.h"
 
-class UText : public UBillboardComponent
+//To do: UTextRenderComponent는 원래 빌보드를 상속받지 않음
+class UTextRenderComponent : public UBillboardComponent
 {
-    DECLARE_CLASS(UText, UBillboardComponent)
+    DECLARE_CLASS(UTextRenderComponent, UBillboardComponent)
 
 public:
-    UText();
-    virtual ~UText() override;
+    UTextRenderComponent();
+    virtual ~UTextRenderComponent() override;
 
     virtual void InitializeComponent() override;
     virtual void TickComponent(float DeltaTime) override;

@@ -669,6 +669,9 @@
     <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Engine\Level.cpp">
       <Filter>Engine\Source\Runtime\Engine\Classes\Engine</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Actors\LightActor.cpp">
+      <Filter>Engine\Source\Runtime\Engine\Classes\Actors</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\PixelTextureShader.hlsl">
@@ -693,6 +696,9 @@
   <ItemGroup>
     <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Engine\Level.h">
       <Filter>Engine\Source\Runtime\Engine\Classes\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Actors\LightActor.h">
+      <Filter>Engine\Source\Runtime\Engine\Classes\Actors</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

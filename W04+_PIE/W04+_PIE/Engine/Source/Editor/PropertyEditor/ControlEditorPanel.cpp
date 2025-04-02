@@ -1,4 +1,4 @@
-﻿#include "ControlEditorPanel.h"
+#include "ControlEditorPanel.h"
 
 #include "World.h"
 #include "Actors/Player.h"
@@ -14,6 +14,8 @@
 #include "tinyfiledialogs/tinyfiledialogs.h"
 #include "UnrealEd/EditorViewportClient.h"
 #include "PropertyEditor/ShowFlags.h"
+//#include "Engine/Classes/Actors/Li.h"
+#include <Actors/LightActor.h>
 
 void ControlEditorPanel::Render()
 {
@@ -280,9 +282,9 @@ void ControlEditorPanel::CreateModifyButton(ImVec2 ButtonSize, ImFont* IconFont)
                 }
                 case OBJ_SpotLight:
                 {
-                    SpawnedActor = World->SpawnActor<AActor>();
+                    SpawnedActor = World->SpawnActor<ULightBaseActor>();
                     SpawnedActor->SetActorLabel(TEXT("OBJ_SpotLight"));
-                    SpawnedActor->AddComponent<ULightComponentBase>();
+                    //SpawnedActor->AddComponent<ULightComponentBase>();
                     break;
                 }
                 case OBJ_PARTICLE:
@@ -300,7 +302,7 @@ void ControlEditorPanel::CreateModifyButton(ImVec2 ButtonSize, ImFont* IconFont)
                 {
                     SpawnedActor = World->SpawnActor<AActor>();
                     SpawnedActor->SetActorLabel(TEXT("OBJ_Text"));
-                    UText* TextComponent = SpawnedActor->AddComponent<UText>();
+                    UTextRenderComponent* TextComponent = SpawnedActor->AddComponent<UTextRenderComponent>();
                     TextComponent->SetTexture(L"Assets/Texture/font.png");
                     TextComponent->SetRowColumnCount(106, 106);
                     TextComponent->SetText(L"안녕하세요 Jungle 1");
