@@ -10,7 +10,7 @@
 
 class UActorComponent;
 
-class AActor : public UObject
+class  AActor : public UObject
 {
     DECLARE_CLASS(AActor, UObject)
 
@@ -24,7 +24,7 @@ public:
             return reinterpret_cast<AActor*>(DuplicateObjects[GetUUID()]);
         }
         
-        AActor* NewObject = reinterpret_cast<AActor*>(Super::Duplicate());
+        AActor* NewObject = PushValue(Super::Duplicate());
 
         NewObject->RootComponent = RootComponent->Duplicate();
 
@@ -37,6 +37,7 @@ public:
         
         return NewObject;
     }
+
     
     /** Actor가 게임에 배치되거나 스폰될 때 호출됩니다. */
     virtual void BeginPlay();
@@ -117,6 +118,7 @@ protected:
     USceneComponent* RootComponent = nullptr;
 
 private:
+    
     /** 이 Actor를 소유하고 있는 다른 Actor의 정보 */
     AActor* Owner = nullptr;
 
@@ -129,6 +131,16 @@ private:
 
     //struct FActorTickFunction PrimaryActorTick;
 
+    AActor* PushValue(UObject* Other) {
+        AActor* NewObject = new AActor();
+
+        NewObject->SetUUID(Other->GetUUID());
+        NewObject->SetInternalIndex(Other->GetInternalIndex());
+        NewObject->SetFName(Other->GetFName());
+        NewObject->SetClass(Other->GetClass());
+        
+        return NewObject;
+    }
 
 #if 1 // TODO: WITH_EDITOR 추가
 public:

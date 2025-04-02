@@ -23,10 +23,9 @@ public:
         {
             return static_cast<UMeshComponent*>(DuplicateObjects[GetUUID()]);
         }
-
+        
         UMeshComponent* NewObject = PushValue(Super::Duplicate());
-       
-
+        
         NewObject->OverrideMaterials = this->OverrideMaterials;
         
         DuplicateObjects[GetUUID()] = NewObject;
@@ -36,7 +35,6 @@ public:
 private:
     UMeshComponent* PushValue(UPrimitiveComponent* Other) 
     {
-        
         UMeshComponent* NewObject = new UMeshComponent();
         NewObject->AABB = Other->AABB;
 
