@@ -31,9 +31,9 @@ void UWorld::InitializePIE()
     {
         EditorPlayer = FObjectFactory::ConstructObject<AEditorController>();;
     }
-    
+
     TSet<AActor*> Actors = GetActors();
-    
+
     for (AActor* Actor : Actors)
     {
         Actor->BeginPlay();
@@ -102,7 +102,7 @@ void UWorld::PIETick(float DeltaTime)
     PendingBeginPlayActors.Empty();
 
     // 매 틱마다 Actor->Tick(...) 호출
-	
+
     for (AActor* Actor : ActorsArray)
     {
         if (Actor && Actor->IsActorTickEnabled())
@@ -155,15 +155,23 @@ void UWorld::Release()
 
 UWorld* UWorld::Duplicate()
 {
+    UWorld* newWorld = new UWorld();
+
     UWorld* NewWorld = reinterpret_cast<UWorld*>(Super::Duplicate());
 
-    for (auto Actor : ActorsArray) {
-       
-        NewWorld->ActorsArray.Add(Actor->Duplicate());
-    }
- 
+    newWorld->SetUUID(NewWorld->GetUUID());
+    newWorld->SetInternalIndex(NewWorld->GetInternalIndex());
+    newWorld->SetFName(NewWorld->GetFName());
+    newWorld->SetClass(NewWorld->GetClass());
+    newWorld->camera = camera;
 
-    return NewWorld;
+
+    for (auto Actor : ActorsArray) {
+
+        newWorld->ActorsArray.Add(Actor->Duplicate());
+    }
+
+    return newWorld;
 }
 
 bool UWorld::DestroyActor(AActor* ThisActor)
