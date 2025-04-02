@@ -3,11 +3,13 @@
 
 enum OBJECTS
 {
+	OBJ_ACTOR,
 	OBJ_SPHERE,
 	OBJ_CUBE,
 	OBJ_SpotLight,
 	OBJ_PARTICLE,
 	OBJ_Text,
+	OBJ_Billboard,
 	OBJ_TRIANGLE,
 	OBJ_CAMERA,
 	OBJ_PLAYER,

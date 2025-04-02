@@ -35,6 +35,10 @@ public:
     ID3D11Buffer* MaterialConstantBuffer = nullptr;
     ID3D11Buffer* SubMeshConstantBuffer = nullptr;
     ID3D11Buffer* TextureConstantBufer = nullptr;
+    
+    ID3D11BlendState* TextureBlendState = nullptr;
+    
+    UINT Mask = 0xffffffff;
 
     FLighting lightingData;
 
@@ -71,6 +75,7 @@ public:
     void CreateConstantBuffer();
     void CreateLightingBuffer();
     void CreateLitUnlitBuffer();
+    void CreateBlendState();
     ID3D11Buffer* CreateVertexBuffer(FVertexSimple* vertices, UINT byteWidth) const;
     ID3D11Buffer* CreateVertexBuffer(const TArray<FVertexSimple>& vertices, UINT byteWidth) const;
     ID3D11Buffer* CreateIndexBuffer(uint32* indices, UINT byteWidth) const;

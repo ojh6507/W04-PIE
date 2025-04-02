@@ -1,9 +1,9 @@
 #pragma once
 #include "UText.h"
 
-class UTextUUID : public UText
+class UTextUUID : public UTextRenderComponent
 {
-    DECLARE_CLASS(UTextUUID, UText)
+    DECLARE_CLASS(UTextUUID, UTextRenderComponent)
 
 public:
     UTextUUID();

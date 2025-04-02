@@ -1,4 +1,4 @@
-﻿#include "ControlEditorPanel.h"
+#include "ControlEditorPanel.h"
 
 #include "World.h"
 #include "Actors/Player.h"
@@ -14,6 +14,8 @@
 #include "tinyfiledialogs/tinyfiledialogs.h"
 #include "UnrealEd/EditorViewportClient.h"
 #include "PropertyEditor/ShowFlags.h"
+//#include "Engine/Classes/Actors/Li.h"
+#include <Actors/LightActor.h>
 
 void ControlEditorPanel::Render()
 {
@@ -247,11 +249,13 @@ void ControlEditorPanel::CreateModifyButton(ImVec2 ButtonSize, ImFont* IconFont)
         };
 
         static const Primitive primitives[] = {
+           // { .label= "Actor",      .obj= OBJ_ACTOR },
             { .label= "Cube",      .obj= OBJ_CUBE },
             { .label= "Sphere",    .obj= OBJ_SPHERE },
             { .label= "SpotLight", .obj= OBJ_SpotLight },
             { .label= "Particle",  .obj= OBJ_PARTICLE },
-            { .label= "Text",      .obj= OBJ_Text }
+            { .label= "Text",      .obj= OBJ_Text },
+            { .label= "Billboard",      .obj= OBJ_Billboard }
         };
 
         for (const auto& primitive : primitives)
@@ -263,6 +267,12 @@ void ControlEditorPanel::CreateModifyButton(ImVec2 ButtonSize, ImFont* IconFont)
                 AActor* SpawnedActor = nullptr;
                 switch (static_cast<OBJECTS>(primitive.obj))
                 {
+                //case OBJ_ACTOR:
+                //{
+                //    SpawnedActor = World->SpawnActor<AActor>();
+                //    SpawnedActor->SetActorLabel(TEXT("OBJ_ACTOR"));
+                //    break;
+                //}
                 case OBJ_SPHERE:
                 {
                     SpawnedActor = World->SpawnActor<AActor>();
@@ -281,9 +291,9 @@ void ControlEditorPanel::CreateModifyButton(ImVec2 ButtonSize, ImFont* IconFont)
                 }
                 case OBJ_SpotLight:
                 {
-                    SpawnedActor = World->SpawnActor<AActor>();
+                    SpawnedActor = World->SpawnActor<ULightBaseActor>();
                     SpawnedActor->SetActorLabel(TEXT("OBJ_SpotLight"));
-                    SpawnedActor->AddComponent<ULightComponentBase>();
+                    //SpawnedActor->AddComponent<ULightComponentBase>();
                     break;
                 }
                 case OBJ_PARTICLE:
@@ -291,7 +301,7 @@ void ControlEditorPanel::CreateModifyButton(ImVec2 ButtonSize, ImFont* IconFont)
                     SpawnedActor = World->SpawnActor<AActor>();
                     SpawnedActor->SetActorLabel(TEXT("OBJ_PARTICLE"));
                     UParticleSubUVComp* ParticleComponent = SpawnedActor->AddComponent<UParticleSubUVComp>();
-                    ParticleComponent->SetTexture(L"Assets/Texture/T_Explosion_SubUV.png");
+                    ParticleComponent->SetSprite(L"Assets/Texture/T_Explosion_SubUV.png");
                     ParticleComponent->SetRowColumnCount(6, 6);
                     ParticleComponent->SetScale(FVector(10.0f, 10.0f, 1.0f));
                     ParticleComponent->Activate();
@@ -301,10 +311,20 @@ void ControlEditorPanel::CreateModifyButton(ImVec2 ButtonSize, ImFont* IconFont)
                 {
                     SpawnedActor = World->SpawnActor<AActor>();
                     SpawnedActor->SetActorLabel(TEXT("OBJ_Text"));
-                    UText* TextComponent = SpawnedActor->AddComponent<UText>();
-                    TextComponent->SetTexture(L"Assets/Texture/font.png");
+                    UTextRenderComponent* TextComponent = SpawnedActor->AddComponent<UTextRenderComponent>();
+                    TextComponent->SetSprite(L"Assets/Texture/font.png");
                     TextComponent->SetRowColumnCount(106, 106);
                     TextComponent->SetText(L"안녕하세요 Jungle 1");
+                    break;
+                }
+                case OBJ_Billboard:
+                {
+                    SpawnedActor = World->SpawnActor<AActor>();
+                    SpawnedActor->SetActorLabel(TEXT("OBJ_Billboard"));
+
+                    UBillboardComponent* BillboardComponent = SpawnedActor->AddComponent<UBillboardComponent>(); 
+                    BillboardComponent->SetSprite(L"Assets/Texture/emart.png");
+
                     break;
                 }
                 case OBJ_TRIANGLE:

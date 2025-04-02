@@ -43,6 +43,8 @@ public:
     void AddRotation(FVector _added);
     void AddScale(FVector _added);
 
+    bool IsAttachedTo(const USceneComponent* PossibleParent) const;
+
 protected:
     FVector RelativeLocation;
     FVector RelativeRotation;
