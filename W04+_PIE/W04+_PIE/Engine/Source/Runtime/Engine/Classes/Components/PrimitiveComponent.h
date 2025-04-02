@@ -20,11 +20,18 @@ public:
 
     virtual UPrimitiveComponent* Duplicate() override
     {
+        if (DuplicateObjects.Contains(GetUUID()))
+        {
+            return reinterpret_cast<UPrimitiveComponent*>(DuplicateObjects[GetUUID()]);
+        }
+
         UPrimitiveComponent* NewObject = reinterpret_cast<UPrimitiveComponent*>(Super::Duplicate());
 
         NewObject->AABB = AABB;
 
         NewObject->m_Type = m_Type;
+
+        DuplicateObjects[GetUUID()] = NewObject;
 
         return NewObject;
     }

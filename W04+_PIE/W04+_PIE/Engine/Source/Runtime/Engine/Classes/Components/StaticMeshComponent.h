@@ -21,12 +21,18 @@ public:
 
     virtual UStaticMeshComponent* Duplicate() override
     {
+        if (DuplicateObjects.Contains(GetUUID()))
+        {
+            return reinterpret_cast<UStaticMeshComponent*>(DuplicateObjects[GetUUID()]);
+        }
        
         UStaticMeshComponent* NewObject = reinterpret_cast<UStaticMeshComponent*>(Super::Duplicate());
         
-        NewObject->staticMesh = staticMesh;
+        NewObject->staticMesh = reinterpret_cast<UStaticMesh*>(staticMesh->Duplicate());
 
         NewObject->selectedSubMeshIndex = selectedSubMeshIndex;
+
+        DuplicateObjects[GetUUID()] = NewObject;
 
         return NewObject;
     }

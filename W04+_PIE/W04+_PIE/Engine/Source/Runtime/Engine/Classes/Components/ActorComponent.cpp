@@ -83,3 +83,27 @@ void UActorComponent::Deactivate()
     // TODO: Tick 멈추기
     bIsActive = false;
 }
+
+UActorComponent* UActorComponent::Duplicate()
+{
+    if (DuplicateObjects.Contains(GetUUID()))
+    {
+        return reinterpret_cast<UActorComponent*>(DuplicateObjects[GetUUID()]);
+    }
+
+    UActorComponent* NewObject = reinterpret_cast<UActorComponent*>(Super::Duplicate());
+        
+    NewObject->Owner = Owner->Duplicate();
+
+    NewObject->bHasBegunPlay = bHasBegunPlay;
+
+    NewObject->bIsBeingDestroyed = bIsBeingDestroyed;
+
+    NewObject->bIsActive = bIsActive;
+
+    NewObject->bAutoActive = bAutoActive;
+
+    DuplicateObjects[GetUUID()] = NewObject;
+
+    return NewObject;
+}
