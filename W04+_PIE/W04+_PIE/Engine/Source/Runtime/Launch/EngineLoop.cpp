@@ -126,7 +126,7 @@ int32 FEngineLoop::Init(HINSTANCE hInstance)
 
     GWorld = new UWorld();
     GWorld->Initialize();
-
+    EditWorld = GWorld;
     return 0;
 }
 
@@ -294,8 +294,6 @@ void FEngineLoop::StartPIE(){
     {
         GWorld = PIEWorld;
 
-        
-        
         GWorld->InitializePIE();
     }
 }

@@ -1,4 +1,4 @@
-﻿#include "UObjectArray.h"
+#include "UObjectArray.h"
 #include "Object.h"
 #include "UObjectHash.h"
 
@@ -26,3 +26,4 @@ void FUObjectArray::ProcessPendingDestroyObjects()
 }
 
 FUObjectArray GUObjectArray;
+TMap<uint32_t, UObject*> DuplicateObjects;

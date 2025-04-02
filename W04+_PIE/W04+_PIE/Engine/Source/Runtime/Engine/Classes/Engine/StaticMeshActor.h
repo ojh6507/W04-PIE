@@ -8,11 +8,7 @@ class AStaticMeshActor : public AActor
 
 public:
     AStaticMeshActor();
-   virtual AStaticMeshActor* Duplicate() override {
-       AStaticMeshActor* newActor = reinterpret_cast<AStaticMeshActor*>(Super::Duplicate());
-       newActor->StaticMeshComponent = StaticMeshComponent->Duplicate();
-       return newActor;
-    }
+    virtual AStaticMeshActor* Duplicate() override;
     UStaticMeshComponent* GetStaticMeshComponent() const { return StaticMeshComponent; }
 
 private:

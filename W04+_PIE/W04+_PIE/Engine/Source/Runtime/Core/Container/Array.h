@@ -114,6 +114,10 @@ public:
 
         return true;
     }
+    void Shrink()
+    {
+        ContainerPrivate.shrink_to_fit();
+    }
 };
 
 

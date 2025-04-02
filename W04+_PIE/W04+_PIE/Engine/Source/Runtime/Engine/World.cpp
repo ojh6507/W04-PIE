@@ -27,6 +27,10 @@ void UWorld::Initialize()
 void UWorld::InitializePIE()
 {
     //TODO: Player 지정해주기
+    if (EditorPlayer == nullptr)
+    {
+        EditorPlayer = FObjectFactory::ConstructObject<AEditorController>();;
+    }
     
     TSet<AActor*> Actors = GetActors();
     
@@ -147,6 +151,19 @@ void UWorld::Release()
     ReleaseBaseObject();
 
     GUObjectArray.ProcessPendingDestroyObjects();
+}
+
+UWorld* UWorld::Duplicate()
+{
+    UWorld* NewWorld = reinterpret_cast<UWorld*>(Super::Duplicate());
+
+    for (auto Actor : ActorsArray) {
+       
+        NewWorld->ActorsArray.Add(Actor->Duplicate());
+    }
+ 
+
+    return NewWorld;
 }
 
 bool UWorld::DestroyActor(AActor* ThisActor)

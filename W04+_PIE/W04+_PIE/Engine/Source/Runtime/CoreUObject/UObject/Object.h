@@ -40,25 +40,7 @@ public:
         return GEngineLoop;
     }
 
-    virtual UObject* Duplicate()
-    {
-        if (DuplicateObjects.Contains(GetUUID()))
-        {
-            return DuplicateObjects[GetUUID()];
-        }
-        
-        // 현재 객체가 T 타입인지 확인
-        UObject* NewObject = new UObject(); // 안전하게 복사 생성자 호출
-
-        NewObject->UUID = this->UUID;
-        NewObject->InternalIndex = this->InternalIndex;
-        NewObject->NamePrivate = this->NamePrivate;
-        NewObject->ClassPrivate = this->ClassPrivate;
-
-        DuplicateObjects[GetUUID()] = NewObject;
-        
-        return NewObject;
-    }
+    virtual UObject* Duplicate();
 
     FName GetFName() const { return NamePrivate; }
     FString GetName() const { return NamePrivate.ToString(); }

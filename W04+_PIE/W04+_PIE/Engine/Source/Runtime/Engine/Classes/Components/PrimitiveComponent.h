@@ -29,7 +29,7 @@ public:
 
         NewObject->AABB = AABB;
 
-        NewObject->m_Type = m_Type;
+       // NewObject->m_Type = m_Type;
 
         DuplicateObjects[GetUUID()] = NewObject;
 

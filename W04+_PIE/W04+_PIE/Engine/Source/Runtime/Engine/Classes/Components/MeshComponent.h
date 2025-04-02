@@ -21,22 +21,29 @@ public:
     {
         if (DuplicateObjects.Contains(GetUUID()))
         {
-            return reinterpret_cast<UMeshComponent*>(DuplicateObjects[GetUUID()]);
+            return static_cast<UMeshComponent*>(DuplicateObjects[GetUUID()]);
         }
 
-        UMeshComponent* NewObject = reinterpret_cast<UMeshComponent*>(Super::Duplicate());
 
-        NewObject->OverrideMaterials = OverrideMaterials;
+        UMeshComponent* NewObject = PushValue(reinterpret_cast<UMeshComponent*>(Super::Duplicate()));
+       
 
+        NewObject->OverrideMaterials = this->OverrideMaterials;
+        NewObject->OverrideMaterials.Shrink();
         DuplicateObjects[GetUUID()] = NewObject;
+        return NewObject;
+    }
+
+    UMeshComponent* PushValue(UPrimitiveComponent* Other) {
+        UMeshComponent* NewObject = new UMeshComponent();
+        NewObject->AABB = Other->AABB;
 
         return NewObject;
-
-
     }
+
+    TArray<UMaterial*> OverrideMaterials;
 #pragma endregion
 protected:
-    TArray<UMaterial*> OverrideMaterials;
 public:
     TArray<UMaterial*>& GetOverrideMaterials() { return OverrideMaterials; }
 };

@@ -29,7 +29,7 @@ public:
     void Tick(float DeltaTime);
     void PIETick(float DeltaTime);
     void Release();
-    
+    UWorld* Duplicate();
     /**
      * World에 Actor를 Spawn합니다.
      * @tparam T AActor를 상속받은 클래스
