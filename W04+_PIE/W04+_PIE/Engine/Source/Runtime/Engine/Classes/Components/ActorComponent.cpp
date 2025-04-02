@@ -91,8 +91,12 @@ UActorComponent* UActorComponent::Duplicate()
         return reinterpret_cast<UActorComponent*>(DuplicateObjects[GetUUID()]);
     }
 
-    UActorComponent* NewObject = PushValue(Super::Duplicate());
-        
+    UActorComponent* NewObject = FObjectFactory::ConstructObject<UActorComponent>();
+
+    UObject* SuperObject = Super::Duplicate();
+
+    NewObject->SetInternalIndex(SuperObject->GetInternalIndex());
+    
     NewObject->Owner = Owner->Duplicate();
 
     NewObject->bHasBegunPlay = bHasBegunPlay;

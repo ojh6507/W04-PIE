@@ -61,16 +61,6 @@ public:
     virtual UActorComponent* Duplicate() override;
 
 private:
-    UActorComponent* PushValue(UObject* Other) {
-        UActorComponent* NewObject = new UActorComponent();
-
-        NewObject->SetUUID(Other->GetUUID());
-        NewObject->SetInternalIndex(Other->GetInternalIndex());
-        NewObject->SetFName(Other->GetFName());
-        NewObject->SetClass(Other->GetClass());
-        
-        return NewObject;
-    }
     
     AActor* Owner;
 

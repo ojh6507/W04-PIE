@@ -126,25 +126,22 @@ void UWorld::Tick(float DeltaTime)
 
 void UWorld::Release()
 {
-    if (GEngineLoop.GetPlayWorldType() == EPlayWorldType::Edit) {
-
-        for (AActor* Actor : ActorsArray)
+    for (AActor* Actor : ActorsArray)
+    {
+        Actor->EndPlay(EEndPlayReason::WorldTransition);
+        TSet<UActorComponent*> Components = Actor->GetComponents();
+        for (UActorComponent* Component : Components)
         {
-            Actor->EndPlay(EEndPlayReason::WorldTransition);
-            TSet<UActorComponent*> Components = Actor->GetComponents();
-            for (UActorComponent* Component : Components)
-            {
-                GUObjectArray.MarkRemoveObject(Component);
-            }
-            GUObjectArray.MarkRemoveObject(Actor);
+            GUObjectArray.MarkRemoveObject(Component);
         }
-        ActorsArray.Empty();
-
-        pickingGizmo = nullptr;
-        ReleaseBaseObject();
-
-        GUObjectArray.ProcessPendingDestroyObjects();
+        GUObjectArray.MarkRemoveObject(Actor);
     }
+    ActorsArray.Empty();
+
+    pickingGizmo = nullptr;
+    ReleaseBaseObject();
+
+    GUObjectArray.ProcessPendingDestroyObjects();
 }
 
 UWorld* UWorld::Duplicate()
@@ -155,7 +152,7 @@ UWorld* UWorld::Duplicate()
 
 
     for (auto Actor : ActorsArray) {
-
+        
         newWorld->ActorsArray.Add(Actor->Duplicate());
     }
 

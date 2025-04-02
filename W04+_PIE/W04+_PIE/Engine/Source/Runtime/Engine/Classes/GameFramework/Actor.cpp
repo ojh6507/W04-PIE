@@ -12,8 +12,12 @@ AActor* AActor::Duplicate()
 
     AActor* NewObject = FObjectFactory::ConstructObject<AActor>();
 
-    NewObject->RootComponent = RootComponent->Duplicate();
+    UObject* SuperObject = Super::Duplicate();
 
+    NewObject->SetInternalIndex(SuperObject->GetInternalIndex());
+    
+    NewObject->RootComponent = RootComponent->Duplicate();
+    
     for (UActorComponent* Comp : OwnedComponents)
     {
         NewObject->OwnedComponents.Add(Comp->Duplicate());

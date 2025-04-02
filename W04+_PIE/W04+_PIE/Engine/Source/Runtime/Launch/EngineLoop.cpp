@@ -311,12 +311,12 @@ void FEngineLoop::EndPIE() {
     {
         return;
     }
-
+    
     if (GWorld)
     {
         GWorld->Release();
     }
-
+    
     DuplicateObjects.Empty();
 
     GWorld = EditWorld; //포인터만 이동
