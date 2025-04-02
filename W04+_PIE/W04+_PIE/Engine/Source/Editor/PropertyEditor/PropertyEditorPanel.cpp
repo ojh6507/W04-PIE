@@ -57,7 +57,7 @@ void PropertyEditorPanel::Render()
     {
         ImGui::SetItemDefaultFocus();
         // TreeNode 배경색을 변경 (기본 상태)
-        ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.1f, 0.1f, 0.1f, 1.0f));
+        //ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.1f, 0.1f, 0.1f, 1.0f));
 
         FString actorName = PickedActor->GetFName().ToString();
 
@@ -83,7 +83,6 @@ void PropertyEditorPanel::Render()
 
             ImGui::Text("Add Component");
 
-            ImGui::PopStyleColor();
 
             static const std::vector<std::string> AvailableComponentTypeNames = {
                 "CubeComponent",
@@ -186,9 +185,10 @@ void PropertyEditorPanel::Render()
             }
 
 
+            
             ImGui::TreePop(); // 트리 닫기
         }
-
+       // ImGui::PopStyleColor();
 
         ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.1f, 0.1f, 0.1f, 1.0f));
         if (ImGui::TreeNodeEx("Transform", ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_DefaultOpen)) // 트리 노드 생성
