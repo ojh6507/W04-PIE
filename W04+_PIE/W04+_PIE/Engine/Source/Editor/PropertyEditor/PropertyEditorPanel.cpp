@@ -132,12 +132,18 @@ void PropertyEditorPanel::Render()
                     const std::string& selectedTypeName = AvailableComponentTypeNames[selectedComponentTypeIndex];
                     //FName newComponentName = FName(newComponentNameBuffer); // 입력된 이름으로 FName 생성
 
+                    USceneComponent* SelectSceneComp = Cast<USceneComponent>(GEngineLoop.GetWorld()->GetSelectedComponent());
+
                     // 선택된 타입 이름에 따라 적절한 AddComponent<T> 호출
                     // **** 중요: 이 부분은 실제 GTL 엔진의 AddComponent 작동 방식과 컴포넌트 타입에 맞춰 확장/수정해야 합니다. ****
                     if (selectedTypeName == "BillboardComponent")
                     {
                         UBillboardComponent* BillboardComponent = PickedActor->AddComponent<UBillboardComponent>();
                         BillboardComponent->SetSprite(L"Assets/Texture/emart.png");
+                        if (SelectSceneComp)
+                        {
+                            BillboardComponent->SetupAttachment(SelectSceneComp);
+                        }
                         UE_LOG(LogLevel::Display, "AddComponent");
                     }
                     else if (selectedTypeName == "TextRenderComponent")
@@ -146,6 +152,10 @@ void PropertyEditorPanel::Render()
                         TextComponent->SetSprite(L"Assets/Texture/font.png");
                         TextComponent->SetRowColumnCount(106, 106);
                         TextComponent->SetText(L"안녕하세요 Jungle 1");
+                        if (SelectSceneComp)
+                        {
+                            TextComponent->SetupAttachment(SelectSceneComp);
+                        }
                         UE_LOG(LogLevel::Display, "AddComponent");
                     }
                     else if (selectedTypeName == "CubeComponent")
@@ -154,21 +164,35 @@ void PropertyEditorPanel::Render()
                         UStaticMeshComponent* StaticMeshComponent = PickedActor->AddComponent<UStaticMeshComponent>();
                         StaticMeshComponent->SetStaticMesh(FManagerOBJ::GetStaticMesh(L"helloBlender.obj"));
 
+                        if (SelectSceneComp)
+                        {
+                            StaticMeshComponent->SetupAttachment(SelectSceneComp);
+                        }
+
                         UE_LOG(LogLevel::Display, "AddComponent");
                     }
-                    else if (selectedTypeName == "SphereComponent")
-                    {
-                        PickedActor->AddComponent<USphereComp>();
-                        UE_LOG(LogLevel::Display, "AddComponent");
-                    }
+                    //else if (selectedTypeName == "SphereComponent")
+                    //{
+                    //    PickedActor->AddComponent<USphereComp>();
+                    //    UE_LOG(LogLevel::Display, "AddComponent");
+                    //}
                     else if (selectedTypeName == "StaticMeshComponent")
                     {
-                        PickedActor->AddComponent<UStaticMeshComponent>();
+                        UStaticMeshComponent* StaticMeshComponent = PickedActor->AddComponent<UStaticMeshComponent>();
+                        if (SelectSceneComp)
+                        {
+                            StaticMeshComponent->SetupAttachment(SelectSceneComp);
+                        }
                         UE_LOG(LogLevel::Display, "AddComponent");
                     }
                     else if (selectedTypeName == "LightComponent")
                     {
-                        PickedActor->AddComponent<ULightComponentBase>();
+                        ULightComponentBase* Comp = PickedActor->AddComponent<ULightComponentBase>();
+
+                        if (SelectSceneComp)
+                        {
+                            Comp->SetupAttachment(SelectSceneComp);
+                        }
                         UE_LOG(LogLevel::Display, "AddComponent");
                     }
 
