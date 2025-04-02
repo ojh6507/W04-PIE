@@ -36,14 +36,6 @@ public:
         return NewObject;
     }
 
-private:
-    UMeshComponent* PushValue(UPrimitiveComponent* Other) 
-    {
-        UMeshComponent* NewObject = new UMeshComponent();
-        NewObject->AABB = Other->AABB;
-
-        return NewObject;
-    }
 protected:
     TArray<UMaterial*> OverrideMaterials;
 #pragma endregion

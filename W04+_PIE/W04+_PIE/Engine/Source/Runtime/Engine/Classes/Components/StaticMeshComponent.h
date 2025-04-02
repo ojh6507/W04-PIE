@@ -20,7 +20,6 @@ public:
     virtual int CheckRayIntersection(FVector& rayOrigin, FVector& rayDirection, float& pfNearHitDistance) override;
 
     virtual UStaticMeshComponent* Duplicate() override;
-private:
 
 public:
     UStaticMesh* GetStaticMesh() const { return staticMesh; }

@@ -24,7 +24,6 @@ AActor* AActor::Duplicate()
         NewObject->OwnedComponents.Add(Comp->Duplicate());
     }
 
-
     return NewObject;
 }
 

@@ -20,5 +20,11 @@ AStaticMeshActor* AStaticMeshActor::Duplicate()
     newActor->RootComponent = DuplicatedActor->GetRootComponent()->Duplicate();
     
     newActor->StaticMeshComponent = StaticMeshComponent->Duplicate();
+
+    for (UActorComponent* Comp : DuplicatedActor->OwnedComponents)
+    {
+        newActor->OwnedComponents.Add(Comp->Duplicate());
+    }
+    
     return newActor;
 }
