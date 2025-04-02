@@ -3,6 +3,7 @@
 
 enum OBJECTS
 {
+	OBJ_ACTOR,
 	OBJ_SPHERE,
 	OBJ_CUBE,
 	OBJ_SpotLight,

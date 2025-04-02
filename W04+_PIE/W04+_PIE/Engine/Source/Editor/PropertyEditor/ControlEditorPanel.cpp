@@ -248,6 +248,7 @@ void ControlEditorPanel::CreateModifyButton(ImVec2 ButtonSize, ImFont* IconFont)
         };
 
         static const Primitive primitives[] = {
+           // { .label= "Actor",      .obj= OBJ_ACTOR },
             { .label= "Cube",      .obj= OBJ_CUBE },
             { .label= "Sphere",    .obj= OBJ_SPHERE },
             { .label= "SpotLight", .obj= OBJ_SpotLight },
@@ -265,6 +266,12 @@ void ControlEditorPanel::CreateModifyButton(ImVec2 ButtonSize, ImFont* IconFont)
                 AActor* SpawnedActor = nullptr;
                 switch (static_cast<OBJECTS>(primitive.obj))
                 {
+                //case OBJ_ACTOR:
+                //{
+                //    SpawnedActor = World->SpawnActor<AActor>();
+                //    SpawnedActor->SetActorLabel(TEXT("OBJ_ACTOR"));
+                //    break;
+                //}
                 case OBJ_SPHERE:
                 {
                     SpawnedActor = World->SpawnActor<AActor>();

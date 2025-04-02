@@ -10,6 +10,8 @@
 #include "UnrealEd/ImGuiWidget.h"
 #include "UObject/Casts.h"
 #include "UObject/ObjectFactory.h"
+#include <Components/CubeComp.h>
+#include <Components/SphereComp.h>
 
 // --- Helper function to convert FWString (wstring) to UTF-8 std::string ---
 // To do 
@@ -55,6 +57,130 @@ void PropertyEditorPanel::Render()
     {
         ImGui::SetItemDefaultFocus();
         // TreeNode 배경색을 변경 (기본 상태)
+        ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.1f, 0.1f, 0.1f, 1.0f));
+
+        FString actorName = PickedActor->GetFName().ToString();
+
+        if (ImGui::TreeNodeEx(*actorName, ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            // --- 기존 컴포넌트 목록 표시 (이 부분은 별도 구현 필요) ---
+            ImGui::Text("Components:");
+            for (const auto& comp : PickedActor->GetComponents()) { // GetComponents() 함수가 있다고 가정
+                ImGui::Text(" - %s", *comp->GetFName().ToString());
+            }
+
+            // --- 컴포넌트 추가 UI ---
+            ImGui::Separator(); // 구분선
+
+            ImGui::Text("Add Component");
+
+            ImGui::PopStyleColor();
+
+            static const std::vector<std::string> AvailableComponentTypeNames = {
+                "CubeComponent",
+                "LightComponent",
+                "StaticMeshComponent",
+                "TextRenderComponent",
+                "BillboardComponent",
+                     };
+
+            // 콤보 박스에 표시할 이름 목록 준비 (const char* 배열)
+            std::vector<const char*> componentComboItems;
+            for (const auto& name : AvailableComponentTypeNames)
+            {
+                componentComboItems.push_back(name.c_str());
+            }
+
+            // 선택된 컴포넌트 타입 인덱스 (static으로 상태 유지)
+            static int selectedComponentTypeIndex = 0;
+            // 새 컴포넌트 이름 입력 버퍼 (static으로 상태 유지)
+            //static char newComponentNameBuffer[128] = "NewComponent";
+
+            // 추가 가능한 컴포넌트 타입 선택 드롭다운
+            ImGui::PushItemWidth(200); // 드롭다운 너비 조절 (선택 사항)
+            ImGui::Combo("Type", &selectedComponentTypeIndex, componentComboItems.data(), componentComboItems.size());
+            ImGui::PopItemWidth();
+
+            //ImGui::SameLine(); // 버튼을 같은 줄에 배치
+
+
+
+            // 1. 콤보 박스에 표시할 이름 목록 준비
+            //static std::vector<const char*> componentNames;
+            //if (componentNames.empty()) // 한 번만 생성하도록 static 사용
+            //{
+            //    componentNames.reserve(GAddableComponents.size());
+            //    for (const auto& info : GAddableComponents)
+            //    {
+            //        componentNames.push_back(info.displayName.c_str());
+            //    }
+            //}
+                    // "추가" 버튼
+
+            if (ImGui::Button("Add"))
+            {
+                if (selectedComponentTypeIndex >= 0 && selectedComponentTypeIndex < AvailableComponentTypeNames.size())
+                {
+                    const std::string& selectedTypeName = AvailableComponentTypeNames[selectedComponentTypeIndex];
+                    //FName newComponentName = FName(newComponentNameBuffer); // 입력된 이름으로 FName 생성
+
+                    // 선택된 타입 이름에 따라 적절한 AddComponent<T> 호출
+                    // **** 중요: 이 부분은 실제 GTL 엔진의 AddComponent 작동 방식과 컴포넌트 타입에 맞춰 확장/수정해야 합니다. ****
+                    if (selectedTypeName == "BillboardComponent")
+                    {
+                        UBillboardComponent* BillboardComponent = PickedActor->AddComponent<UBillboardComponent>();
+                        BillboardComponent->SetSprite(L"Assets/Texture/emart.png");
+                        UE_LOG(LogLevel::Display, "AddComponent");
+                    }
+                    else if (selectedTypeName == "TextRenderComponent")
+                    {
+                        UTextRenderComponent* TextComponent = PickedActor->AddComponent<UTextRenderComponent>();
+                        TextComponent->SetSprite(L"Assets/Texture/font.png");
+                        TextComponent->SetRowColumnCount(106, 106);
+                        TextComponent->SetText(L"안녕하세요 Jungle 1");
+                        UE_LOG(LogLevel::Display, "AddComponent");
+                    }
+                    else if (selectedTypeName == "CubeComponent")
+                    {
+                        FManagerOBJ::CreateStaticMesh("Assets/helloBlender.obj");
+                        UStaticMeshComponent* StaticMeshComponent = PickedActor->AddComponent<UStaticMeshComponent>();
+                        StaticMeshComponent->SetStaticMesh(FManagerOBJ::GetStaticMesh(L"helloBlender.obj"));
+
+                        UE_LOG(LogLevel::Display, "AddComponent");
+                    }
+                    else if (selectedTypeName == "SphereComponent")
+                    {
+                        PickedActor->AddComponent<USphereComp>();
+                        UE_LOG(LogLevel::Display, "AddComponent");
+                    }
+                    else if (selectedTypeName == "StaticMeshComponent")
+                    {
+                        PickedActor->AddComponent<UStaticMeshComponent>();
+                        UE_LOG(LogLevel::Display, "AddComponent");
+                    }
+                    else if (selectedTypeName == "LightComponent")
+                    {
+                        PickedActor->AddComponent<ULightComponentBase>();
+                        UE_LOG(LogLevel::Display, "AddComponent");
+                    }
+
+                    else
+                    {
+                        // 알려지지 않은 컴포넌트 타입 처리 (오류 로그 등)
+                        // UE_LOG(LogTemp, Warning, TEXT("알 수 없는 컴포넌트 타입: %s"), *FString(selectedTypeName.c_str()));
+                        UE_LOG(LogLevel::Warning, "Unknown component type");
+                    }
+
+                    // 컴포넌트 추가 후 입력 필드 초기화 (선택 사항)
+                    // strcpy_s(newComponentNameBuffer, "NewComponent");
+                }
+            }
+
+
+            ImGui::TreePop(); // 트리 닫기
+        }
+
+
         ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.1f, 0.1f, 0.1f, 1.0f));
         if (ImGui::TreeNodeEx("Transform", ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_DefaultOpen)) // 트리 노드 생성
         {
