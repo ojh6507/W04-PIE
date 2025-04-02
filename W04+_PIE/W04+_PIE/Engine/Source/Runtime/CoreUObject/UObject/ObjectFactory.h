@@ -3,6 +3,7 @@
 #include "UObjectHash.h"
 #include "EngineStatics.h"
 #include "UObjectArray.h"
+#include "Components/Mesh/StaticMesh.h"
 
 class FObjectFactory
 {

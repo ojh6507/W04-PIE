@@ -10,6 +10,10 @@
 #include "Math/Vector4.h"
 #include "Math/Matrix.h"
 
+#define MsgBoxAssert(Text) \
+std::string Value = Text; \
+MessageBoxA(nullptr, Value.c_str(), "Error", MB_OK); assert(false);
+
 
 #define UE_LOG Console::GetInstance().AddLog
 

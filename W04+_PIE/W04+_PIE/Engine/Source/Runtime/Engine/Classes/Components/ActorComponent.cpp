@@ -1,5 +1,6 @@
 #include "ActorComponent.h"
 
+#include "StaticMeshComponent.h"
 #include "GameFramework/Actor.h"
 
 
@@ -68,7 +69,6 @@ void UActorComponent::DestroyComponent()
 
     OnComponentDestroyed();
 
-    // 나중에 ProcessPendingDestroyObjects에서 실제로 제거됨
     GUObjectArray.MarkRemoveObject(this);
 }
 
@@ -82,4 +82,28 @@ void UActorComponent::Deactivate()
 {
     // TODO: Tick 멈추기
     bIsActive = false;
+}
+
+UActorComponent* UActorComponent::Duplicate()
+{
+    if (DuplicateObjects.Contains(GetUUID()))
+    {
+        return reinterpret_cast<UActorComponent*>(DuplicateObjects[GetUUID()]);
+    }
+
+    UActorComponent* NewObject = PushValue(Super::Duplicate());
+        
+    NewObject->Owner = Owner->Duplicate();
+
+    NewObject->bHasBegunPlay = bHasBegunPlay;
+
+    NewObject->bIsBeingDestroyed = bIsBeingDestroyed;
+
+    NewObject->bIsActive = bIsActive;
+
+    NewObject->bAutoActive = bAutoActive;
+
+    DuplicateObjects[GetUUID()] = NewObject;
+
+    return NewObject;
 }

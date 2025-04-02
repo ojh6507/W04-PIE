@@ -56,14 +56,19 @@ int UBillboardComponent::CheckRayIntersection(FVector& rayOrigin, FVector& rayDi
 }
 
 
-void UBillboardComponent::SetTexture(FWString _fileName)
+void UBillboardComponent::SetSprite(FWString _fileName)
 {
 	Sprite = FEngineLoop::resourceMgr.GetTexture(_fileName);
 }
 
+void UBillboardComponent::SetSprite(std::shared_ptr<FTexture> _Sprite)
+{
+    Sprite = _Sprite;
+}
+
 void UBillboardComponent::SetUUIDParent(USceneComponent* _parent)
 {
-	m_parent = _parent;
+    AttachParent = _parent;
 }
 
 
@@ -88,7 +93,7 @@ FMatrix UBillboardComponent::CreateBillboardMatrix()
 	FMatrix LookAtCamera = FMatrix::Transpose(CameraView);
 	
 	FVector worldLocation = RelativeLocation;
-	if (m_parent) worldLocation = RelativeLocation + m_parent->GetWorldLocation();
+	if (AttachParent) worldLocation = RelativeLocation + AttachParent->GetWorldLocation();
 	FVector worldScale = RelativeScale3D;
 	FMatrix S = FMatrix::CreateScale(worldScale.x, worldScale.y, worldScale.z);
 	FMatrix R = LookAtCamera;

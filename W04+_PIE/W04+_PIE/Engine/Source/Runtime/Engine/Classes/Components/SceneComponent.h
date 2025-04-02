@@ -2,11 +2,33 @@
 #include "ActorComponent.h"
 #include "Math/Quat.h"
 #include "UObject/ObjectMacros.h"
+#include "GameFramework/Actor.h"
 
 class USceneComponent : public UActorComponent
 {
     DECLARE_CLASS(USceneComponent, UActorComponent)
 
+
+    virtual USceneComponent* Duplicate() override
+    {
+        if (DuplicateObjects.Contains(GetUUID()))
+        {
+            return reinterpret_cast<USceneComponent*>(DuplicateObjects[GetUUID()]);
+        }
+        
+        USceneComponent* NewObject = PushValue(Super::Duplicate());
+        NewObject->RelativeLocation = RelativeLocation;
+        NewObject->RelativeRotation = RelativeRotation;
+        NewObject->RelativeScale3D = RelativeScale3D;
+        NewObject->QuatRotation = QuatRotation;
+
+        NewObject->AttachParent = AttachParent;
+
+        DuplicateObjects[GetUUID()] = NewObject;
+        
+        return NewObject;
+    }
+    
 public:
     USceneComponent();
     virtual ~USceneComponent() override;
@@ -20,6 +42,8 @@ public:
     void AddLocation(FVector _added);
     void AddRotation(FVector _added);
     void AddScale(FVector _added);
+
+    bool IsAttachedTo(const USceneComponent* PossibleParent) const;
 
 protected:
     FVector RelativeLocation;
@@ -49,5 +73,20 @@ public:
 private:
     class UTextUUID* uuidText = nullptr;
 
+    USceneComponent* PushValue(UActorComponent* Other) {
+        USceneComponent* NewObject = new USceneComponent();
+
+        NewObject->SetOwner(Other->GetOwner()->Duplicate());
+
+        NewObject->SetbHasBegunPlay(GetbHasBegunPlay());
+
+        NewObject->SetbIsBeingDestroyed(GetbIsBeingDestroyed());
+
+        NewObject->SetbIsActive(GetbIsActive());
+
+        NewObject->bAutoActive = Other->bAutoActive;
+        
+        return NewObject;
+    }
 public:
 };

@@ -1,6 +1,28 @@
-﻿#include "Actor.h"
-
+#include "Actor.h"
 #include "World.h"
+#include "Components/SceneComponent.h"
+#include "Components/ActorComponent.h"
+
+AActor* AActor::Duplicate()
+{
+    if (DuplicateObjects.Contains(GetUUID()))
+    {
+        return reinterpret_cast<AActor*>(DuplicateObjects[GetUUID()]);
+    }
+
+    AActor* NewObject = PushValue(Super::Duplicate());
+
+    NewObject->RootComponent = RootComponent->Duplicate();
+
+    for (UActorComponent* Comp : OwnedComponents)
+    {
+        NewObject->OwnedComponents.Add(Comp->Duplicate());
+    }
+
+    DuplicateObjects[GetUUID()] = NewObject;
+
+    return NewObject;
+}
 
 void AActor::BeginPlay()
 {
@@ -105,6 +127,15 @@ bool AActor::SetRootComponent(USceneComponent* NewRootComponent)
     }
     return false;
 }
+
+FVector  AActor::GetActorLocation() const { return RootComponent ? RootComponent->GetWorldLocation() : FVector::ZeroVector; }
+FVector  AActor::GetActorRotation() const { return RootComponent ? RootComponent->GetWorldRotation() : FVector::ZeroVector; }
+FVector  AActor::GetActorScale() const { return RootComponent ? RootComponent->GetWorldScale() : FVector::ZeroVector; }
+
+FVector  AActor::GetActorForwardVector() const { return RootComponent ? RootComponent->GetForwardVector() : FVector::ForwardVector; }
+FVector  AActor::GetActorRightVector() const { return RootComponent ? RootComponent->GetRightVector() : FVector::RightVector; }
+FVector  AActor::GetActorUpVector() const { return RootComponent ? RootComponent->GetUpVector() : FVector::UpVector; }
+
 
 bool AActor::SetActorLocation(const FVector& NewLocation)
 {

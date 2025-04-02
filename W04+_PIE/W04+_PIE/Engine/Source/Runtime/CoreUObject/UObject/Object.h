@@ -1,27 +1,20 @@
 #pragma once
 #include "EngineLoop.h"
 #include "NameTypes.h"
+#include "UObjectArray.h"
 
 extern FEngineLoop GEngineLoop;
 
 class UClass;
 class UWorld;
 
-
 class UObject
 {
-private:
-    UObject(const UObject&) = delete;
-    UObject& operator=(const UObject&) = delete;
-    UObject(UObject&&) = delete;
-    UObject& operator=(UObject&&) = delete;
-
 public:
     using Super = UObject;
     using ThisClass = UObject;
 
     static UClass* StaticClass();
-
 private:
     friend class FObjectFactory;
     friend class FSceneMgr;
@@ -36,7 +29,7 @@ private:
 public:
     UObject();
     virtual ~UObject() = default;
-
+    
     UWorld* GetWorld()
     {
         return GEngineLoop.GetWorld();
@@ -46,16 +39,21 @@ public:
     {
         return GEngineLoop;
     }
+    
+
+    virtual UObject* Duplicate();
 
     FName GetFName() const { return NamePrivate; }
+    void SetFName(FName InFName) {NamePrivate = InFName;}
     FString GetName() const { return NamePrivate.ToString(); }
 
     uint32 GetUUID() const { return UUID; }
+    void SetUUID(uint32 INUUID) {UUID = INUUID;}
     uint32 GetInternalIndex() const { return InternalIndex; }
-
+    void SetInternalIndex(uint32 InInternalIndex){InternalIndex = InInternalIndex;}
     UClass* GetClass() const { return ClassPrivate; }
-
-
+    void SetClass(UClass* InClass) { ClassPrivate = InClass; }
+    
     /** this가 SomeBase인지, SomeBase의 자식 클래스인지 확인합니다. */
     bool IsA(const UClass* SomeBase) const;
 

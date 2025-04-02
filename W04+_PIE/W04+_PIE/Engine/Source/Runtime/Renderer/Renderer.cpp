@@ -30,6 +30,7 @@ void FRenderer::Initialize(FGraphicsDevice* graphics)
     CreateConstantBuffer();
     CreateLightingBuffer();
     CreateLitUnlitBuffer();
+    CreateBlendState();
     UpdateLitUnlitConstant(1);
 }
 
@@ -374,6 +375,28 @@ void FRenderer::CreateLitUnlitBuffer()
     Graphics->Device->CreateBuffer(&constantbufferdesc, nullptr, &FlagBuffer);
 }
 
+void FRenderer::CreateBlendState()
+{
+    // Blend
+    D3D11_BLEND_DESC blendDesc = {};
+    blendDesc.AlphaToCoverageEnable = FALSE;
+    blendDesc.IndependentBlendEnable = false;
+    blendDesc.RenderTarget[0].BlendEnable = TRUE;
+
+    // src srcColor * src의 알파
+    // 1, 0, 0(, 1) * 1.0f
+    blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+    blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+    blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+    blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+    blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+    blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+    blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+    
+    Graphics->Device->CreateBlendState(&blendDesc, &TextureBlendState);
+
+}
+
 void FRenderer::ReleaseConstantBuffer()
 {
     if (ConstantBuffer)
@@ -599,6 +622,8 @@ void FRenderer::PrepareTextureShader() const
 {
     Graphics->DeviceContext->VSSetShader(VertexTextureShader, nullptr, 0);
     Graphics->DeviceContext->PSSetShader(PixelTextureShader, nullptr, 0);
+    
+    Graphics->DeviceContext->OMSetBlendState(TextureBlendState, nullptr, 0xffffffff);
     Graphics->DeviceContext->IASetInputLayout(TextureInputLayout);
 
     //�ؽ��Ŀ� ConstantBuffer �߰��ʿ��Ҽ���
@@ -1158,7 +1183,7 @@ void FRenderer::RenderBillboards(UWorld* World, std::shared_ptr<FEditorViewportC
                 SubUVParticle->indexTextureBuffer, SubUVParticle->numIndices, SubUVParticle->Sprite->TextureSRV, SubUVParticle->Sprite->SamplerState
             );
         }
-        else if (UText* Text = Cast<UText>(BillboardComp))
+        else if (UTextRenderComponent* Text = Cast<UTextRenderComponent>(BillboardComp))
         {
             FEngineLoop::renderer.RenderTextPrimitive(
                 Text->vertexTextBuffer, Text->numTextVertices,

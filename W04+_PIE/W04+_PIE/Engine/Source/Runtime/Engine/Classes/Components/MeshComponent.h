@@ -17,9 +17,33 @@ public:
     virtual void SetMaterial(uint32 ElementIndex, UMaterial* Material);
     virtual void SetMaterialByName(FName MaterialSlotName, class UMaterial* Material);
     virtual void GetUsedMaterials(TArray<UMaterial*>& Out) const;
-#pragma endregion
+    virtual UMeshComponent* Duplicate() override
+    {
+        if (DuplicateObjects.Contains(GetUUID()))
+        {
+            return static_cast<UMeshComponent*>(DuplicateObjects[GetUUID()]);
+        }
+        
+        UMeshComponent* NewObject = PushValue(Super::Duplicate());
+        
+        NewObject->OverrideMaterials = this->OverrideMaterials;
+        
+        DuplicateObjects[GetUUID()] = NewObject;
+        return NewObject;
+    }
+
+private:
+    UMeshComponent* PushValue(UPrimitiveComponent* Other) 
+    {
+        UMeshComponent* NewObject = new UMeshComponent();
+        NewObject->AABB = Other->AABB;
+
+        return NewObject;
+    }
 protected:
     TArray<UMaterial*> OverrideMaterials;
+#pragma endregion
+protected:
 public:
     TArray<UMaterial*>& GetOverrideMaterials() { return OverrideMaterials; }
 };

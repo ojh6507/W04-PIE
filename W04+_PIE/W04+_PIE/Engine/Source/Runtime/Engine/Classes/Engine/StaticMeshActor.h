@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "GameFramework/Actor.h"
 
 
@@ -8,7 +8,7 @@ class AStaticMeshActor : public AActor
 
 public:
     AStaticMeshActor();
-
+    virtual AStaticMeshActor* Duplicate() override;
     UStaticMeshComponent* GetStaticMeshComponent() const { return StaticMeshComponent; }
 
 private:

@@ -1,5 +1,6 @@
 #pragma once
 #include "Define.h"
+#include "Actors/Player.h"
 #include "Container/Set.h"
 #include "UObject/ObjectFactory.h"
 #include "UObject/ObjectMacros.h"
@@ -10,23 +11,25 @@ class AActor;
 class UObject;
 class UGizmoArrowComponent;
 class UCameraComponent;
-class AEditorPlayer;
+class AEditorController;
 class USceneComponent;
 class UTransformGizmo;
 
 class UWorld : public UObject
 {
+public:
     DECLARE_CLASS(UWorld, UObject)
 
-public:
     UWorld() = default;
-
+    
     void Initialize();
+    void InitializePIE();
     void CreateBaseObject();
     void ReleaseBaseObject();
     void Tick(float DeltaTime);
+    void PIETick(float DeltaTime);
     void Release();
-
+    UWorld* Duplicate();
     /**
      * World에 Actor를 Spawn합니다.
      * @tparam T AActor를 상속받은 클래스
@@ -38,15 +41,18 @@ public:
 
     /** World에 존재하는 Actor를 제거합니다. */
     bool DestroyActor(AActor* ThisActor);
-
-private:
+    
+private: 
     const FString defaultMapName = "Default";
 
     AActor* SelectedActor = nullptr;
 
+    class UActorComponent* SelectedComponent = nullptr;
+
     USceneComponent* pickingGizmo = nullptr;
     UCameraComponent* camera = nullptr;
-    AEditorPlayer* EditorPlayer = nullptr;
+    AEditorController* EditorPlayer = nullptr;
+    APlayerController* PlayerController = nullptr;
 
     ULevel* SelectedLevel = nullptr;
 
@@ -66,6 +72,12 @@ public:
     void SetPickedActor(AActor* InActor)
     {
         SelectedActor = InActor;
+    }
+
+    class UActorComponent* GetSelectedComponent() const { return SelectedComponent; }
+    void SetSelectedComponent(class UActorComponent* InComponent)
+    {
+        SelectedComponent = InComponent;
     }
 
     UObject* GetWorldGizmo() const { return worldGizmo; }

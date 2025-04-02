@@ -10,6 +10,19 @@
 #include "UnrealEd/ImGuiWidget.h"
 #include "UObject/Casts.h"
 #include "UObject/ObjectFactory.h"
+#include <Components/CubeComp.h>
+#include <Components/SphereComp.h>
+
+// --- Helper function to convert FWString (wstring) to UTF-8 std::string ---
+// To do 
+std::string WStringToUTF8(const FWString& wstr)
+{
+    if (wstr.empty()) return std::string();
+    int size_needed = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), (int)wstr.size(), NULL, 0, NULL, NULL);
+    std::string strTo(size_needed, 0);
+    WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), (int)wstr.size(), &strTo[0], size_needed, NULL, NULL);
+    return strTo;
+}
 
 void PropertyEditorPanel::Render()
 {
@@ -38,42 +51,214 @@ void PropertyEditorPanel::Render()
     /* Render Start */
     ImGui::Begin("Detail", nullptr, PanelFlags);
     
-    AEditorPlayer* player = GEngineLoop.GetWorld()->GetEditorPlayer();
+    AEditorController* player = GEngineLoop.GetWorld()->GetEditorPlayer();
     AActor* PickedActor = GEngineLoop.GetWorld()->GetSelectedActor();
     if (PickedActor)
     {
         ImGui::SetItemDefaultFocus();
         // TreeNode 배경색을 변경 (기본 상태)
+        //ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.1f, 0.1f, 0.1f, 1.0f));
+
+        FString actorName = PickedActor->GetFName().ToString();
+
+
+        if (ImGui::TreeNodeEx(*actorName, ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            // --- 기존 컴포넌트 목록 표시 (이 부분은 별도 구현 필요) ---
+            ImGui::Text("Components:");
+
+            UWorld* World = GEngineLoop.GetWorld();
+            for ( UActorComponent* comp : PickedActor->GetComponents()) {
+
+                if (ImGui::Selectable(*comp->GetFName().ToString(), World->GetSelectedComponent() == comp))
+                {
+                    World->SetSelectedComponent(comp);
+                    break;
+                }
+                //ImGui::Text(" - %s", *comp->GetFName().ToString());
+            }
+
+            // --- 컴포넌트 추가 UI ---
+            ImGui::Separator(); // 구분선
+
+            ImGui::Text("Add Component");
+
+
+            static const std::vector<std::string> AvailableComponentTypeNames = {
+                "CubeComponent",
+                "LightComponent",
+                "StaticMeshComponent",
+                "TextRenderComponent",
+                "BillboardComponent",
+                     };
+
+            // 콤보 박스에 표시할 이름 목록 준비 (const char* 배열)
+            std::vector<const char*> componentComboItems;
+            for (const auto& name : AvailableComponentTypeNames)
+            {
+                componentComboItems.push_back(name.c_str());
+            }
+
+            // 선택된 컴포넌트 타입 인덱스 (static으로 상태 유지)
+            static int selectedComponentTypeIndex = 0;
+            // 새 컴포넌트 이름 입력 버퍼 (static으로 상태 유지)
+            //static char newComponentNameBuffer[128] = "NewComponent";
+
+            // 추가 가능한 컴포넌트 타입 선택 드롭다운
+            ImGui::PushItemWidth(200); // 드롭다운 너비 조절 (선택 사항)
+            ImGui::Combo("Type", &selectedComponentTypeIndex, componentComboItems.data(), componentComboItems.size());
+            ImGui::PopItemWidth();
+
+            //ImGui::SameLine(); // 버튼을 같은 줄에 배치
+
+
+
+            // 1. 콤보 박스에 표시할 이름 목록 준비
+            //static std::vector<const char*> componentNames;
+            //if (componentNames.empty()) // 한 번만 생성하도록 static 사용
+            //{
+            //    componentNames.reserve(GAddableComponents.size());
+            //    for (const auto& info : GAddableComponents)
+            //    {
+            //        componentNames.push_back(info.displayName.c_str());
+            //    }
+            //}
+                    // "추가" 버튼
+
+            if (ImGui::Button("Add"))
+            {
+                if (selectedComponentTypeIndex >= 0 && selectedComponentTypeIndex < AvailableComponentTypeNames.size())
+                {
+                    const std::string& selectedTypeName = AvailableComponentTypeNames[selectedComponentTypeIndex];
+                    //FName newComponentName = FName(newComponentNameBuffer); // 입력된 이름으로 FName 생성
+
+                    // 선택된 타입 이름에 따라 적절한 AddComponent<T> 호출
+                    // **** 중요: 이 부분은 실제 GTL 엔진의 AddComponent 작동 방식과 컴포넌트 타입에 맞춰 확장/수정해야 합니다. ****
+                    if (selectedTypeName == "BillboardComponent")
+                    {
+                        UBillboardComponent* BillboardComponent = PickedActor->AddComponent<UBillboardComponent>();
+                        BillboardComponent->SetSprite(L"Assets/Texture/emart.png");
+                        UE_LOG(LogLevel::Display, "AddComponent");
+                    }
+                    else if (selectedTypeName == "TextRenderComponent")
+                    {
+                        UTextRenderComponent* TextComponent = PickedActor->AddComponent<UTextRenderComponent>();
+                        TextComponent->SetSprite(L"Assets/Texture/font.png");
+                        TextComponent->SetRowColumnCount(106, 106);
+                        TextComponent->SetText(L"안녕하세요 Jungle 1");
+                        UE_LOG(LogLevel::Display, "AddComponent");
+                    }
+                    else if (selectedTypeName == "CubeComponent")
+                    {
+                        FManagerOBJ::CreateStaticMesh("Assets/helloBlender.obj");
+                        UStaticMeshComponent* StaticMeshComponent = PickedActor->AddComponent<UStaticMeshComponent>();
+                        StaticMeshComponent->SetStaticMesh(FManagerOBJ::GetStaticMesh(L"helloBlender.obj"));
+
+                        UE_LOG(LogLevel::Display, "AddComponent");
+                    }
+                    else if (selectedTypeName == "SphereComponent")
+                    {
+                        PickedActor->AddComponent<USphereComp>();
+                        UE_LOG(LogLevel::Display, "AddComponent");
+                    }
+                    else if (selectedTypeName == "StaticMeshComponent")
+                    {
+                        PickedActor->AddComponent<UStaticMeshComponent>();
+                        UE_LOG(LogLevel::Display, "AddComponent");
+                    }
+                    else if (selectedTypeName == "LightComponent")
+                    {
+                        PickedActor->AddComponent<ULightComponentBase>();
+                        UE_LOG(LogLevel::Display, "AddComponent");
+                    }
+
+                    else
+                    {
+                        // 알려지지 않은 컴포넌트 타입 처리 (오류 로그 등)
+                        // UE_LOG(LogTemp, Warning, TEXT("알 수 없는 컴포넌트 타입: %s"), *FString(selectedTypeName.c_str()));
+                        UE_LOG(LogLevel::Warning, "Unknown component type");
+                    }
+
+                    // 컴포넌트 추가 후 입력 필드 초기화 (선택 사항)
+                    // strcpy_s(newComponentNameBuffer, "NewComponent");
+                }
+            }
+
+
+            
+            ImGui::TreePop(); // 트리 닫기
+        }
+       // ImGui::PopStyleColor();
+
         ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.1f, 0.1f, 0.1f, 1.0f));
         if (ImGui::TreeNodeEx("Transform", ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_DefaultOpen)) // 트리 노드 생성
         {
-            Location = PickedActor->GetActorLocation();
-            Rotation = PickedActor->GetActorRotation();
-            Scale = PickedActor->GetActorScale();
-            
-            FImGuiWidget::DrawVec3Control("Location", Location, 0, 85);
-            ImGui::Spacing();
 
-            FImGuiWidget::DrawVec3Control("Rotation", Rotation, 0, 85);
-            ImGui::Spacing();
+            UWorld* World = GEngineLoop.GetWorld();
 
-            FImGuiWidget::DrawVec3Control("Scale", Scale, 0, 85);
-            ImGui::Spacing();
 
-            PickedActor->SetActorLocation(Location);
-            PickedActor->SetActorRotation(Rotation);
-            PickedActor->SetActorScale(Scale);
-            
-            std::string coordiButtonLabel;
-            if (player->GetCoordiMode() == CoordiMode::CDM_WORLD)
-                coordiButtonLabel = "World";
-            else if (player->GetCoordiMode() == CoordiMode::CDM_LOCAL)
-                coordiButtonLabel = "Local";
-            
-            if (ImGui::Button(coordiButtonLabel.c_str(), ImVec2(ImGui::GetWindowContentRegionMax().x * 0.9f, 32)))
+            //만일 컴포넌트가 없으면
+            if (World->GetSelectedComponent() == nullptr)
             {
-                player->AddCoordiMode();
+                Location = PickedActor->GetActorLocation();
+                Rotation = PickedActor->GetActorRotation();
+                Scale = PickedActor->GetActorScale();
+
+                FImGuiWidget::DrawVec3Control("Location", Location, 0, 85);
+                ImGui::Spacing();
+
+                FImGuiWidget::DrawVec3Control("Rotation", Rotation, 0, 85);
+                ImGui::Spacing();
+
+                FImGuiWidget::DrawVec3Control("Scale", Scale, 0, 85);
+                ImGui::Spacing();
+
+                PickedActor->SetActorLocation(Location);
+                PickedActor->SetActorRotation(Rotation);
+                PickedActor->SetActorScale(Scale);
+
+                std::string coordiButtonLabel;
+                if (player->GetCoordiMode() == CoordiMode::CDM_WORLD)
+                    coordiButtonLabel = "World";
+                else if (player->GetCoordiMode() == CoordiMode::CDM_LOCAL)
+                    coordiButtonLabel = "Local";
+
+                if (ImGui::Button(coordiButtonLabel.c_str(), ImVec2(ImGui::GetWindowContentRegionMax().x * 0.9f, 32)))
+                {
+                    player->AddCoordiMode();
+                }
             }
+            else if(USceneComponent* Comp = Cast<USceneComponent>(World->GetSelectedComponent()))
+            {
+                Location = Comp->GetLocalLocation();
+                Rotation = Comp->GetLocalRotation();
+                Scale = Comp->GetLocalScale();
+
+                FImGuiWidget::DrawVec3Control("Location", Location, 0, 85);
+                ImGui::Spacing();
+
+                FImGuiWidget::DrawVec3Control("Rotation", Rotation, 0, 85);
+                ImGui::Spacing();
+
+                FImGuiWidget::DrawVec3Control("Scale", Scale, 0, 85);
+                ImGui::Spacing();
+
+                Comp->SetLocation(Location);
+                Comp->SetRotation(Rotation);
+                Comp->SetScale(Scale);
+
+                std::string coordiButtonLabel;
+                if (player->GetCoordiMode() == CoordiMode::CDM_WORLD)
+                    coordiButtonLabel = "World";
+                else if (player->GetCoordiMode() == CoordiMode::CDM_LOCAL)
+                    coordiButtonLabel = "Local";
+
+                if (ImGui::Button(coordiButtonLabel.c_str(), ImVec2(ImGui::GetWindowContentRegionMax().x * 0.9f, 32)))
+                {
+                    player->AddCoordiMode();
+                }
+            }
+            
             ImGui::TreePop(); // 트리 닫기
         }
         ImGui::PopStyleColor();
@@ -156,16 +341,17 @@ void PropertyEditorPanel::Render()
         }
         ImGui::PopStyleColor();
     }
+    
 
     // TODO: 추후에 RTTI를 이용해서 프로퍼티 출력하기
     if (PickedActor)
-    if (UText* textOBj = Cast<UText>(PickedActor->GetRootComponent()))
+    if (UTextRenderComponent* textOBj = Cast<UTextRenderComponent>(PickedActor->GetRootComponent()))
     {
         ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.1f, 0.1f, 0.1f, 1.0f));
         if (ImGui::TreeNodeEx("Text Component", ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_DefaultOpen)) // 트리 노드 생성
         {
             if (textOBj) {
-                textOBj->SetTexture(L"Assets/Texture/font.png");
+                textOBj->SetSprite(L"Assets/Texture/font.png");
                 textOBj->SetRowColumnCount(106, 106);
                 FWString wText = textOBj->GetText();
                 int len = WideCharToMultiByte(CP_UTF8, 0, wText.c_str(), -1, nullptr, 0, nullptr, nullptr);
@@ -191,6 +377,67 @@ void PropertyEditorPanel::Render()
             ImGui::TreePop();
         }
         ImGui::PopStyleColor();
+    }
+
+    if (PickedActor)
+    if (UBillboardComponent* BillboardOBj = Cast<UBillboardComponent>(PickedActor->GetRootComponent()))
+    {
+        if (!BillboardOBj->IsA<UTextRenderComponent>())
+        {
+            ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.1f, 0.1f, 0.1f, 1.0f));
+            if (ImGui::TreeNodeEx("Billboard Component", ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_DefaultOpen))
+            {
+                // 1. 사용 가능한 텍스처 목록 가져오기
+                const auto& allTextures = FEngineLoop::resourceMgr.GetAllTextures();
+
+                // 2. ImGui::Combo 데이터 준비
+
+               // 2. UTF-8 변환 및 데이터 준비
+                TArray<std::string> utf8TextureNames; // 변환된 UTF-8 이름 저장 (메모리 유지용)
+                TArray<const char*> comboItems;
+                TArray<std::shared_ptr<FTexture>> texturePtrs; // 이름과 포인터를 동기화하기 위한 벡터
+
+                //utf8TextureNames.Add("None");
+
+                //comboItems.Add(utf8TextureNames.Last().c_str());
+                //texturePtrs.Add(nullptr);
+
+                int currentItemIndex = 0; // 기본값은 "None"
+                int index = 0; // "None" 다음 인덱스부터 시작
+                // 현재 빌보드에 설정된 스프라이트 가져오기
+                std::shared_ptr<FTexture> currentSprite = BillboardOBj->GetSprite();
+
+
+                for (const auto& pair : allTextures) // pair.first는 FWString, pair.second는 shared_ptr<FTexture>
+                {
+                    if (pair.Value == nullptr) continue; // Null 텍스처는 스킵 (선택 사항)
+
+                    // FWString 키를 UTF-8 std::string으로 변환
+                    utf8TextureNames.Add(WStringToUTF8(pair.Key)); // 변환된 문자열 저장
+                    comboItems.Add(utf8TextureNames.Last().c_str()); // 저장된 문자열의 c_str() 포인터 추가
+                    texturePtrs.Add(pair.Value);                     // 텍스처 포인터 추가
+
+                    // 현재 선택된 텍스처인지 확인
+                    if (currentSprite == pair.Value)
+                    {
+                        currentItemIndex = index;
+                    }
+                    index++;
+                }
+
+                // 3. ImGui::Combo 표시
+                ImGui::Text("Sprite Texture:");
+                ImGui::SameLine();
+                if (ImGui::Combo("##SpriteTextureCombo", &currentItemIndex, comboItems.GetData(), comboItems.Num()))
+                {
+                    // 4. 선택 변경 처리
+                    BillboardOBj->SetSprite(texturePtrs[currentItemIndex]);
+                }
+
+                ImGui::TreePop();
+            }
+            ImGui::PopStyleColor();
+        }
     }
 
     // TODO: 추후에 RTTI를 이용해서 프로퍼티 출력하기
