@@ -1,5 +1,6 @@
 #pragma once
 #include "Define.h"
+#include "Actors/Player.h"
 #include "Container/Set.h"
 #include "UObject/ObjectFactory.h"
 #include "UObject/ObjectMacros.h"
@@ -9,24 +10,26 @@ class AActor;
 class UObject;
 class UGizmoArrowComponent;
 class UCameraComponent;
-class AEditorPlayer;
+class AEditorController;
 class USceneComponent;
 class UTransformGizmo;
 
 
 class UWorld : public UObject
 {
+public:
     DECLARE_CLASS(UWorld, UObject)
 
-public:
     UWorld() = default;
-
+    
     void Initialize();
+    void InitializePIE();
     void CreateBaseObject();
     void ReleaseBaseObject();
     void Tick(float DeltaTime);
+    void PIETick(float DeltaTime);
     void Release();
-
+    UWorld* Duplicate();
     /**
      * World에 Actor를 Spawn합니다.
      * @tparam T AActor를 상속받은 클래스
@@ -38,8 +41,8 @@ public:
 
     /** World에 존재하는 Actor를 제거합니다. */
     bool DestroyActor(AActor* ThisActor);
-
-private:
+    
+private: 
     const FString defaultMapName = "Default";
 
     /** World에서 관리되는 모든 Actor의 목록 */
@@ -54,7 +57,8 @@ private:
 
     USceneComponent* pickingGizmo = nullptr;
     UCameraComponent* camera = nullptr;
-    AEditorPlayer* EditorPlayer = nullptr;
+    AEditorController* EditorPlayer = nullptr;
+    APlayerController* PlayerController = nullptr;
 
 public:
     UObject* worldGizmo = nullptr;
@@ -63,7 +67,7 @@ public:
 
     UTransformGizmo* LocalGizmo = nullptr;
     UCameraComponent* GetCamera() const { return camera; }
-    AEditorPlayer* GetEditorPlayer() const { return EditorPlayer; }
+    AEditorController* GetEditorPlayer() const { return EditorPlayer; }
 
 
     // EditorManager 같은데로 보내기
@@ -83,7 +87,6 @@ public:
     USceneComponent* GetPickingGizmo() const { return pickingGizmo; }
     void SetPickingGizmo(UObject* Object);
 };
-
 
 template <typename T>
     requires std::derived_from<T, AActor>

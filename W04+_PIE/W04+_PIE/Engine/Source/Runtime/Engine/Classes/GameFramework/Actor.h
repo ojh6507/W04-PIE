@@ -1,5 +1,5 @@
 #pragma once
-#include "Components/SceneComponent.h"
+
 #include "Container/Set.h"
 #include "Engine/EngineTypes.h"
 #include "UObject/Casts.h"
@@ -8,15 +8,19 @@
 #include "UObject/ObjectMacros.h"
 
 
+class USceneComponent;
+
 class UActorComponent;
 
-class AActor : public UObject
+class  AActor : public UObject
 {
     DECLARE_CLASS(AActor, UObject)
 
 public:
     AActor() = default;
 
+    virtual AActor* Duplicate() override;
+    
     /** Actor가 게임에 배치되거나 스폰될 때 호출됩니다. */
     virtual void BeginPlay();
 
@@ -80,13 +84,14 @@ public:
     void SetOwner(AActor* NewOwner) { Owner = NewOwner; }
 
 public:
-    FVector GetActorLocation() const { return RootComponent ? RootComponent->GetWorldLocation() : FVector::ZeroVector; }
-    FVector GetActorRotation() const { return RootComponent ? RootComponent->GetWorldRotation() : FVector::ZeroVector; }
-    FVector GetActorScale() const { return RootComponent ? RootComponent->GetWorldScale() : FVector::ZeroVector; }
 
-    FVector GetActorForwardVector() const { return RootComponent ? RootComponent->GetForwardVector() : FVector::ForwardVector; }
-    FVector GetActorRightVector() const { return RootComponent ? RootComponent->GetRightVector() : FVector::RightVector; }
-    FVector GetActorUpVector() const { return RootComponent ? RootComponent->GetUpVector() : FVector::UpVector; }
+    FVector GetActorLocation() const;
+    FVector GetActorRotation() const;
+    FVector GetActorScale() const;
+
+    FVector GetActorForwardVector() const;
+    FVector GetActorRightVector() const;
+    FVector GetActorUpVector() const;
 
     bool SetActorLocation(const FVector& NewLocation);
     bool SetActorRotation(const FVector& NewRotation);
@@ -96,6 +101,7 @@ protected:
     USceneComponent* RootComponent = nullptr;
 
 private:
+    
     /** 이 Actor를 소유하고 있는 다른 Actor의 정보 */
     AActor* Owner = nullptr;
 
@@ -108,6 +114,16 @@ private:
 
     //struct FActorTickFunction PrimaryActorTick;
 
+    AActor* PushValue(UObject* Other) {
+        AActor* NewObject = new AActor();
+
+        NewObject->SetUUID(Other->GetUUID());
+        NewObject->SetInternalIndex(Other->GetInternalIndex());
+        NewObject->SetFName(Other->GetFName());
+        NewObject->SetClass(Other->GetClass());
+        
+        return NewObject;
+    }
 
 #if 1 // TODO: WITH_EDITOR 추가
 public:

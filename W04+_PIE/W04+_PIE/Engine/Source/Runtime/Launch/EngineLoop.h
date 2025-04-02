@@ -12,6 +12,12 @@ class SSplitterV;
 class SSplitterH;
 class SLevelEditor;
 
+enum class EPlayWorldType
+{
+    Edit,
+    Play,
+};
+
 class FEngineLoop
 {
 public:
@@ -34,20 +40,25 @@ public:
     static FResourceMgr resourceMgr;
     static uint32 TotalAllocationBytes;
     static uint32 TotalAllocationCount;
-
-
+    
     HWND hWnd;
 
 private:
     UImGuiManager* UIMgr;
+    UWorld* EditWorld;
     UWorld* GWorld;
     SLevelEditor* LevelEditor;
     UnrealEd* UnrealEditor;
     bool bIsExit = false;
     const int32 targetFPS = 60;
     bool bTestInput = false;
-
+    EPlayWorldType PlayWorldType = EPlayWorldType::Edit;
+    
 public:
+    void StartPIE();
+    void EndPIE();
+
+    EPlayWorldType GetPlayWorldType() const { return PlayWorldType; }
     UWorld* GetWorld() const { return GWorld; }
     SLevelEditor* GetLevelEditor() const { return LevelEditor; }
     UnrealEd* GetUnrealEditor() const { return UnrealEditor; }

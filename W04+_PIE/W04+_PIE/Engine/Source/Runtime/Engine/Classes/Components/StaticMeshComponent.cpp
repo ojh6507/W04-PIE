@@ -4,6 +4,7 @@
 #include "Launch/EngineLoop.h"
 #include "UObject/ObjectFactory.h"
 #include "UnrealEd/PrimitiveBatch.h"
+#include "Engine/FLoaderOBJ.h"
 
 
 uint32 UStaticMeshComponent::GetNumMaterials() const
@@ -110,4 +111,21 @@ int UStaticMeshComponent::CheckRayIntersection(FVector& rayOrigin, FVector& rayD
 
     }
     return nIntersections;
+}
+
+UStaticMeshComponent* UStaticMeshComponent::Duplicate()
+{
+    if (DuplicateObjects.Contains(GetUUID()))
+    {
+        return reinterpret_cast<UStaticMeshComponent*>(DuplicateObjects[GetUUID()]);
+    }
+
+    UStaticMeshComponent* NewObject = PushValue(Super::Duplicate());
+    NewObject->SetStaticMesh(FManagerOBJ::GetStaticMesh(staticMesh->GetRenderData()->ObjectName));
+
+    NewObject->selectedSubMeshIndex = selectedSubMeshIndex;
+
+    DuplicateObjects[GetUUID()] = NewObject;
+
+    return NewObject;
 }

@@ -40,6 +40,9 @@ public:
     /** 이 컴포넌트를 소유하고 있는 Actor를 반환합니다. */
     AActor* GetOwner() const { return Owner; }
 
+    void SetOwner(AActor* NewOwner) { Owner = NewOwner; }
+    
+    
     /** 이 컴포넌트를 제거합니다. */
     virtual void DestroyComponent();
 
@@ -55,22 +58,77 @@ public:
     void Activate();
     void Deactivate();
 
+    virtual UActorComponent* Duplicate() override;
+
 private:
+    UActorComponent* PushValue(UObject* Other) {
+        UActorComponent* NewObject = new UActorComponent();
+
+        NewObject->SetUUID(Other->GetUUID());
+        NewObject->SetInternalIndex(Other->GetInternalIndex());
+        NewObject->SetFName(Other->GetFName());
+        NewObject->SetClass(Other->GetClass());
+        
+        return NewObject;
+    }
+    
     AActor* Owner;
 
     /** InitializeComponent가 호출 되었는지 여부 */
     uint8 bHasBeenInitialized : 1;
 
+private:
     /** BeginPlay가 호출 되었는지 여부 */
     uint8 bHasBegunPlay : 1;
 
     /** 현재 컴포넌트가 삭제 처리중인지 여부 */
     uint8 bIsBeingDestroyed : 1;
 
+public:
+    void SetbHasBeenInitialized(uint8 bhasbeeninitialized)
+    {
+        bHasBeenInitialized = bhasbeeninitialized;
+    }
+
+    void SetbHasBegunPlay(uint8 bhasbegunplay)
+    {
+        bHasBegunPlay = bhasbegunplay;
+    }
+
+    void SetbIsBeingDestroyed(uint8 bisbeingdestroyed)
+    {
+        bIsBeingDestroyed = bisbeingdestroyed;
+    }
+
+    void SetbIsActive(uint8 bisactive)
+    {
+        bIsActive = bisactive;
+    }
+
+private:
     /** Component가 현재 활성화 중인지 여부 */
     uint8 bIsActive:1;
 
 public:
+    [[nodiscard]] uint8 GetbHasBeenInitialized() const
+    {
+        return bHasBeenInitialized;
+    }
+
+    [[nodiscard]] uint8 GetbHasBegunPlay() const
+    {
+        return bHasBegunPlay;
+    }
+
+    [[nodiscard]] uint8 GetbIsBeingDestroyed() const
+    {
+        return bIsBeingDestroyed;
+    }
+
+    [[nodiscard]] uint8 GetbIsActive() const
+    {
+        return bIsActive;
+    }
     /** Component가 초기화 되었을 때, 자동으로 활성화할지 여부 */
     uint8 bAutoActive : 1;
 };
