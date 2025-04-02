@@ -154,7 +154,7 @@ void FEngineLoop::Render()
             // renderer.PrepareShader();
             // renderer.UpdateLightBuffer();
             // RenderWorld();
-            renderer.PrepareRender();
+            renderer.PrepareRender(GWorld);
             renderer.Render(GetWorld(), LevelEditor->GetActiveViewportClient());
         }
         GetLevelEditor()->SetViewportClient(viewportClient);
@@ -167,7 +167,7 @@ void FEngineLoop::Render()
         // renderer.PrepareShader();
         // renderer.UpdateLightBuffer();
         // RenderWorld();
-        renderer.PrepareRender();
+        renderer.PrepareRender(GWorld);
         renderer.Render(GetWorld(), LevelEditor->GetActiveViewportClient());
     }
 }
@@ -312,7 +312,6 @@ void FEngineLoop::EndPIE() {
         return;
     }
 
-    PlayWorldType = EPlayWorldType::Edit;
     if (GWorld)
     {
         GWorld->Release();
@@ -321,4 +320,5 @@ void FEngineLoop::EndPIE() {
     DuplicateObjects.Empty();
 
     GWorld = EditWorld; //포인터만 이동
+    PlayWorldType = EPlayWorldType::Edit;
 }

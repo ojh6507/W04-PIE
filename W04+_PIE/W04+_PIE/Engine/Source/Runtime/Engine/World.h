@@ -56,7 +56,6 @@ private:
     class UActorComponent* SelectedComponent = nullptr;
 
     USceneComponent* pickingGizmo = nullptr;
-    UCameraComponent* camera = nullptr;
     AEditorController* EditorPlayer = nullptr;
     APlayerController* PlayerController = nullptr;
 
@@ -66,7 +65,6 @@ public:
     const TSet<AActor*>& GetActors() const { return ActorsArray; }
 
     UTransformGizmo* LocalGizmo = nullptr;
-    UCameraComponent* GetCamera() const { return camera; }
     AEditorController* GetEditorPlayer() const { return EditorPlayer; }
 
 

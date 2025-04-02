@@ -33,12 +33,12 @@ void UWorld::InitializePIE()
 
     GEngineLoop.GetLevelEditor()->GetActiveViewportClient()->ViewTransformPerspective.SetLocation(FVector(8.0f, 8.0f, 8.f));
     GEngineLoop.GetLevelEditor()->GetActiveViewportClient()->ViewTransformPerspective.SetRotation(FVector(0.0f, 45.0f, -135.0f));
-    
+
     TSet<AActor*> Actors = GetActors();
 
     for (AActor* Actor : Actors)
     {
-        if(Actor)
+        if (Actor)
             Actor->BeginPlay();
     }
 }
@@ -50,12 +50,6 @@ void UWorld::CreateBaseObject()
         EditorPlayer = FObjectFactory::ConstructObject<AEditorController>();
     }
 
-    if (camera == nullptr)
-    {
-        camera = FObjectFactory::ConstructObject<UCameraComponent>();
-        camera->SetLocation(FVector(8.0f, 8.0f, 8.f));
-        camera->SetRotation(FVector(0.0f, 45.0f, -135.0f));
-    }
 
     if (LocalGizmo == nullptr)
     {
@@ -65,30 +59,27 @@ void UWorld::CreateBaseObject()
 
 void UWorld::ReleaseBaseObject()
 {
-    if (LocalGizmo)
-    {
-        delete LocalGizmo;
-        LocalGizmo = nullptr;
-    }
+    if (GEngineLoop.GetPlayWorldType() == EPlayWorldType::Edit) {
 
-    if (worldGizmo)
-    {
-        delete worldGizmo;
-        worldGizmo = nullptr;
-    }
+        if (LocalGizmo)
+        {
+            delete LocalGizmo;
+            LocalGizmo = nullptr;
+        }
 
-    if (camera)
-    {
-        delete camera;
-        camera = nullptr;
-    }
+        if (worldGizmo)
+        {
+            delete worldGizmo;
+            worldGizmo = nullptr;
+        }
 
-    if (EditorPlayer)
-    {
-        delete EditorPlayer;
-        EditorPlayer = nullptr;
-    }
+        if (EditorPlayer)
+        {
+            delete EditorPlayer;
+            EditorPlayer = nullptr;
+        }
 
+    }
 }
 
 void UWorld::PIETick(float DeltaTime)
@@ -135,22 +126,25 @@ void UWorld::Tick(float DeltaTime)
 
 void UWorld::Release()
 {
-    for (AActor* Actor : ActorsArray)
-    {
-        Actor->EndPlay(EEndPlayReason::WorldTransition);
-        TSet<UActorComponent*> Components = Actor->GetComponents();
-        for (UActorComponent* Component : Components)
+    if (GEngineLoop.GetPlayWorldType() == EPlayWorldType::Edit) {
+
+        for (AActor* Actor : ActorsArray)
         {
-            GUObjectArray.MarkRemoveObject(Component);
+            Actor->EndPlay(EEndPlayReason::WorldTransition);
+            TSet<UActorComponent*> Components = Actor->GetComponents();
+            for (UActorComponent* Component : Components)
+            {
+                GUObjectArray.MarkRemoveObject(Component);
+            }
+            GUObjectArray.MarkRemoveObject(Actor);
         }
-        GUObjectArray.MarkRemoveObject(Actor);
+        ActorsArray.Empty();
+
+        pickingGizmo = nullptr;
+        ReleaseBaseObject();
+
+        GUObjectArray.ProcessPendingDestroyObjects();
     }
-    ActorsArray.Empty();
-
-    pickingGizmo = nullptr;
-    ReleaseBaseObject();
-
-    GUObjectArray.ProcessPendingDestroyObjects();
 }
 
 UWorld* UWorld::Duplicate()
@@ -158,8 +152,6 @@ UWorld* UWorld::Duplicate()
     UWorld* newWorld = FObjectFactory::ConstructObject<UWorld>();
 
     newWorld->SetInternalIndex(GetInternalIndex());
-
-    newWorld->camera = camera;
 
 
     for (auto Actor : ActorsArray) {
