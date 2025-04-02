@@ -166,7 +166,6 @@ void UWorld::Release()
 
 UWorld* UWorld::Duplicate()
 {
-
     UWorld* newWorld = new UWorld();
     
     for (auto Actor : ActorsArray) {

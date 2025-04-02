@@ -7,10 +7,7 @@
 
 USceneComponent* USceneComponent::Duplicate()
 {
-    if (DuplicateObjects.Contains(GetUUID()))
-    {
-        return reinterpret_cast<USceneComponent*>(DuplicateObjects[GetUUID()]);
-    }
+
    
     USceneComponent* NewObject = FObjectFactory::ConstructObject<USceneComponent>();
 
@@ -20,8 +17,6 @@ USceneComponent* USceneComponent::Duplicate()
     NewObject->QuatRotation = QuatRotation;
 
     NewObject->AttachParent = AttachParent;
-
-    DuplicateObjects[NewObject->GetUUID()] = NewObject;
 
     return NewObject;
 }

@@ -115,21 +115,17 @@ int UStaticMeshComponent::CheckRayIntersection(FVector& rayOrigin, FVector& rayD
 
 UStaticMeshComponent* UStaticMeshComponent::Duplicate()
 {
-    if (DuplicateObjects.Contains(GetUUID()))
-    {
-        return reinterpret_cast<UStaticMeshComponent*>(DuplicateObjects[GetUUID()]);
-    }
-    Super::Duplicate();
     UStaticMeshComponent* NewObject = FObjectFactory::ConstructObject<UStaticMeshComponent>();
+
+    UMeshComponent* NewComponent = Super::Duplicate();
+
+    NewObject->OverrideMaterials = NewComponent->GetOverrideMaterials();
 
     NewObject->SetStaticMesh(FManagerOBJ::GetStaticMesh(staticMesh->GetRenderData()->ObjectName));
 
     NewObject->selectedSubMeshIndex = selectedSubMeshIndex;
-    
 
     NewObject->SetInternalIndex(GetInternalIndex());
-    
-    DuplicateObjects[NewObject->GetUUID()] = NewObject;
 
     return NewObject;
 }

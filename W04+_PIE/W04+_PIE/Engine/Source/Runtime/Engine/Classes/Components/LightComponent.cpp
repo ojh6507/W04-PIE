@@ -16,10 +16,7 @@ ULightComponentBase::~ULightComponentBase()
 }
 ULightComponentBase* ULightComponentBase::Duplicate()
 {
-    if (DuplicateObjects.Contains(GetUUID()))
-    {
-        return reinterpret_cast<ULightComponentBase*>(DuplicateObjects[GetUUID()]);
-    }
+
    
     ULightComponentBase* NewObject1 = FObjectFactory::ConstructObject<ULightComponentBase>();
   

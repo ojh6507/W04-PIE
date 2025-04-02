@@ -5,11 +5,6 @@
 
 AActor* AActor::Duplicate()
 {
-    if (DuplicateObjects.Contains(GetUUID()))
-    {
-        return reinterpret_cast<AActor*>(DuplicateObjects[GetUUID()]);
-    }
-
     AActor* NewObject = FObjectFactory::ConstructObject<AActor>();
 
     UObject* SuperObject = Super::Duplicate();
@@ -29,7 +24,6 @@ AActor* AActor::Duplicate()
         NewObject->OwnedComponents.Add(Comp->Duplicate());
     }
 
-    DuplicateObjects[NewObject->GetUUID()] = NewObject;
 
     return NewObject;
 }

@@ -24,11 +24,7 @@ ULightBaseActor::ULightBaseActor()
 
 ULightBaseActor* ULightBaseActor::Duplicate()
 {
-    if (DuplicateObjects.Contains(GetUUID()))
-    {
-        return reinterpret_cast<ULightBaseActor*>(DuplicateObjects[GetUUID()]);
-    }
-    
+
     ULightBaseActor* newActor = FObjectFactory::ConstructObject<ULightBaseActor>();
 
     UObject* SuperObject = Super::Duplicate();
@@ -44,7 +40,6 @@ ULightBaseActor* ULightBaseActor::Duplicate()
 
     newActor->SetInternalIndex(GetInternalIndex());
 
-    DuplicateObjects[newActor->GetUUID()] = newActor;
 
     return newActor;
 }
