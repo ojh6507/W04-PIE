@@ -264,7 +264,6 @@ void ControlEditorPanel::CreateModifyButton(ImVec2 ButtonSize, ImFont* IconFont)
         static const Primitive primitives[] = {
            // { .label= "Actor",      .obj= OBJ_ACTOR },
             { .label= "Cube",      .obj= OBJ_CUBE },
-            { .label= "Sphere",    .obj= OBJ_SPHERE },
             { .label= "SpotLight", .obj= OBJ_SpotLight },
             { .label= "Particle",  .obj= OBJ_PARTICLE },
             { .label= "Text",      .obj= OBJ_Text },
@@ -286,13 +285,7 @@ void ControlEditorPanel::CreateModifyButton(ImVec2 ButtonSize, ImFont* IconFont)
                 //    SpawnedActor->SetActorLabel(TEXT("OBJ_ACTOR"));
                 //    break;
                 //}
-                case OBJ_SPHERE:
-                {
-                    SpawnedActor = World->SpawnActor<AActor>();
-                    SpawnedActor->SetActorLabel(TEXT("OBJ_SPHERE"));
-                    SpawnedActor->AddComponent<USphereComp>();
-                    break;
-                }
+               
                 case OBJ_CUBE:
                 {
                     AStaticMeshActor* TempActor = World->SpawnActor<AStaticMeshActor>();
