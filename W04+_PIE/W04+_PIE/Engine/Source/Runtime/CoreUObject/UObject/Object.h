@@ -39,18 +39,21 @@ public:
     {
         return GEngineLoop;
     }
+    
 
     virtual UObject* Duplicate();
 
     FName GetFName() const { return NamePrivate; }
+    void SetFName(FName InFName) {NamePrivate = InFName;}
     FString GetName() const { return NamePrivate.ToString(); }
 
     uint32 GetUUID() const { return UUID; }
+    void SetUUID(uint32 INUUID) {UUID = INUUID;}
     uint32 GetInternalIndex() const { return InternalIndex; }
-
+    void SetInternalIndex(uint32 InInternalIndex){InternalIndex = InInternalIndex;}
     UClass* GetClass() const { return ClassPrivate; }
-
-
+    void SetClass(UClass* InClass) { ClassPrivate = InClass; }
+    
     /** this가 SomeBase인지, SomeBase의 자식 클래스인지 확인합니다. */
     bool IsA(const UClass* SomeBase) const;
 

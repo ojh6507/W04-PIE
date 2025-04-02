@@ -24,10 +24,8 @@ public:
             return static_cast<UMeshComponent*>(DuplicateObjects[GetUUID()]);
         }
 
-
-        UMeshComponent* NewObject = PushValue(reinterpret_cast<UMeshComponent*>(Super::Duplicate()));
-       
-
+        UMeshComponent* NewObject = PushValue(Super::Duplicate());
+        
         NewObject->OverrideMaterials = this->OverrideMaterials;
         NewObject->OverrideMaterials.Shrink();
         DuplicateObjects[GetUUID()] = NewObject;

@@ -91,7 +91,7 @@ UActorComponent* UActorComponent::Duplicate()
         return reinterpret_cast<UActorComponent*>(DuplicateObjects[GetUUID()]);
     }
 
-    UActorComponent* NewObject = reinterpret_cast<UActorComponent*>(Super::Duplicate());
+    UActorComponent* NewObject = PushValue(Super::Duplicate());
         
     NewObject->Owner = Owner->Duplicate();
 

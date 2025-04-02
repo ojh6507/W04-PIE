@@ -2,6 +2,7 @@
 #include "ActorComponent.h"
 #include "Math/Quat.h"
 #include "UObject/ObjectMacros.h"
+#include "GameFramework/Actor.h"
 
 class USceneComponent : public UActorComponent
 {
@@ -15,7 +16,7 @@ class USceneComponent : public UActorComponent
             return reinterpret_cast<USceneComponent*>(DuplicateObjects[GetUUID()]);
         }
         
-        USceneComponent* NewObject = reinterpret_cast<USceneComponent*>(Super::Duplicate());
+        USceneComponent* NewObject = PushValue(Super::Duplicate());
         NewObject->RelativeLocation = RelativeLocation;
         NewObject->RelativeRotation = RelativeRotation;
         NewObject->RelativeScale3D = RelativeScale3D;
@@ -70,5 +71,20 @@ public:
 private:
     class UTextUUID* uuidText = nullptr;
 
+    USceneComponent* PushValue(UActorComponent* Other) {
+        USceneComponent* NewObject = new USceneComponent();
+
+        NewObject->SetOwner(Other->GetOwner()->Duplicate());
+
+        NewObject->SetbHasBegunPlay(GetbHasBegunPlay());
+
+        NewObject->SetbIsBeingDestroyed(GetbIsBeingDestroyed());
+
+        NewObject->SetbIsActive(GetbIsActive());
+
+        NewObject->bAutoActive = Other->bAutoActive;
+        
+        return NewObject;
+    }
 public:
 };
