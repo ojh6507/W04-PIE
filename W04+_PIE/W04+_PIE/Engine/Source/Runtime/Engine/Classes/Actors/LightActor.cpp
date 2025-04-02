@@ -36,6 +36,10 @@ ULightBaseActor* ULightBaseActor::Duplicate()
     
     newActor->LightComponent = LightComponent->Duplicate();
     newActor->SpriteComponent = SpriteComponent->Duplicate();
+    
+    newActor->SetActorLocation(GetActorLocation());
+    newActor->SetActorRotation(GetActorRotation());
+    newActor->SetActorScale(GetActorScale());
 
     newActor->SetInternalIndex(GetInternalIndex());
 

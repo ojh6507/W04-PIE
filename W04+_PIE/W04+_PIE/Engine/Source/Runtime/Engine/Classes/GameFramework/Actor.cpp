@@ -18,6 +18,11 @@ AActor* AActor::Duplicate()
     
     NewObject->RootComponent = RootComponent->Duplicate();
     
+   
+    NewObject->SetActorLocation(GetActorLocation());
+    NewObject->SetActorRotation(GetActorRotation());
+    NewObject->SetActorScale(GetActorScale());
+
     for (UActorComponent* Comp : OwnedComponents)
     {
         NewObject->OwnedComponents.Add(Comp->Duplicate());

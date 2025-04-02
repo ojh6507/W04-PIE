@@ -20,6 +20,7 @@ ULightComponentBase* ULightComponentBase::Duplicate()
     {
         return reinterpret_cast<ULightComponentBase*>(DuplicateObjects[GetUUID()]);
     }
+   
     ULightComponentBase* NewObject1 = FObjectFactory::ConstructObject<ULightComponentBase>();
   
     NewObject1->color = color;

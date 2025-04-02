@@ -24,6 +24,7 @@ public:
         {
             return reinterpret_cast<UPrimitiveComponent*>(DuplicateObjects[GetUUID()]);
         }
+        Super::Duplicate();
 
         UPrimitiveComponent* NewObject = FObjectFactory::ConstructObject<UPrimitiveComponent>();
 
