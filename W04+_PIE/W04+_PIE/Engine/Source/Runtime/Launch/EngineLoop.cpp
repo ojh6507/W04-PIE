@@ -192,7 +192,15 @@ void FEngineLoop::Tick()
         }
 
         Input();
-        GWorld->Tick(elapsedTime);
+
+        if (PlayWorldType == EPlayWorldType::Play)
+        {
+            GWorld->PIETick(elapsedTime);
+        }else if (PlayWorldType == EPlayWorldType::Edit)
+        {
+            GWorld->Tick(elapsedTime);
+        }
+
         LevelEditor->Tick(elapsedTime);
         Render();
         UIMgr->BeginFrame();
@@ -275,4 +283,28 @@ void FEngineLoop::WindowInit(HINSTANCE hInstance)
         CW_USEDEFAULT, CW_USEDEFAULT, 1000, 1000,
         nullptr, nullptr, hInstance, nullptr
     );
+}
+
+void FEngineLoop::StartPIE(){
+    PlayWorldType = EPlayWorldType::Play;
+
+    UWorld* PIEWorld = EditWorld.DuplicateForPIE(); //DuplicateForPIE 아마 필요한 정보만..? 내생각엔 Tick을 진행하면서 생긴 정보는 날리고 최초의 초기정보만 가져와야하는듯, 그리고 깊은복사
+    GWorld = PIEWorld;
+
+    GWorld->InitializePIE();    
+}
+
+void FEngineLoop::EndPIE(){
+    if (PlayWorldType != EPlayWorldType::Play)
+    {
+        return;
+    }
+    
+    PlayWorldType = EPlayWorldType::Edit;
+    if (GWorld)
+    {
+        GWorld->Release();
+    }
+    
+    GWorld = EditWorld; //포인터만 이동
 }

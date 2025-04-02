@@ -24,11 +24,23 @@ void UWorld::Initialize()
     skySphere->GetStaticMesh()->GetMaterials()[0]->Material->SetDiffuse(FVector((float)32/255, (float)171/255, (float)191/255));
 }
 
+void UWorld::InitializePIE()
+{
+    //TODO: Player 지정해주기
+    
+    TSet<AActor*> Actors = GetActors();
+    
+    for (AActor* Actor : Actors)
+    {
+        Actor->BeginPlay();
+    }
+}
+
 void UWorld::CreateBaseObject()
 {
     if (EditorPlayer == nullptr)
     {
-        EditorPlayer = FObjectFactory::ConstructObject<AEditorPlayer>();;
+        EditorPlayer = FObjectFactory::ConstructObject<AEditorController>();;
     }
 
     if (camera == nullptr)
@@ -71,6 +83,31 @@ void UWorld::ReleaseBaseObject()
     }
 
 }
+
+void UWorld::PIETick(float DeltaTime)
+{
+    camera->TickComponent(DeltaTime); //TODO: MainPlayer가 있으면 이거 하면안됨 분기줘야함
+
+    EditorPlayer->Tick(DeltaTime);
+
+    // SpawnActor()에 의해 Actor가 생성된 경우, 여기서 BeginPlay 호출
+    for (AActor* Actor : PendingBeginPlayActors)
+    {
+        Actor->BeginPlay();
+    }
+    PendingBeginPlayActors.Empty();
+
+    // 매 틱마다 Actor->Tick(...) 호출
+	
+    for (AActor* Actor : Level->Actors)
+    {
+        if (Actor && Actor->IsActorTickEnabled())
+        {
+            Actor->Tick(DeltaTime);
+        }
+    }
+}
+
 
 void UWorld::Tick(float DeltaTime)
 {

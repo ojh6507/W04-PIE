@@ -418,7 +418,7 @@ void ControlEditorPanel::CreateFlagButton() const
 // code is so dirty / Please refactor
 void ControlEditorPanel::CreateSRTButton(ImVec2 ButtonSize) const
 {
-    AEditorPlayer* Player = GEngineLoop.GetWorld()->GetEditorPlayer();
+    AEditorController* Player = GEngineLoop.GetWorld()->GetEditorPlayer();
 
     ImVec4 ActiveColor = ImVec4(0.00f, 0.00f, 0.85f, 1.0f);
     

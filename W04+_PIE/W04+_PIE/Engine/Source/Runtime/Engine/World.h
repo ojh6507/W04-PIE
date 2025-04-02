@@ -10,7 +10,7 @@ class AActor;
 class UObject;
 class UGizmoArrowComponent;
 class UCameraComponent;
-class AEditorPlayer;
+class AEditorController;
 class USceneComponent;
 class UTransformGizmo;
 
@@ -23,9 +23,11 @@ public:
     UWorld() = default;
 
     void Initialize();
+    void InitializePIE();
     void CreateBaseObject();
     void ReleaseBaseObject();
     void Tick(float DeltaTime);
+    void PIETick(float DeltaTime);
     void Release();
 
     /**
@@ -50,7 +52,7 @@ private:
 
     USceneComponent* pickingGizmo = nullptr;
     UCameraComponent* camera = nullptr;
-    AEditorPlayer* EditorPlayer = nullptr;
+    AEditorController* EditorPlayer = nullptr;
 
     ULevel* Level;
 
@@ -61,7 +63,7 @@ public:
 
     UTransformGizmo* LocalGizmo = nullptr;
     UCameraComponent* GetCamera() const { return camera; }
-    AEditorPlayer* GetEditorPlayer() const { return EditorPlayer; }
+    AEditorController* GetEditorPlayer() const { return EditorPlayer; }
 
 
     // EditorManager 같은데로 보내기
@@ -75,7 +77,6 @@ public:
     USceneComponent* GetPickingGizmo() const { return pickingGizmo; }
     void SetPickingGizmo(UObject* Object);
 };
-
 
 template <typename T>
     requires std::derived_from<T, AActor>
