@@ -196,13 +196,14 @@ void FEngineLoop::Tick()
         if (PlayWorldType == EPlayWorldType::Play)
         {
             GWorld->PIETick(elapsedTime);
+            LevelEditor->PIETick(elapsedTime);
         }
         else if (PlayWorldType == EPlayWorldType::Edit)
         {
             GWorld->Tick(elapsedTime);
+            LevelEditor->Tick(elapsedTime);
         }
 
-        LevelEditor->Tick(elapsedTime);
         Render();
         UIMgr->BeginFrame();
         UnrealEditor->Render();

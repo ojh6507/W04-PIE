@@ -11,6 +11,7 @@ public:
     SLevelEditor();
     ~SLevelEditor();
     void Initialize();
+    void PIETick(double DeltaTime);
     void Tick(double deltaTime);
     void Input();
     void Release();

@@ -67,7 +67,7 @@ void ControlEditorPanel::Render()
     ImGui::SetCursorPosX(ContentWidth - (IconSize.x * 3.0f + 16.0f));
     
     ImGui::PushFont(IconFont);
-    CreateSRTButton(IconSize);
+    // CreateSRTButton(IconSize);
     ImGui::PopFont();
     
     ImGui::End();

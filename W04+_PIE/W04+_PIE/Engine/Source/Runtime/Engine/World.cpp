@@ -8,7 +8,7 @@
 #include "Classes/Components/StaticMeshComponent.h"
 #include "Engine/StaticMeshActor.h"
 #include "Components/SkySphereComponent.h"
-
+#include "UnrealEd/EditorViewportClient.h"
 
 void UWorld::Initialize()
 {
@@ -26,12 +26,14 @@ void UWorld::Initialize()
 
 void UWorld::InitializePIE()
 {
-    //TODO: Player 지정해주기
-    if (EditorPlayer == nullptr)
+    if (PlayerController == nullptr)
     {
-        EditorPlayer = FObjectFactory::ConstructObject<AEditorController>();;
+        PlayerController = FObjectFactory::ConstructObject<APlayerController>();
     }
 
+    GEngineLoop.GetLevelEditor()->GetActiveViewportClient()->ViewTransformPerspective.SetLocation(FVector(8.0f, 8.0f, 8.f));
+    GEngineLoop.GetLevelEditor()->GetActiveViewportClient()->ViewTransformPerspective.SetRotation(FVector(0.0f, 45.0f, -135.0f));
+    
     TSet<AActor*> Actors = GetActors();
 
     for (AActor* Actor : Actors)
@@ -44,7 +46,7 @@ void UWorld::CreateBaseObject()
 {
     if (EditorPlayer == nullptr)
     {
-        EditorPlayer = FObjectFactory::ConstructObject<AEditorController>();;
+        EditorPlayer = FObjectFactory::ConstructObject<AEditorController>();
     }
 
     if (camera == nullptr)
@@ -90,9 +92,7 @@ void UWorld::ReleaseBaseObject()
 
 void UWorld::PIETick(float DeltaTime)
 {
-    camera->TickComponent(DeltaTime); //TODO: MainPlayer가 있으면 이거 하면안됨 분기줘야함
-
-    EditorPlayer->Tick(DeltaTime);
+    PlayerController->Tick(DeltaTime);
 
     // SpawnActor()에 의해 Actor가 생성된 경우, 여기서 BeginPlay 호출
     for (AActor* Actor : PendingBeginPlayActors)
@@ -115,7 +115,6 @@ void UWorld::PIETick(float DeltaTime)
 
 void UWorld::Tick(float DeltaTime)
 {
-    camera->TickComponent(DeltaTime);
     EditorPlayer->Tick(DeltaTime);
     LocalGizmo->Tick(DeltaTime);
 
