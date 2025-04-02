@@ -14,7 +14,7 @@ ULightBaseActor::ULightBaseActor()
 //#if WITH_EDITORONLY_DATA
     SpriteComponent = AddComponent<UBillboardComponent>();
 
-    SpriteComponent->SetTexture(L"Assets/Editor/Icon/SpotLight_64x.png");
+    SpriteComponent->SetSprite(L"Assets/Editor/Icon/SpotLight_64x.png");
 
     SpriteComponent->SetupAttachment(LightComponent);
 

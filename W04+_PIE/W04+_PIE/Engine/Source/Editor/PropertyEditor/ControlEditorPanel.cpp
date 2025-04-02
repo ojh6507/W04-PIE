@@ -252,7 +252,8 @@ void ControlEditorPanel::CreateModifyButton(ImVec2 ButtonSize, ImFont* IconFont)
             { .label= "Sphere",    .obj= OBJ_SPHERE },
             { .label= "SpotLight", .obj= OBJ_SpotLight },
             { .label= "Particle",  .obj= OBJ_PARTICLE },
-            { .label= "Text",      .obj= OBJ_Text }
+            { .label= "Text",      .obj= OBJ_Text },
+            { .label= "Billboard",      .obj= OBJ_Billboard }
         };
 
         for (const auto& primitive : primitives)
@@ -292,7 +293,7 @@ void ControlEditorPanel::CreateModifyButton(ImVec2 ButtonSize, ImFont* IconFont)
                     SpawnedActor = World->SpawnActor<AActor>();
                     SpawnedActor->SetActorLabel(TEXT("OBJ_PARTICLE"));
                     UParticleSubUVComp* ParticleComponent = SpawnedActor->AddComponent<UParticleSubUVComp>();
-                    ParticleComponent->SetTexture(L"Assets/Texture/T_Explosion_SubUV.png");
+                    ParticleComponent->SetSprite(L"Assets/Texture/T_Explosion_SubUV.png");
                     ParticleComponent->SetRowColumnCount(6, 6);
                     ParticleComponent->SetScale(FVector(10.0f, 10.0f, 1.0f));
                     ParticleComponent->Activate();
@@ -303,9 +304,19 @@ void ControlEditorPanel::CreateModifyButton(ImVec2 ButtonSize, ImFont* IconFont)
                     SpawnedActor = World->SpawnActor<AActor>();
                     SpawnedActor->SetActorLabel(TEXT("OBJ_Text"));
                     UTextRenderComponent* TextComponent = SpawnedActor->AddComponent<UTextRenderComponent>();
-                    TextComponent->SetTexture(L"Assets/Texture/font.png");
+                    TextComponent->SetSprite(L"Assets/Texture/font.png");
                     TextComponent->SetRowColumnCount(106, 106);
                     TextComponent->SetText(L"안녕하세요 Jungle 1");
+                    break;
+                }
+                case OBJ_Billboard:
+                {
+                    SpawnedActor = World->SpawnActor<AActor>();
+                    SpawnedActor->SetActorLabel(TEXT("OBJ_Billboard"));
+
+                    UBillboardComponent* BillboardComponent = SpawnedActor->AddComponent<UBillboardComponent>(); 
+                    BillboardComponent->SetSprite(L"Assets/Texture/emart.png");
+
                     break;
                 }
                 case OBJ_TRIANGLE:

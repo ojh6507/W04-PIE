@@ -17,7 +17,14 @@ public:
         FVector& rayDirection, float& pfNearHitDistance
     ) override;
 
-    void SetTexture(FWString _fileName);
+    void SetSprite(FWString _fileName); 
+    void SetSprite(std::shared_ptr<FTexture> _Sprite);
+    std::shared_ptr<FTexture> GetSprite() const
+    {
+        return Sprite;
+    }
+
+
     void SetUUIDParent(USceneComponent* _parent);
     FMatrix CreateBillboardMatrix();
 

@@ -11,6 +11,17 @@
 #include "UObject/Casts.h"
 #include "UObject/ObjectFactory.h"
 
+// --- Helper function to convert FWString (wstring) to UTF-8 std::string ---
+// To do 
+std::string WStringToUTF8(const FWString& wstr)
+{
+    if (wstr.empty()) return std::string();
+    int size_needed = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), (int)wstr.size(), NULL, 0, NULL, NULL);
+    std::string strTo(size_needed, 0);
+    WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), (int)wstr.size(), &strTo[0], size_needed, NULL, NULL);
+    return strTo;
+}
+
 void PropertyEditorPanel::Render()
 {
     /* Pre Setup */
@@ -165,7 +176,7 @@ void PropertyEditorPanel::Render()
         if (ImGui::TreeNodeEx("Text Component", ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_DefaultOpen)) // 트리 노드 생성
         {
             if (textOBj) {
-                textOBj->SetTexture(L"Assets/Texture/font.png");
+                textOBj->SetSprite(L"Assets/Texture/font.png");
                 textOBj->SetRowColumnCount(106, 106);
                 FWString wText = textOBj->GetText();
                 int len = WideCharToMultiByte(CP_UTF8, 0, wText.c_str(), -1, nullptr, 0, nullptr, nullptr);
@@ -191,6 +202,67 @@ void PropertyEditorPanel::Render()
             ImGui::TreePop();
         }
         ImGui::PopStyleColor();
+    }
+
+    if (PickedActor)
+    if (UBillboardComponent* BillboardOBj = Cast<UBillboardComponent>(PickedActor->GetRootComponent()))
+    {
+        if (!BillboardOBj->IsA<UTextRenderComponent>())
+        {
+            ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.1f, 0.1f, 0.1f, 1.0f));
+            if (ImGui::TreeNodeEx("Billboard Component", ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_DefaultOpen))
+            {
+                // 1. 사용 가능한 텍스처 목록 가져오기
+                const auto& allTextures = FEngineLoop::resourceMgr.GetAllTextures();
+
+                // 2. ImGui::Combo 데이터 준비
+
+               // 2. UTF-8 변환 및 데이터 준비
+                TArray<std::string> utf8TextureNames; // 변환된 UTF-8 이름 저장 (메모리 유지용)
+                TArray<const char*> comboItems;
+                TArray<std::shared_ptr<FTexture>> texturePtrs; // 이름과 포인터를 동기화하기 위한 벡터
+
+                //utf8TextureNames.Add("None");
+
+                //comboItems.Add(utf8TextureNames.Last().c_str());
+                //texturePtrs.Add(nullptr);
+
+                int currentItemIndex = 0; // 기본값은 "None"
+                int index = 0; // "None" 다음 인덱스부터 시작
+                // 현재 빌보드에 설정된 스프라이트 가져오기
+                std::shared_ptr<FTexture> currentSprite = BillboardOBj->GetSprite();
+
+
+                for (const auto& pair : allTextures) // pair.first는 FWString, pair.second는 shared_ptr<FTexture>
+                {
+                    if (pair.Value == nullptr) continue; // Null 텍스처는 스킵 (선택 사항)
+
+                    // FWString 키를 UTF-8 std::string으로 변환
+                    utf8TextureNames.Add(WStringToUTF8(pair.Key)); // 변환된 문자열 저장
+                    comboItems.Add(utf8TextureNames.Last().c_str()); // 저장된 문자열의 c_str() 포인터 추가
+                    texturePtrs.Add(pair.Value);                     // 텍스처 포인터 추가
+
+                    // 현재 선택된 텍스처인지 확인
+                    if (currentSprite == pair.Value)
+                    {
+                        currentItemIndex = index;
+                    }
+                    index++;
+                }
+
+                // 3. ImGui::Combo 표시
+                ImGui::Text("Sprite Texture:");
+                ImGui::SameLine();
+                if (ImGui::Combo("##SpriteTextureCombo", &currentItemIndex, comboItems.GetData(), comboItems.Num()))
+                {
+                    // 4. 선택 변경 처리
+                    BillboardOBj->SetSprite(texturePtrs[currentItemIndex]);
+                }
+
+                ImGui::TreePop();
+            }
+            ImGui::PopStyleColor();
+        }
     }
 
     // TODO: 추후에 RTTI를 이용해서 프로퍼티 출력하기

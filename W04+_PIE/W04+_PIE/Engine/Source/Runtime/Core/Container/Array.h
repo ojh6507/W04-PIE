@@ -80,6 +80,8 @@ public:
 
     T* GetData();
     const T* GetData() const;
+    T& Last() { return ContainerPrivate.back(); }
+    const T& Last() const { return ContainerPrivate.back(); }
 
     /**
      * Array에서 Item을 찾습니다.
