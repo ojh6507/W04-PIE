@@ -51,6 +51,11 @@ UBillboardComponent* UBillboardComponent::Duplicate()
     newComponent->finalIndexU = finalIndexU;
     newComponent->finalIndexV = finalIndexV;
 
+    newComponent->vertexTextureBuffer = vertexTextureBuffer;
+    newComponent->indexTextureBuffer = indexTextureBuffer;
+    newComponent->numVertices = numVertices;
+    newComponent->numIndices = numIndices;
+    
     return newComponent;
 }
 

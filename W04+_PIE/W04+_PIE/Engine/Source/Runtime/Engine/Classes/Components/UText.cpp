@@ -51,8 +51,11 @@ UTextRenderComponent* UTextRenderComponent::Duplicate()
         newComponent->quad.Add(q);
     }
 
-    return newComponent;
+    newComponent->vertexTextureBuffer = vertexTextureBuffer;
+    newComponent->indexTextureBuffer = indexTextureBuffer;
+    newComponent->numVertices = numVertices;
 
+    return newComponent;
 }
 
 void UTextRenderComponent::InitializeComponent()
