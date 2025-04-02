@@ -60,6 +60,18 @@ void ControlEditorPanel::Render()
 
     ImGui::SameLine();
 
+    if (ImGui::Button("Start", IconSize)) {
+        GEngineLoop.StartPIE();
+    }
+
+    ImGui::SameLine();
+
+      if (ImGui::Button("Stop", IconSize)) {
+        GEngineLoop.EndPIE();
+    }
+
+    ImGui::SameLine();
+
     /* Get Window Content Region */
     float ContentWidth = ImGui::GetWindowContentRegionMax().x;
 
