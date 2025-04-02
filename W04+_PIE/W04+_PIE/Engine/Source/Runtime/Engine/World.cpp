@@ -20,7 +20,9 @@ void UWorld::Initialize()
     FManagerOBJ::CreateStaticMesh("Assets/SkySphere.obj");
     AActor* SpawnedActor = SpawnActor<AActor>();
     USkySphereComponent* skySphere = SpawnedActor->AddComponent<USkySphereComponent>();
+
     skySphere->SetStaticMesh(FManagerOBJ::GetStaticMesh(L"SkySphere.obj"));
+
     skySphere->GetStaticMesh()->GetMaterials()[0]->Material->SetDiffuse(FVector((float)32 / 255, (float)171 / 255, (float)191 / 255));
 }
 
@@ -126,19 +128,20 @@ void UWorld::Tick(float DeltaTime)
 
 void UWorld::Release()
 {
-    if (GEngineLoop.GetPlayWorldType() == EPlayWorldType::Edit) {
 
-        for (AActor* Actor : ActorsArray)
+    if (GEngineLoop.GetPlayWorldType() == EPlayWorldType::Edit) {
+    for (AActor* Actor : ActorsArray)
+    {
+        Actor->EndPlay(EEndPlayReason::WorldTransition);
+        TSet<UActorComponent*> Components = Actor->GetComponents();
+        for (UActorComponent* Component : Components)
         {
-            Actor->EndPlay(EEndPlayReason::WorldTransition);
-            TSet<UActorComponent*> Components = Actor->GetComponents();
-            for (UActorComponent* Component : Components)
-            {
-                GUObjectArray.MarkRemoveObject(Component);
-            }
-            GUObjectArray.MarkRemoveObject(Actor);
+            GUObjectArray.MarkRemoveObject(Component);
         }
-        ActorsArray.Empty();
+        GUObjectArray.MarkRemoveObject(Actor);
+    }
+    ActorsArray.Empty();
+
 
         pickingGizmo = nullptr;
         ReleaseBaseObject();
@@ -149,6 +152,7 @@ void UWorld::Release()
 
 UWorld* UWorld::Duplicate()
 {
+
     UWorld* newWorld = FObjectFactory::ConstructObject<UWorld>();
 
     newWorld->SetInternalIndex(GetInternalIndex());

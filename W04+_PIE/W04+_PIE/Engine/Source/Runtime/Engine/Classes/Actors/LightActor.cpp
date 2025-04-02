@@ -28,10 +28,16 @@ ULightBaseActor* ULightBaseActor::Duplicate()
     {
         return reinterpret_cast<ULightBaseActor*>(DuplicateObjects[GetUUID()]);
     }
+
     ULightBaseActor* newActor = new ULightBaseActor();
-    
+    Super::Duplicate();
+
     newActor->LightComponent = LightComponent->Duplicate();
     newActor->SpriteComponent = SpriteComponent->Duplicate();
+    
+    newActor->SetActorLocation(GetActorLocation());
+    newActor->SetActorRotation(GetActorRotation());
+    newActor->SetActorScale(GetActorScale());
 
     newActor->SetUUID(GetUUID());
     newActor->SetInternalIndex(GetInternalIndex());

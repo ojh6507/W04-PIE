@@ -9,10 +9,14 @@ AActor* AActor::Duplicate()
     {
         return reinterpret_cast<AActor*>(DuplicateObjects[GetUUID()]);
     }
-
+    Super::Duplicate();
     AActor* NewObject = FObjectFactory::ConstructObject<AActor>();
 
     NewObject->RootComponent = RootComponent->Duplicate();
+   
+    NewObject->SetActorLocation(GetActorLocation());
+    NewObject->SetActorRotation(GetActorRotation());
+    NewObject->SetActorScale(GetActorScale());
 
     for (UActorComponent* Comp : OwnedComponents)
     {

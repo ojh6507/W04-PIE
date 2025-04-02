@@ -11,7 +11,7 @@ USceneComponent* USceneComponent::Duplicate()
     {
         return reinterpret_cast<USceneComponent*>(DuplicateObjects[GetUUID()]);
     }
-
+   
     USceneComponent* NewObject = FObjectFactory::ConstructObject<USceneComponent>();
 
     NewObject->RelativeLocation = RelativeLocation;

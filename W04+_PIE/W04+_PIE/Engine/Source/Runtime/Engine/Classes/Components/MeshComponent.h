@@ -23,6 +23,7 @@ public:
         {
             return static_cast<UMeshComponent*>(DuplicateObjects[GetUUID()]);
         }
+        Super::Duplicate();
 
         UMeshComponent* NewObject = FObjectFactory::ConstructObject<UMeshComponent>();
   

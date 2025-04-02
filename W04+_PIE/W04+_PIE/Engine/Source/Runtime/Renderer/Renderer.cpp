@@ -1005,10 +1005,7 @@ void FRenderer::PrepareRender(UWorld* CurrentWorld)
                 if (!Cast<UGizmoBaseComponent>(comp))
                     StaticMeshObjs.Add(pStaticMeshComp);
             }
-            if (UGizmoBaseComponent* pGizmoComp = Cast<UGizmoBaseComponent>(comp))
-            {
-                GizmoObjs.Add(pGizmoComp);
-            }
+            
             if (UBillboardComponent* pBillboardComp = Cast<UBillboardComponent>(comp))
             {
                 BillboardObjs.Add(pBillboardComp);
@@ -1017,6 +1014,11 @@ void FRenderer::PrepareRender(UWorld* CurrentWorld)
             {
                 LightObjs.Add(pLightComp);
             }
+        }
+    }
+    if (GEngineLoop.GetPlayWorldType() == EPlayWorldType::Edit) {
+        for (const auto iter : TObjectRange<UGizmoBaseComponent>()) {
+            GizmoObjs.Add(iter);
         }
     }
 }

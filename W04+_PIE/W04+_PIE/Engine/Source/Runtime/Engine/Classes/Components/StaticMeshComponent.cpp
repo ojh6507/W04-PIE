@@ -119,7 +119,7 @@ UStaticMeshComponent* UStaticMeshComponent::Duplicate()
     {
         return reinterpret_cast<UStaticMeshComponent*>(DuplicateObjects[GetUUID()]);
     }
-
+    Super::Duplicate();
     UStaticMeshComponent* NewObject = FObjectFactory::ConstructObject<UStaticMeshComponent>();
 
     NewObject->SetStaticMesh(FManagerOBJ::GetStaticMesh(staticMesh->GetRenderData()->ObjectName));
