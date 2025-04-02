@@ -58,7 +58,7 @@ int UBillboardComponent::CheckRayIntersection(FVector& rayOrigin, FVector& rayDi
 
 void UBillboardComponent::SetTexture(FWString _fileName)
 {
-	Texture = FEngineLoop::resourceMgr.GetTexture(_fileName);
+	Sprite = FEngineLoop::resourceMgr.GetTexture(_fileName);
 }
 
 void UBillboardComponent::SetUUIDParent(USceneComponent* _parent)

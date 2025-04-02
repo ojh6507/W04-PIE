@@ -21,7 +21,7 @@ void UWorld::Initialize()
     AActor* SpawnedActor = SpawnActor<AActor>();
     USkySphereComponent* skySphere = SpawnedActor->AddComponent<USkySphereComponent>();
     skySphere->SetStaticMesh(FManagerOBJ::GetStaticMesh(L"SkySphere.obj"));
-    skySphere->GetStaticMesh()->GetMaterials()[0]->Material->SetDiffuse(FVector((float)32/255, (float)171/255, (float)191/255));
+    skySphere->GetStaticMesh()->GetMaterials()[0]->Material->SetDiffuse(FVector((float)32 / 255, (float)171 / 255, (float)191 / 255));
 }
 
 void UWorld::InitializePIE()
@@ -111,9 +111,9 @@ void UWorld::PIETick(float DeltaTime)
 
 void UWorld::Tick(float DeltaTime)
 {
-	camera->TickComponent(DeltaTime);
-	EditorPlayer->Tick(DeltaTime);
-	LocalGizmo->Tick(DeltaTime);
+    camera->TickComponent(DeltaTime);
+    EditorPlayer->Tick(DeltaTime);
+    LocalGizmo->Tick(DeltaTime);
 
     // SpawnActor()에 의해 Actor가 생성된 경우, 여기서 BeginPlay 호출
     for (AActor* Actor : PendingBeginPlayActors)
@@ -123,33 +123,28 @@ void UWorld::Tick(float DeltaTime)
     PendingBeginPlayActors.Empty();
 
     // 매 틱마다 Actor->Tick(...) 호출
-	
-    for (AActor* Actor : Level->Actors)
+    for (AActor* Actor : ActorsArray)
     {
-        if (Actor && Actor->IsActorTickEnabled())
-        {
-            Actor->Tick(DeltaTime);
-        }
+        Actor->Tick(DeltaTime);
     }
-
 }
 
 void UWorld::Release()
 {
-	for (AActor* Actor : ActorsArray)
-	{
-		Actor->EndPlay(EEndPlayReason::WorldTransition);
+    for (AActor* Actor : ActorsArray)
+    {
+        Actor->EndPlay(EEndPlayReason::WorldTransition);
         TSet<UActorComponent*> Components = Actor->GetComponents();
-	    for (UActorComponent* Component : Components)
-	    {
-	        GUObjectArray.MarkRemoveObject(Component);
-	    }
-	    GUObjectArray.MarkRemoveObject(Actor);
-	}
+        for (UActorComponent* Component : Components)
+        {
+            GUObjectArray.MarkRemoveObject(Component);
+        }
+        GUObjectArray.MarkRemoveObject(Actor);
+    }
     ActorsArray.Empty();
 
-	pickingGizmo = nullptr;
-	ReleaseBaseObject();
+    pickingGizmo = nullptr;
+    ReleaseBaseObject();
 
     GUObjectArray.ProcessPendingDestroyObjects();
 }
@@ -190,5 +185,5 @@ bool UWorld::DestroyActor(AActor* ThisActor)
 
 void UWorld::SetPickingGizmo(UObject* Object)
 {
-	pickingGizmo = Cast<USceneComponent>(Object);
+    pickingGizmo = Cast<USceneComponent>(Object);
 }

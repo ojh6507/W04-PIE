@@ -38,7 +38,7 @@ public:
 
     uint8 IsActorTickEnabled() const 
     {
-        return PrimaryActorTick.bCanEverTick;
+        return 1;
     }
 
     /** 이 Actor를 제거합니다. */
@@ -106,7 +106,7 @@ private:
     /** 현재 Actor가 삭제 처리중인지 여부 */
     uint8 bActorIsBeingDestroyed : 1;
 
-    struct FActorTickFunction PrimaryActorTick;
+    //struct FActorTickFunction PrimaryActorTick;
 
 
 #if 1 // TODO: WITH_EDITOR 추가

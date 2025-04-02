@@ -481,7 +481,7 @@ void FRenderer::UpdateMaterial(const FObjMaterialInfo& MaterialInfo) const
         ID3D11SamplerState* nullSampler[1] = {nullptr};
 
         Graphics->DeviceContext->PSSetShaderResources(0, 1, nullSRV);
-        Graphics->DeviceContext->PSSetSamplers(0, 1, nullSampler);
+        Graphics->DeviceContext->PSSetSamplers(0, 1, nullSampler); // TO DO 샘플러 미세팅 경고
     }
 }
 
@@ -794,7 +794,7 @@ void FRenderer::ReleaseLineShader() const
 
 ID3D11Buffer* FRenderer::CreateStaticVerticesBuffer() const
 {
-    FSimpleVertex vertices[2]{{0}, {0}};
+    FVertexSimple vertices[2]{{0}, {0}};
 
     D3D11_BUFFER_DESC vbDesc = {};
     vbDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -958,7 +958,7 @@ void FRenderer::RenderBatch(
     const FGridParameters& gridParam, ID3D11Buffer* pVertexBuffer, int boundingBoxCount, int coneCount, int coneSegmentCount, int obbCount
 ) const
 {
-    UINT stride = sizeof(FSimpleVertex);
+    UINT stride = sizeof(FVertexSimple);
     UINT offset = 0;
     Graphics->DeviceContext->IASetVertexBuffers(0, 1, &pVertexBuffer, &stride, &offset);
     Graphics->DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
@@ -1155,21 +1155,21 @@ void FRenderer::RenderBillboards(UWorld* World, std::shared_ptr<FEditorViewportC
         {
             RenderTexturePrimitive(
                 SubUVParticle->vertexSubUVBuffer, SubUVParticle->numTextVertices,
-                SubUVParticle->indexTextureBuffer, SubUVParticle->numIndices, SubUVParticle->Texture->TextureSRV, SubUVParticle->Texture->SamplerState
+                SubUVParticle->indexTextureBuffer, SubUVParticle->numIndices, SubUVParticle->Sprite->TextureSRV, SubUVParticle->Sprite->SamplerState
             );
         }
         else if (UText* Text = Cast<UText>(BillboardComp))
         {
             FEngineLoop::renderer.RenderTextPrimitive(
                 Text->vertexTextBuffer, Text->numTextVertices,
-                Text->Texture->TextureSRV, Text->Texture->SamplerState
+                Text->Sprite->TextureSRV, Text->Sprite->SamplerState
             );
         }
         else
         {
             RenderTexturePrimitive(
                 BillboardComp->vertexTextureBuffer, BillboardComp->numVertices,
-                BillboardComp->indexTextureBuffer, BillboardComp->numIndices, BillboardComp->Texture->TextureSRV, BillboardComp->Texture->SamplerState
+                BillboardComp->indexTextureBuffer, BillboardComp->numIndices, BillboardComp->Sprite->TextureSRV, BillboardComp->Sprite->SamplerState
             );
         }
     }

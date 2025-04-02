@@ -37,7 +37,7 @@ enum EWorldType
 
 struct FTickFunction
 {
-    uint8 bCanEverTick : 1;
+    //uint8 bCanEverTick : 1;
 };
 
 struct FActorTickFunction : public FTickFunction

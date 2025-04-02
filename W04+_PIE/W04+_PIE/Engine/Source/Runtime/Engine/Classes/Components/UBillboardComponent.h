@@ -27,7 +27,7 @@ public:
     UINT numIndices;
     float finalIndexU = 0.0f;
     float finalIndexV = 0.0f;
-    std::shared_ptr<FTexture> Texture;
+    std::shared_ptr<FTexture> Sprite;
 protected:
 
 
