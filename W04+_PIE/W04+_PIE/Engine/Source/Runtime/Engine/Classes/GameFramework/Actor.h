@@ -11,6 +11,7 @@
 class USceneComponent;
 
 class UActorComponent;
+class ULevel;
 
 class  AActor : public UObject
 {
@@ -83,6 +84,9 @@ public:
     AActor* GetOwner() const { return Owner; }
     void SetOwner(AActor* NewOwner) { Owner = NewOwner; }
 
+    ULevel* GetLevel() const { return Level; }
+    void SetLevel(ULevel* InLevel) { Level = InLevel; }
+
 public:
 
     FVector GetActorLocation() const;
@@ -111,6 +115,9 @@ private:
 
     /** 현재 Actor가 삭제 처리중인지 여부 */
     uint8 bActorIsBeingDestroyed : 1;
+
+    // 이 Actor가 속한 레벨
+    ULevel* Level = nullptr;
 
     //struct FActorTickFunction PrimaryActorTick;
 

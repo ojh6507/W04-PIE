@@ -9,13 +9,12 @@
 #include "Engine/StaticMeshActor.h"
 #include "Components/SkySphereComponent.h"
 #include "UnrealEd/EditorViewportClient.h"
+#include "Engine/Classes/Engine/Level.h"
 
 void UWorld::Initialize()
 {
     // TODO: Load Scene
     CreateBaseObject();
-    //SpawnObject(OBJ_CUBE);
-    FManagerOBJ::CreateStaticMesh("Assets/Dodge/Dodge.obj");
 
     FManagerOBJ::CreateStaticMesh("Assets/SkySphere.obj");
     AActor* SpawnedActor = SpawnActor<AActor>();
@@ -57,6 +56,13 @@ void UWorld::CreateBaseObject()
     {
         LocalGizmo = FObjectFactory::ConstructObject<UTransformGizmo>();
     }
+
+    if (SelectedLevel == nullptr)
+    {
+        SelectedLevel = FObjectFactory::ConstructObject<ULevel>();
+        SelectedLevel->SetWorld(this);
+        SelectedLevel->Initialize();
+    }
 }
 
 void UWorld::ReleaseBaseObject()
@@ -81,6 +87,12 @@ void UWorld::ReleaseBaseObject()
             EditorPlayer = nullptr;
         }
 
+        if (SelectedLevel)
+        {
+            SelectedLevel->Release();
+            GUObjectArray.MarkRemoveObject(SelectedLevel);
+            SelectedLevel = nullptr;
+        }
     }
 }
 
@@ -88,22 +100,7 @@ void UWorld::PIETick(float DeltaTime)
 {
     PlayerController->Tick(DeltaTime);
 
-    // SpawnActor()에 의해 Actor가 생성된 경우, 여기서 BeginPlay 호출
-    for (AActor* Actor : PendingBeginPlayActors)
-    {
-        Actor->BeginPlay();
-    }
-    PendingBeginPlayActors.Empty();
-
-    // 매 틱마다 Actor->Tick(...) 호출
-
-    for (AActor* Actor : ActorsArray)
-    {
-        if (Actor && Actor->IsActorTickEnabled())
-        {
-            Actor->Tick(DeltaTime);
-        }
-    }
+    SelectedLevel->Tick(DeltaTime);
 }
 
 
@@ -112,35 +109,11 @@ void UWorld::Tick(float DeltaTime)
     EditorPlayer->Tick(DeltaTime);
     LocalGizmo->Tick(DeltaTime);
 
-    // SpawnActor()에 의해 Actor가 생성된 경우, 여기서 BeginPlay 호출
-    for (AActor* Actor : PendingBeginPlayActors)
-    {
-        Actor->BeginPlay();
-    }
-    PendingBeginPlayActors.Empty();
-
-    // 매 틱마다 Actor->Tick(...) 호출
-    for (AActor* Actor : ActorsArray)
-    {
-        Actor->Tick(DeltaTime);
-    }
+    SelectedLevel->Tick(DeltaTime);
 }
 
 void UWorld::Release()
 {
-
-    for (AActor* Actor : ActorsArray)
-    {
-        Actor->EndPlay(EEndPlayReason::WorldTransition);
-        TSet<UActorComponent*> Components = Actor->GetComponents();
-        for (UActorComponent* Component : Components)
-        {
-            GUObjectArray.MarkRemoveObject(Component);
-        }
-        GUObjectArray.MarkRemoveObject(Actor);
-    }
-    ActorsArray.Empty();
-
     pickingGizmo = nullptr;
     ReleaseBaseObject();
 
@@ -150,47 +123,52 @@ void UWorld::Release()
 UWorld* UWorld::Duplicate()
 {
     UWorld* newWorld = new UWorld();
-    
-    for (auto Actor : ActorsArray) {
-        
-        newWorld->ActorsArray.Add(Actor->Duplicate());
-    }
-
+   
+    ULevel* DuplicatedLevel = SelectedLevel->Duplicate();
+    DuplicatedLevel->SetWorld(newWorld);
+    newWorld->SelectedLevel = DuplicatedLevel;
     return newWorld;
 }
 
 bool UWorld::DestroyActor(AActor* ThisActor)
 {
-    if (ThisActor->GetWorld() == nullptr)
-    {
-        return false;
-    }
+    return SelectedLevel->DestroyActor(ThisActor);
+}
 
-    if (ThisActor->IsActorBeingDestroyed())
-    {
-        return true;
-    }
+const TSet<AActor*>& UWorld::GetActors() const
+{
+    return SelectedLevel->GetActors();
+}
 
-    // 액터의 Destroyed 호출
-    ThisActor->Destroyed();
+AEditorController* UWorld::GetEditorPlayer() const 
+{ 
+    return EditorPlayer; 
+}
 
-    if (ThisActor->GetOwner())
-    {
-        ThisActor->SetOwner(nullptr);
-    }
+ULevel* UWorld::GetLevel() const
+{
+    return SelectedLevel;
+}
 
-    TSet<UActorComponent*> Components = ThisActor->GetComponents();
-    for (UActorComponent* Component : Components)
-    {
-        Component->DestroyComponent();
-    }
+AActor* UWorld::GetSelectedActor() const
+{
+    return SelectedActor;
+}
 
-    // World에서 제거
-    ActorsArray.Remove(ThisActor);
+void UWorld::SetPickedActor(AActor* InActor)
+{
+    SelectedActor = InActor;
+}
 
-    // 제거 대기열에 추가
-    GUObjectArray.MarkRemoveObject(ThisActor);
-    return true;
+UActorComponent* UWorld::GetSelectedComponent() const
+{
+    return SelectedComponent;
+
+}
+
+void UWorld::SetSelectedComponent(UActorComponent* InComponent)
+{
+    SelectedComponent = InComponent;
 }
 
 void UWorld::SetPickingGizmo(UObject* Object)
