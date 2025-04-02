@@ -30,6 +30,23 @@ UBillboardComponent::~UBillboardComponent()
 	}
 }
 
+UBillboardComponent* UBillboardComponent::Duplicate()
+{
+    UBillboardComponent* newComponent = new UBillboardComponent();
+    newComponent->SetSprite(Sprite);
+    newComponent->vertexTextureBuffer = vertexTextureBuffer;
+    newComponent->indexTextureBuffer = indexTextureBuffer;
+    newComponent->numVertices = numVertices;
+
+    newComponent->numIndices = numIndices;
+    newComponent->finalIndexU = finalIndexU;
+    newComponent->finalIndexV = finalIndexV;
+
+
+
+    return newComponent;
+}
+
 void UBillboardComponent::InitializeComponent()
 {
     Super::InitializeComponent();

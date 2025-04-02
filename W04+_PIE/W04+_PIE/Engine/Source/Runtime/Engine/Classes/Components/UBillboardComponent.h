@@ -10,6 +10,9 @@ public:
     UBillboardComponent();
     virtual ~UBillboardComponent() override;
 
+
+    virtual UBillboardComponent* Duplicate() override;
+
     virtual void InitializeComponent() override;
     virtual void TickComponent(float DeltaTime) override;
     virtual int CheckRayIntersection(

@@ -21,3 +21,12 @@ ULightBaseActor::ULightBaseActor()
     //SpriteComponent->SetTexture(L"Assets/Texture/spotLight.png");
 
 }
+
+ULightBaseActor* ULightBaseActor::Duplicate()
+{
+    ULightBaseActor* newActor = reinterpret_cast<ULightBaseActor*>(Super::Duplicate());
+
+    newActor->LightComponent = LightComponent->Duplicate();
+    newActor->SpriteComponent = SpriteComponent->Duplicate();
+    return nullptr;
+}
