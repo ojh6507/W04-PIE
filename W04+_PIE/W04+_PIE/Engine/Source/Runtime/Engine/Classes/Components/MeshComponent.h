@@ -23,6 +23,10 @@ public:
 
         UPrimitiveComponent* Comp = Super::Duplicate();
 
+        NewObject->SetLocation(Comp->GetWorldLocation());
+        NewObject->SetRotation(Comp->GetWorldRotation());
+        NewObject->SetScale(Comp->GetWorldScale());
+        
         NewObject->AABB = Comp->AABB;
 
         NewObject->SetType(Comp->GetType());

@@ -121,6 +121,10 @@ UStaticMeshComponent* UStaticMeshComponent::Duplicate()
 
     NewObject->OverrideMaterials = NewComponent->GetOverrideMaterials();
 
+    NewObject->SetLocation(NewComponent->GetWorldLocation());
+    NewObject->SetRotation(NewComponent->GetWorldRotation());
+    NewObject->SetScale(NewComponent->GetWorldScale());
+    
     NewObject->SetStaticMesh(FManagerOBJ::GetStaticMesh(staticMesh->GetRenderData()->ObjectName));
 
     NewObject->selectedSubMeshIndex = selectedSubMeshIndex;

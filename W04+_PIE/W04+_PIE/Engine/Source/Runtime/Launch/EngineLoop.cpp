@@ -314,7 +314,7 @@ void FEngineLoop::EndPIE() {
     
     if (GWorld)
     {
-        GWorld->ReleasePIE();
+        GWorld->Release();
         delete GWorld;
     }
     
