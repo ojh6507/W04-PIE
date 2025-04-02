@@ -23,6 +23,7 @@ void ControlEditorPanel::Render()
     ImGuiIO& io = ImGui::GetIO();
     ImFont* IconFont = io.Fonts->Fonts[FEATHER_FONT];
     ImVec2 IconSize = ImVec2(32, 32);
+    ImVec2 IconSizeStart = ImVec2(48, 32);
     
     float PanelWidth = (Width) * 0.8f;
     float PanelHeight = 45.0f;
@@ -60,13 +61,13 @@ void ControlEditorPanel::Render()
 
     ImGui::SameLine();
 
-    if (ImGui::Button("Start", IconSize)) {
+    if (ImGui::Button("Start", IconSizeStart)) {
         GEngineLoop.StartPIE();
     }
 
     ImGui::SameLine();
 
-      if (ImGui::Button("Stop", IconSize)) {
+      if (ImGui::Button("Stop", IconSizeStart)) {
         GEngineLoop.EndPIE();
     }
 
