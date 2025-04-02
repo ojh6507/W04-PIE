@@ -19,24 +19,18 @@ public:
 
     virtual int CheckRayIntersection(FVector& rayOrigin, FVector& rayDirection, float& pfNearHitDistance) override;
 
-    virtual UStaticMeshComponent* Duplicate() override
-    {
-        if (DuplicateObjects.Contains(GetUUID()))
-        {
-            return reinterpret_cast<UStaticMeshComponent*>(DuplicateObjects[GetUUID()]);
-        }
-       
-        UStaticMeshComponent* NewObject = reinterpret_cast<UStaticMeshComponent*>(Super::Duplicate());
-        
-        NewObject->staticMesh = reinterpret_cast<UStaticMesh*>(staticMesh->Duplicate());
+    virtual UStaticMeshComponent* Duplicate() override;
+private:
+    UStaticMeshComponent* PushValue(UMeshComponent* meshComp) {
 
-        NewObject->selectedSubMeshIndex = selectedSubMeshIndex;
+        UStaticMeshComponent* NewObj = new UStaticMeshComponent();
 
-        DuplicateObjects[GetUUID()] = NewObject;
+        NewObj->OverrideMaterials = meshComp->GetOverrideMaterials();
 
-        return NewObject;
+
+        return NewObj;
     }
-
+public:
     UStaticMesh* GetStaticMesh() const { return staticMesh; }
     void SetStaticMesh(UStaticMesh* value)
     {

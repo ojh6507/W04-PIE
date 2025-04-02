@@ -42,7 +42,7 @@ private:
 
         return NewObject;
     }
-
+protected:
     TArray<UMaterial*> OverrideMaterials;
 #pragma endregion
 protected:
