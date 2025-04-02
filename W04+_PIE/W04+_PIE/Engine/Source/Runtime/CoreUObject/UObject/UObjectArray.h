@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Container/Array.h"
 #include "Container/Set.h"
 
@@ -25,4 +25,4 @@ private:
 };
 
 extern FUObjectArray GUObjectArray;
-extern TSet<uint32_t> DuplicateObjects;
+extern TMap<uint32_t,UObject*> DuplicateObjects;
