@@ -101,22 +101,7 @@ void UWorld::PIETick(float DeltaTime)
 
     EditorPlayer->Tick(DeltaTime);
 
-    // SpawnActor()에 의해 Actor가 생성된 경우, 여기서 BeginPlay 호출
-    for (AActor* Actor : PendingBeginPlayActors)
-    {
-        Actor->BeginPlay();
-    }
-    PendingBeginPlayActors.Empty();
-
-    // 매 틱마다 Actor->Tick(...) 호출
-
-    for (AActor* Actor : ActorsArray)
-    {
-        if (Actor && Actor->IsActorTickEnabled())
-        {
-            Actor->Tick(DeltaTime);
-        }
-    }
+    SelectedLevel->Tick(DeltaTime);
 }
 
 
@@ -139,22 +124,13 @@ void UWorld::Release()
 
 UWorld* UWorld::Duplicate()
 {
-    UWorld* newWorld = new UWorld();
+    UWorld* newWorld = FObjectFactory::ConstructObject<UWorld>();
 
-    UWorld* NewWorld = reinterpret_cast<UWorld*>(Super::Duplicate());
-
-    newWorld->SetUUID(NewWorld->GetUUID());
-    newWorld->SetInternalIndex(NewWorld->GetInternalIndex());
-    newWorld->SetFName(NewWorld->GetFName());
-    newWorld->SetClass(NewWorld->GetClass());
     newWorld->camera = camera;
-
-
-    for (auto Actor : ActorsArray) {
-
-        newWorld->ActorsArray.Add(Actor->Duplicate());
-    }
-
+   
+    ULevel* DuplicatedLevel = SelectedLevel->Duplicate();
+    DuplicatedLevel->SetWorld(newWorld);
+    newWorld->SelectedLevel = DuplicatedLevel;
     return newWorld;
 }
 

@@ -47,13 +47,16 @@ void ULevel::Release()
 
 ULevel* ULevel::Duplicate()
 {
-    ULevel* DuplicatedLevel = new ULevel(Super::Duplicate());
-
+    ULevel* DuplicatedLevel = FObjectFactory::ConstructObject<ULevel>();
+ 
     for (AActor* Actor : Actors)
     {
         AActor* DuplicatedActor = Actor->Duplicate();
-        Actors.Add(DuplicatedActor);
+        DuplicatedLevel->Actors.Add(DuplicatedActor);
+        DuplicatedActor->SetLevel(DuplicatedLevel);
     }
+
+    return DuplicatedLevel;
 }
 
 bool ULevel::DestroyActor(AActor* ThisActor)

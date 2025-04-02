@@ -25,7 +25,7 @@ class USceneComponent : public UActorComponent
         NewObject->AttachParent = AttachParent;
 
         DuplicateObjects[GetUUID()] = NewObject;
-        
+         
         return NewObject;
     }
     

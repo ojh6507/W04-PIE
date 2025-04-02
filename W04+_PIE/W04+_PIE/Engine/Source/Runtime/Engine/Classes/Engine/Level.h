@@ -25,7 +25,7 @@ public:
     void Tick(float DeltaTime);
     void Release();
 
-    //virtual ULevel* Duplicate() override;
+    virtual ULevel* Duplicate() override;
 
     /**
      * Level에 Actor를 Spawn합니다.

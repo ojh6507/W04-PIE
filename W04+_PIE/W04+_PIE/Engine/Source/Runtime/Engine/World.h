@@ -63,7 +63,7 @@ public:
 
     UTransformGizmo* LocalGizmo = nullptr;
     UCameraComponent* GetCamera() const { return camera; }
-    AEditorPlayer* GetEditorPlayer() const { return EditorPlayer; }
+    AEditorController* GetEditorPlayer() const { return EditorPlayer; }
     ULevel* GetLevel() const { return SelectedLevel; }
 
 
