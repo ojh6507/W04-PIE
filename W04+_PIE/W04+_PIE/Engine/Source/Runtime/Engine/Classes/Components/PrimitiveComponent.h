@@ -25,16 +25,28 @@ public:
             return reinterpret_cast<UPrimitiveComponent*>(DuplicateObjects[GetUUID()]);
         }
 
-        UPrimitiveComponent* NewObject = reinterpret_cast<UPrimitiveComponent*>(Super::Duplicate());
+        UPrimitiveComponent* NewObject = GetValue(Super::Duplicate());
 
         NewObject->AABB = AABB;
 
-       // NewObject->m_Type = m_Type;
-
+        NewObject->m_Type = m_Type;
+      
         DuplicateObjects[GetUUID()] = NewObject;
 
         return NewObject;
     }
+private:
+    UPrimitiveComponent* GetValue(USceneComponent* comp) 
+    {
+        UPrimitiveComponent* NewObj = new UPrimitiveComponent();
+        NewObj->SetLocation(GetWorldLocation());
+        NewObj->SetScale(GetWorldScale());
+        NewObj->SetRotation(GetWorldRotation());
+
+        return NewObj;
+    }
+
+
 private:
     FString m_Type;
 
