@@ -25,3 +25,4 @@ private:
 };
 
 extern FUObjectArray GUObjectArray;
+extern TSet<uint32_t> DuplicateObjects;

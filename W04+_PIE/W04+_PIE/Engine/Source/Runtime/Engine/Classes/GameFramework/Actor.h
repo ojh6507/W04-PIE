@@ -19,9 +19,14 @@ public:
 
     virtual AActor* Duplicate() override
     {
-        AActor* NewObject = dynamic_cast<AActor*>(Super::Duplicate());
+        AActor* NewObject = reinterpret_cast<AActor*>(Super::Duplicate());
 
-        
+        NewObject->RootComponent = RootComponent->Duplicate();
+
+        for (UActorComponent* Comp : OwnedComponents)
+        {
+            NewObject->OwnedComponents.Add(Comp->Duplicate());
+        }
         
         return NewObject;
     }

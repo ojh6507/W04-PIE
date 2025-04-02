@@ -42,6 +42,11 @@ public:
 
     virtual UObject* Duplicate()
     {
+        if (DuplicateObjects.Contains(GetUUID()))
+        {
+            return nullptr;
+        }
+        
         // 현재 객체가 T 타입인지 확인
         UObject* NewObject = new UObject(); // 안전하게 복사 생성자 호출
 
@@ -49,6 +54,8 @@ public:
         NewObject->InternalIndex = this->InternalIndex;
         NewObject->NamePrivate = this->NamePrivate;
         NewObject->ClassPrivate = this->ClassPrivate;
+
+        DuplicateObjects.Add(NewObject->GetUUID());
         
         return NewObject;
     }

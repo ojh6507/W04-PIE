@@ -7,6 +7,20 @@ class USceneComponent : public UActorComponent
 {
     DECLARE_CLASS(USceneComponent, UActorComponent)
 
+
+    virtual USceneComponent* Duplicate() override
+    {
+        USceneComponent* NewObject = reinterpret_cast<USceneComponent*>(Super::Duplicate());
+        NewObject->RelativeLocation = RelativeLocation;
+        NewObject->RelativeRotation = RelativeRotation;
+        NewObject->RelativeScale3D = RelativeScale3D;
+        NewObject->QuatRotation = QuatRotation;
+
+        NewObject->AttachParent = AttachParent;
+        
+        return NewObject;
+    }
+    
 public:
     USceneComponent();
     virtual ~USceneComponent() override;
