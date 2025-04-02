@@ -107,7 +107,7 @@ UActorComponent* UActorComponent::Duplicate()
 
     NewObject->bAutoActive = bAutoActive;
 
-    DuplicateObjects[GetUUID()] = NewObject;
+    DuplicateObjects[NewObject->GetUUID()] = NewObject;
 
     return NewObject;
 }

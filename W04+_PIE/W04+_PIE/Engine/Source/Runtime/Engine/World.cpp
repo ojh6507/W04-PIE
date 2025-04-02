@@ -126,6 +126,23 @@ void UWorld::Tick(float DeltaTime)
     }
 }
 
+void UWorld::ReleasePIE()
+{
+    for (AActor* Actor : ActorsArray)
+    {
+        Actor->EndPlay(EEndPlayReason::WorldTransition);
+        TSet<UActorComponent*> Components = Actor->GetComponents();
+        for (UActorComponent* Component : Components)
+        {
+            GUObjectArray.MarkRemoveObject(Component);
+        }
+        GUObjectArray.MarkRemoveObject(Actor);
+    }
+    ActorsArray.Empty();
+
+    GUObjectArray.ProcessPendingDestroyObjects();
+}
+
 void UWorld::Release()
 {
 
@@ -150,11 +167,8 @@ void UWorld::Release()
 UWorld* UWorld::Duplicate()
 {
 
-    UWorld* newWorld = FObjectFactory::ConstructObject<UWorld>();
-
-    newWorld->SetInternalIndex(GetInternalIndex());
-
-
+    UWorld* newWorld = new UWorld();
+    
     for (auto Actor : ActorsArray) {
         
         newWorld->ActorsArray.Add(Actor->Duplicate());

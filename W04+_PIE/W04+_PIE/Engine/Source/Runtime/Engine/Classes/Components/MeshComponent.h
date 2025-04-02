@@ -29,7 +29,7 @@ public:
   
         NewObject->OverrideMaterials = this->OverrideMaterials;
         
-        DuplicateObjects[GetUUID()] = NewObject;
+        DuplicateObjects[NewObject->GetUUID()] = NewObject;
         return NewObject;
     }
 

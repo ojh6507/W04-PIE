@@ -129,7 +129,7 @@ UStaticMeshComponent* UStaticMeshComponent::Duplicate()
 
     NewObject->SetInternalIndex(GetInternalIndex());
     
-    DuplicateObjects[GetUUID()] = NewObject;
+    DuplicateObjects[NewObject->GetUUID()] = NewObject;
 
     return NewObject;
 }

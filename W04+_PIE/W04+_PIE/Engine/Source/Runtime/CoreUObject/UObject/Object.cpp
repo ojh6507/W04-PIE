@@ -30,7 +30,7 @@ UObject* UObject::Duplicate()
 
     NewObject->InternalIndex = this->InternalIndex;
 
-    DuplicateObjects[GetUUID()] = NewObject;
+    DuplicateObjects[NewObject->GetUUID()] = NewObject;
 
     return NewObject;
 }

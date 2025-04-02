@@ -27,6 +27,7 @@ public:
     void CreateBaseObject();
     void ReleaseBaseObject();
     void Tick(float DeltaTime);
+    void ReleasePIE();
     void PIETick(float DeltaTime);
     void Release();
     UWorld* Duplicate();

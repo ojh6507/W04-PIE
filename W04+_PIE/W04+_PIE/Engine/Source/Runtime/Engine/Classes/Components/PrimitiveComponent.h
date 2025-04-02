@@ -33,7 +33,7 @@ public:
         NewObject->m_Type = m_Type;
 
 
-        DuplicateObjects[GetUUID()] = NewObject;
+        DuplicateObjects[NewObject->GetUUID()] = NewObject;
 
         return NewObject;
     }

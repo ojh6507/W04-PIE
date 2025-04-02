@@ -314,7 +314,8 @@ void FEngineLoop::EndPIE() {
     
     if (GWorld)
     {
-        GWorld->Release();
+        GWorld->ReleasePIE();
+        delete GWorld;
     }
     
     DuplicateObjects.Empty();

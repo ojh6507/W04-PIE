@@ -21,7 +21,7 @@ USceneComponent* USceneComponent::Duplicate()
 
     NewObject->AttachParent = AttachParent;
 
-    DuplicateObjects[GetUUID()] = NewObject;
+    DuplicateObjects[NewObject->GetUUID()] = NewObject;
 
     return NewObject;
 }

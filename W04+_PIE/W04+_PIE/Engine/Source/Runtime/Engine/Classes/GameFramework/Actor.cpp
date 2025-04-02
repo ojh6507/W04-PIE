@@ -17,8 +17,9 @@ AActor* AActor::Duplicate()
     NewObject->SetInternalIndex(SuperObject->GetInternalIndex());
     
     NewObject->RootComponent = RootComponent->Duplicate();
+    /** 현재 Actor가 삭제 처리중인지 여부 */
+    NewObject->bActorIsBeingDestroyed = bActorIsBeingDestroyed;
     
-   
     NewObject->SetActorLocation(GetActorLocation());
     NewObject->SetActorRotation(GetActorRotation());
     NewObject->SetActorScale(GetActorScale());
@@ -28,7 +29,7 @@ AActor* AActor::Duplicate()
         NewObject->OwnedComponents.Add(Comp->Duplicate());
     }
 
-    DuplicateObjects[GetUUID()] = NewObject;
+    DuplicateObjects[NewObject->GetUUID()] = NewObject;
 
     return NewObject;
 }

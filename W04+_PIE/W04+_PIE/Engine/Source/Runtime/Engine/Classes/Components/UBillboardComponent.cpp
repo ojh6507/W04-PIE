@@ -47,8 +47,7 @@ UBillboardComponent* UBillboardComponent::Duplicate()
     newComponent->finalIndexU = finalIndexU;
     newComponent->finalIndexV = finalIndexV;
 
-
-    DuplicateObjects[GetUUID()] = newComponent;
+    DuplicateObjects[newComponent->GetUUID()] = newComponent;
 
     return newComponent;
 }
