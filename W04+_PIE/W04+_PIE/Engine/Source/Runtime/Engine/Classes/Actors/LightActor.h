@@ -8,7 +8,7 @@ class UPrimitiveComponent;
 
 class ULightBaseActor : public AActor
 {
-
+DECLARE_CLASS(ULightBaseActor, AActor)
 public:
     ULightBaseActor();
 

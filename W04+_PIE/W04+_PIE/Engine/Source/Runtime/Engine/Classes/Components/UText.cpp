@@ -19,6 +19,42 @@ UTextRenderComponent::~UTextRenderComponent()
 	}
 }
 
+UTextRenderComponent* UTextRenderComponent::Duplicate()
+{
+    UTextRenderComponent* newComponent = FObjectFactory::ConstructObject<UTextRenderComponent>();
+
+    UBillboardComponent* PriComp = Super::Duplicate();
+
+    newComponent->AABB = PriComp->AABB;
+    newComponent->SetType(StaticClass()->GetName());
+    newComponent->SetLocation(PriComp->GetWorldLocation());
+    newComponent->SetScale(PriComp->GetWorldScale());
+    newComponent->SetRotation(PriComp->GetWorldRotation());
+
+    newComponent->Sprite = Sprite;
+    newComponent->vertexTextureBuffer = vertexTextureBuffer;
+    newComponent->indexTextureBuffer = indexTextureBuffer;
+    newComponent->numVertices = numVertices;
+
+    newComponent->numIndices = numIndices;
+    newComponent->finalIndexU = finalIndexU;
+    newComponent->finalIndexV = finalIndexV;
+
+    newComponent->RowCount = RowCount;
+    newComponent->ColumnCount = ColumnCount;
+    newComponent->quadWidth = quadWidth;
+    newComponent->quadHeight = quadHeight;
+    newComponent->text = text;
+
+    for (auto& q : quad)
+    {
+        newComponent->quad.Add(q);
+    }
+
+    return newComponent;
+
+}
+
 void UTextRenderComponent::InitializeComponent()
 {
     Super::InitializeComponent();
