@@ -21,3 +21,24 @@ ULightBaseActor::ULightBaseActor()
     //SpriteComponent->SetTexture(L"Assets/Texture/spotLight.png");
 
 }
+
+ULightBaseActor* ULightBaseActor::Duplicate()
+{
+    if (DuplicateObjects.Contains(GetUUID()))
+    {
+        return reinterpret_cast<ULightBaseActor*>(DuplicateObjects[GetUUID()]);
+    }
+    ULightBaseActor* newActor = new ULightBaseActor();
+    
+    newActor->LightComponent = LightComponent->Duplicate();
+    newActor->SpriteComponent = SpriteComponent->Duplicate();
+
+    newActor->SetUUID(GetUUID());
+    newActor->SetInternalIndex(GetInternalIndex());
+    newActor->SetFName(GetFName());
+    newActor->SetClass(GetClass());
+
+    DuplicateObjects[GetUUID()] = newActor;
+
+    return newActor;
+}

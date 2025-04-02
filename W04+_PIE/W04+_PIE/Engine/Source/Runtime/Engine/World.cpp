@@ -38,7 +38,8 @@ void UWorld::InitializePIE()
 
     for (AActor* Actor : Actors)
     {
-        Actor->BeginPlay();
+        if(Actor)
+            Actor->BeginPlay();
     }
 }
 
