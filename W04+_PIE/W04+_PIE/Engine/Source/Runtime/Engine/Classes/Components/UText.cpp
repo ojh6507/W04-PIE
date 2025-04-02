@@ -45,16 +45,14 @@ UTextRenderComponent* UTextRenderComponent::Duplicate()
     newComponent->quadWidth = quadWidth;
     newComponent->quadHeight = quadHeight;
     newComponent->text = text;
-
     for (auto& q : quad)
     {
         newComponent->quad.Add(q);
     }
+    newComponent->numTextVertices = numTextVertices;
 
-    newComponent->vertexTextureBuffer = vertexTextureBuffer;
-    newComponent->indexTextureBuffer = indexTextureBuffer;
-    newComponent->numVertices = numVertices;
-
+    newComponent->SetText(text);
+    
     return newComponent;
 }
 
