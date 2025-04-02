@@ -86,13 +86,12 @@ void UActorComponent::Deactivate()
 
 UActorComponent* UActorComponent::Duplicate()
 {
-    if (DuplicateObjects.Contains(GetUUID()))
-    {
-        return reinterpret_cast<UActorComponent*>(DuplicateObjects[GetUUID()]);
-    }
+    UActorComponent* NewObject = FObjectFactory::ConstructObject<UActorComponent>();
 
-    UActorComponent* NewObject = PushValue(Super::Duplicate());
-        
+    UObject* SuperObject = Super::Duplicate();
+    
+    NewObject->SetInternalIndex(SuperObject->GetInternalIndex());
+    
     NewObject->Owner = Owner->Duplicate();
 
     NewObject->bHasBegunPlay = bHasBegunPlay;
@@ -102,8 +101,6 @@ UActorComponent* UActorComponent::Duplicate()
     NewObject->bIsActive = bIsActive;
 
     NewObject->bAutoActive = bAutoActive;
-
-    DuplicateObjects[GetUUID()] = NewObject;
 
     return NewObject;
 }

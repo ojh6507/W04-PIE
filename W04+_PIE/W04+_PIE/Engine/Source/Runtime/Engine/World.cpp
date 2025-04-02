@@ -8,29 +8,39 @@
 #include "Classes/Components/StaticMeshComponent.h"
 #include "Engine/StaticMeshActor.h"
 #include "Components/SkySphereComponent.h"
+#include "UnrealEd/EditorViewportClient.h"
 #include "Classes/Engine/Level.h"
-
 
 void UWorld::Initialize()
 {
     // TODO: Load Scene
     CreateBaseObject();
 
+    FManagerOBJ::CreateStaticMesh("Assets/SkySphere.obj");
+    AActor* SpawnedActor = SpawnActor<AActor>();
+    USkySphereComponent* skySphere = SpawnedActor->AddComponent<USkySphereComponent>();
+
+    skySphere->SetStaticMesh(FManagerOBJ::GetStaticMesh(L"SkySphere.obj"));
+
+    skySphere->GetStaticMesh()->GetMaterials()[0]->Material->SetDiffuse(FVector((float)32 / 255, (float)171 / 255, (float)191 / 255));
 }
 
 void UWorld::InitializePIE()
 {
-    //TODO: Player 지정해주기
-    if (EditorPlayer == nullptr)
+    if (PlayerController == nullptr)
     {
-        EditorPlayer = FObjectFactory::ConstructObject<AEditorController>();;
+        PlayerController = FObjectFactory::ConstructObject<APlayerController>();
     }
+
+    GEngineLoop.GetLevelEditor()->GetActiveViewportClient()->ViewTransformPerspective.SetLocation(FVector(8.0f, 8.0f, 8.f));
+    GEngineLoop.GetLevelEditor()->GetActiveViewportClient()->ViewTransformPerspective.SetRotation(FVector(0.0f, 45.0f, -135.0f));
 
     TSet<AActor*> Actors = GetActors();
 
     for (AActor* Actor : Actors)
     {
-        Actor->BeginPlay();
+        if (Actor)
+            Actor->BeginPlay();
     }
 }
 
@@ -38,15 +48,9 @@ void UWorld::CreateBaseObject()
 {
     if (EditorPlayer == nullptr)
     {
-        EditorPlayer = FObjectFactory::ConstructObject<AEditorController>();;
+        EditorPlayer = FObjectFactory::ConstructObject<AEditorController>();
     }
 
-    if (camera == nullptr)
-    {
-        camera = FObjectFactory::ConstructObject<UCameraComponent>();
-        camera->SetLocation(FVector(8.0f, 8.0f, 8.f));
-        camera->SetRotation(FVector(0.0f, 45.0f, -135.0f));
-    }
 
     if (LocalGizmo == nullptr)
     {
@@ -63,29 +67,25 @@ void UWorld::CreateBaseObject()
 
 void UWorld::ReleaseBaseObject()
 {
-    if (LocalGizmo)
-    {
-        delete LocalGizmo;
-        LocalGizmo = nullptr;
-    }
+    if (GEngineLoop.GetPlayWorldType() == EPlayWorldType::Edit) {
 
-    if (worldGizmo)
-    {
-        delete worldGizmo;
-        worldGizmo = nullptr;
-    }
+        if (LocalGizmo)
+        {
+            delete LocalGizmo;
+            LocalGizmo = nullptr;
+        }
 
-    if (camera)
-    {
-        delete camera;
-        camera = nullptr;
-    }
+        if (worldGizmo)
+        {
+            delete worldGizmo;
+            worldGizmo = nullptr;
+        }
 
-    if (EditorPlayer)
-    {
-        delete EditorPlayer;
-        EditorPlayer = nullptr;
-    }
+        if (EditorPlayer)
+        {
+            delete EditorPlayer;
+            EditorPlayer = nullptr;
+        }
 
     if (SelectedLevel)
     {
@@ -97,9 +97,7 @@ void UWorld::ReleaseBaseObject()
 
 void UWorld::PIETick(float DeltaTime)
 {
-    camera->TickComponent(DeltaTime); //TODO: MainPlayer가 있으면 이거 하면안됨 분기줘야함
-
-    EditorPlayer->Tick(DeltaTime);
+    PlayerController->Tick(DeltaTime);
 
     SelectedLevel->Tick(DeltaTime);
 }
@@ -107,7 +105,6 @@ void UWorld::PIETick(float DeltaTime)
 
 void UWorld::Tick(float DeltaTime)
 {
-    camera->TickComponent(DeltaTime);
     EditorPlayer->Tick(DeltaTime);
     LocalGizmo->Tick(DeltaTime);
 
@@ -124,9 +121,7 @@ void UWorld::Release()
 
 UWorld* UWorld::Duplicate()
 {
-    UWorld* newWorld = FObjectFactory::ConstructObject<UWorld>();
-
-    newWorld->camera = camera;
+    UWorld* newWorld = new UWorld();
    
     ULevel* DuplicatedLevel = SelectedLevel->Duplicate();
     DuplicatedLevel->SetWorld(newWorld);

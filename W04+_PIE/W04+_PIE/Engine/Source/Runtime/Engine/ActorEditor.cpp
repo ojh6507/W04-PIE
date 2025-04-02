@@ -1,7 +1,16 @@
-﻿#include "GameFramework/Actor.h"
+#include "GameFramework/Actor.h"
 
 
 #if 1 // TODO: WITH_EDITOR 추가
+
+AActor* AActor::PushValue(UObject* Other)
+{
+    AActor* NewObject = FObjectFactory::ConstructObject<AActor>();
+
+    NewObject->SetInternalIndex(Other->GetInternalIndex());
+
+    return NewObject;
+}
 
 FString AActor::GetDefaultActorLabel() const
 {
@@ -22,7 +31,7 @@ FString AActor::GetActorLabel() const
         MutableThis->ActorLabel = std::move(DefaultActorLabel);
     }
 
-    return ActorLabel; 
+    return ActorLabel;
 }
 
 void AActor::SetActorLabel(const FString& NewActorLabel)

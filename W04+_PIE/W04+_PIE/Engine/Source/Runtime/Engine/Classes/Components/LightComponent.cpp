@@ -14,6 +14,20 @@ ULightComponentBase::ULightComponentBase()
 ULightComponentBase::~ULightComponentBase()
 {
 }
+ULightComponentBase* ULightComponentBase::Duplicate()
+{
+
+   
+    ULightComponentBase* NewObject1 = FObjectFactory::ConstructObject<ULightComponentBase>();
+  
+    NewObject1->color = color;
+    NewObject1->radius = radius;
+    NewObject1->AABB = AABB;
+
+    NewObject1->SetInternalIndex(GetInternalIndex());
+    
+    return NewObject1;
+}
 void ULightComponentBase::SetColor(FVector4 newColor)
 {
     color = newColor;

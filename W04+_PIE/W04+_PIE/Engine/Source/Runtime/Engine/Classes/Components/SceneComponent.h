@@ -9,25 +9,8 @@ class USceneComponent : public UActorComponent
     DECLARE_CLASS(USceneComponent, UActorComponent)
 
 
-    virtual USceneComponent* Duplicate() override
-    {
-        if (DuplicateObjects.Contains(GetUUID()))
-        {
-            return reinterpret_cast<USceneComponent*>(DuplicateObjects[GetUUID()]);
-        }
-        
-        USceneComponent* NewObject = PushValue(Super::Duplicate());
-        NewObject->RelativeLocation = RelativeLocation;
-        NewObject->RelativeRotation = RelativeRotation;
-        NewObject->RelativeScale3D = RelativeScale3D;
-        NewObject->QuatRotation = QuatRotation;
-
-        NewObject->AttachParent = AttachParent;
-
-        DuplicateObjects[GetUUID()] = NewObject;
-         
-        return NewObject;
-    }
+    virtual USceneComponent* Duplicate() override;
+   
     
 public:
     USceneComponent();
@@ -73,20 +56,5 @@ public:
 private:
     class UTextUUID* uuidText = nullptr;
 
-    USceneComponent* PushValue(UActorComponent* Other) {
-        USceneComponent* NewObject = new USceneComponent();
-
-        NewObject->SetOwner(Other->GetOwner()->Duplicate());
-
-        NewObject->SetbHasBegunPlay(GetbHasBegunPlay());
-
-        NewObject->SetbIsBeingDestroyed(GetbIsBeingDestroyed());
-
-        NewObject->SetbIsActive(GetbIsActive());
-
-        NewObject->bAutoActive = Other->bAutoActive;
-        
-        return NewObject;
-    }
 public:
 };

@@ -40,7 +40,60 @@ void FEditorViewportClient::Tick(float DeltaTime)
     Input();
     UpdateViewMatrix();
     UpdateProjectionMatrix();
+}
 
+void FEditorViewportClient::PIETick(float DeltaTime)
+{
+    PIEInput();
+    UpdateViewMatrix();
+    UpdateProjectionMatrix();
+}
+
+void FEditorViewportClient::PIEInput()
+{
+    ImGuiIO& io = ImGui::GetIO();
+    if (io.WantCaptureMouse) return;
+    
+    ImGui::SetMouseCursor(ImGuiMouseCursor_None);
+
+    // 마우스 이동량 계산
+    POINT currentMousePos;
+    GetCursorPos(&currentMousePos);
+
+    // 마우스 이동 차이 계산
+    int32 deltaX = currentMousePos.x - lastMousePos.x;
+    int32 deltaY = currentMousePos.y - lastMousePos.y;
+
+    // Yaw(좌우 회전) 및 Pitch(상하 회전) 값 변경
+    if (IsPerspective()) {
+        CameraRotateYaw(deltaX * 0.1f);  // X 이동에 따라 좌우 회전
+        CameraRotatePitch(deltaY * 0.1f);  // Y 이동에 따라 상하 회전
+    }
+    else
+    {
+        PivotMoveRight(deltaX);
+        PivotMoveUp(deltaY);
+    }
+
+    SetCursorPos(lastMousePos.x, lastMousePos.y);
+    GetCursorPos(&lastMousePos);
+
+    if (GetAsyncKeyState('A') & 0x8000)
+    {
+        CameraMoveZFixRight(-1.f);
+    }
+    if (GetAsyncKeyState('D') & 0x8000)
+    {
+        CameraMoveZFixRight(1.f);
+    }
+    if (GetAsyncKeyState('W') & 0x8000)
+    {
+        CameraMoveZFixForward(1.f);
+    }
+    if (GetAsyncKeyState('S') & 0x8000)
+    {
+        CameraMoveZFixForward(-1.f);
+    }
 }
 
 void FEditorViewportClient::Release()
@@ -49,8 +102,6 @@ void FEditorViewportClient::Release()
         delete Viewport;
  
 }
-
-
 
 void FEditorViewportClient::Input()
 {
@@ -184,6 +235,36 @@ void FEditorViewportClient::CameraMoveForward(float _Value)
     else
     {
         Pivot.x += _Value * 0.1f;
+    }
+}
+
+void FEditorViewportClient::CameraMoveZFixForward(float _Value)
+{
+    if (IsPerspective()) {
+        FVector curCameraLoc = ViewTransformPerspective.GetLocation();
+        FVector Forward = ViewTransformPerspective.GetForwardVector();
+        Forward.z = 0.f;
+        curCameraLoc = curCameraLoc + Forward * GetCameraSpeedScalar() * _Value;
+        ViewTransformPerspective.SetLocation(curCameraLoc);
+    }
+    else
+    {
+        Pivot.x += _Value * 0.1f;
+    }
+}
+
+void FEditorViewportClient::CameraMoveZFixRight(float _Value)
+{
+    if (IsPerspective()) {
+        FVector curCameraLoc = ViewTransformPerspective.GetLocation();
+        FVector Right = ViewTransformPerspective.GetRightVector();
+        Right.z = 0.f;
+        curCameraLoc = curCameraLoc + Right * GetCameraSpeedScalar() * _Value;
+        ViewTransformPerspective.SetLocation(curCameraLoc);
+    }
+    else
+    {
+        Pivot.y += _Value * 0.1f;
     }
 }
 

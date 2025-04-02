@@ -21,3 +21,25 @@ ULightBaseActor::ULightBaseActor()
     //SpriteComponent->SetTexture(L"Assets/Texture/spotLight.png");
 
 }
+
+ULightBaseActor* ULightBaseActor::Duplicate()
+{
+
+    ULightBaseActor* newActor = FObjectFactory::ConstructObject<ULightBaseActor>();
+
+    UObject* SuperObject = Super::Duplicate();
+
+    newActor->SetInternalIndex(SuperObject->GetInternalIndex());
+    
+    newActor->LightComponent = LightComponent->Duplicate();
+    newActor->SpriteComponent = SpriteComponent->Duplicate();
+    
+    newActor->SetActorLocation(GetActorLocation());
+    newActor->SetActorRotation(GetActorRotation());
+    newActor->SetActorScale(GetActorScale());
+
+    newActor->SetInternalIndex(GetInternalIndex());
+
+
+    return newActor;
+}

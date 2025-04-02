@@ -38,6 +38,28 @@ void SLevelEditor::Initialize()
     bInitialize = true;
 }
 
+void SLevelEditor::PIETick(double DeltaTime)
+{
+    if (bMultiViewportMode) {
+        POINT pt;
+        GetCursorPos(&pt);
+        ScreenToClient(GEngineLoop.hWnd, &pt);
+        if (VSplitter->IsHover(FPoint(pt.x, pt.y)) || HSplitter->IsHover(FPoint(pt.x, pt.y)))
+        {
+            SetCursor(LoadCursor(NULL, IDC_SIZEALL));
+        }
+        else
+        {
+            SetCursor(LoadCursor(NULL, IDC_ARROW));
+        }
+        Input();
+    }
+    //Test Code Cursor icon End
+    OnResize();
+
+    ActiveViewportClient->PIETick(DeltaTime);
+}
+
 void SLevelEditor::Tick(double deltaTime)
 {
     if (bMultiViewportMode) {

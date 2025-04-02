@@ -23,6 +23,7 @@ void ControlEditorPanel::Render()
     ImGuiIO& io = ImGui::GetIO();
     ImFont* IconFont = io.Fonts->Fonts[FEATHER_FONT];
     ImVec2 IconSize = ImVec2(32, 32);
+    ImVec2 IconSizeStart = ImVec2(48, 32);
     
     float PanelWidth = (Width) * 0.8f;
     float PanelHeight = 45.0f;
@@ -60,6 +61,18 @@ void ControlEditorPanel::Render()
 
     ImGui::SameLine();
 
+    if (ImGui::Button("Start", IconSizeStart)) {
+        GEngineLoop.StartPIE();
+    }
+
+    ImGui::SameLine();
+
+      if (ImGui::Button("Stop", IconSizeStart)) {
+        GEngineLoop.EndPIE();
+    }
+
+    ImGui::SameLine();
+
     /* Get Window Content Region */
     float ContentWidth = ImGui::GetWindowContentRegionMax().x;
 
@@ -67,7 +80,7 @@ void ControlEditorPanel::Render()
     ImGui::SetCursorPosX(ContentWidth - (IconSize.x * 3.0f + 16.0f));
     
     ImGui::PushFont(IconFont);
-    CreateSRTButton(IconSize);
+    // CreateSRTButton(IconSize);
     ImGui::PopFont();
     
     ImGui::End();

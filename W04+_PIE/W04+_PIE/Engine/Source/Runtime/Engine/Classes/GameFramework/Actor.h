@@ -101,6 +101,7 @@ public:
     bool SetActorRotation(const FVector& NewRotation);
     bool SetActorScale(const FVector& NewScale);
 
+    TSet<UActorComponent*> OwnedComponents;
 protected:
     USceneComponent* RootComponent = nullptr;
 
@@ -110,7 +111,6 @@ private:
     AActor* Owner = nullptr;
 
     /** 본인이 소유하고 있는 컴포넌트들의 정보 */
-    TSet<UActorComponent*> OwnedComponents;
 
 
     /** 현재 Actor가 삭제 처리중인지 여부 */
@@ -118,19 +118,7 @@ private:
 
     //struct FActorTickFunction PrimaryActorTick;
 
-    AActor* PushValue(UObject* Other) {
-        AActor* NewObject = new AActor();
-
-        NewObject->SetUUID(Other->GetUUID());
-        NewObject->SetInternalIndex(Other->GetInternalIndex());
-        NewObject->SetFName(Other->GetFName());
-        NewObject->SetClass(Other->GetClass());
-        
-        return NewObject;
-    }
-    // 이 Actor가 속해있는 ULevel
-    ULevel* Level = nullptr;
-
+    AActor* PushValue(UObject* Other);
 
 #if 1 // TODO: WITH_EDITOR 추가
 public:

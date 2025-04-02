@@ -92,6 +92,8 @@ public:
     virtual UWorld*     GetWorld() const { return NULL; };
     void Initialize(int32 viewportIndex);
     void Tick(float DeltaTime);
+    void PIETick(float DeltaTime);
+    void PIEInput();
     void Release();
 
     void Input();
@@ -135,6 +137,8 @@ public:
     FMatrix Projection;
 public: //Camera Movement
     void CameraMoveForward(float _Value);
+    void CameraMoveZFixForward(float _Value);
+    void CameraMoveZFixRight(float _Value);
     void CameraMoveRight(float _Value);
     void CameraMoveUp(float _Value);
     void CameraRotateYaw(float _Value);

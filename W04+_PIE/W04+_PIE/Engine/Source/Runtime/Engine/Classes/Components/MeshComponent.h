@@ -19,27 +19,23 @@ public:
     virtual void GetUsedMaterials(TArray<UMaterial*>& Out) const;
     virtual UMeshComponent* Duplicate() override
     {
-        if (DuplicateObjects.Contains(GetUUID()))
-        {
-            return static_cast<UMeshComponent*>(DuplicateObjects[GetUUID()]);
-        }
+        UMeshComponent* NewObject = FObjectFactory::ConstructObject<UMeshComponent>();
+
+        UPrimitiveComponent* Comp = Super::Duplicate();
+
+        NewObject->SetLocation(Comp->GetWorldLocation());
+        NewObject->SetRotation(Comp->GetWorldRotation());
+        NewObject->SetScale(Comp->GetWorldScale());
         
-        UMeshComponent* NewObject = PushValue(Super::Duplicate());
-        
+        NewObject->AABB = Comp->AABB;
+
+        NewObject->SetType(Comp->GetType());
+  
         NewObject->OverrideMaterials = this->OverrideMaterials;
         
-        DuplicateObjects[GetUUID()] = NewObject;
         return NewObject;
     }
 
-private:
-    UMeshComponent* PushValue(UPrimitiveComponent* Other) 
-    {
-        UMeshComponent* NewObject = new UMeshComponent();
-        NewObject->AABB = Other->AABB;
-
-        return NewObject;
-    }
 protected:
     TArray<UMaterial*> OverrideMaterials;
 #pragma endregion
