@@ -9,10 +9,10 @@ void ULevel::Initialize()
     FManagerOBJ::CreateStaticMesh("Assets/Dodge/Dodge.obj");
     FManagerOBJ::CreateStaticMesh("Assets/SkySphere.obj");
 
-    AActor* SpawnedActor = SpawnActor<AActor>();
+   /* AActor* SpawnedActor = SpawnActor<AActor>();
     USkySphereComponent* SkySphere = SpawnedActor->AddComponent<USkySphereComponent>();
     SkySphere->SetStaticMesh(FManagerOBJ::GetStaticMesh(L"SkySphere.obj"));
-    SkySphere->GetStaticMesh()->GetMaterials()[0]->Material->SetDiffuse(FVector((float)32 / 255, (float)171 / 255, (float)191 / 255));
+    SkySphere->GetStaticMesh()->GetMaterials()[0]->Material->SetDiffuse(FVector((float)32 / 255, (float)171 / 255, (float)191 / 255));*/
 }
 
 void ULevel::Tick(float DeltaTime)
@@ -43,6 +43,17 @@ void ULevel::Release()
     }
     Actors.Empty();
     GUObjectArray.ProcessPendingDestroyObjects();
+}
+
+ULevel* ULevel::Duplicate()
+{
+    ULevel* DuplicatedLevel = new ULevel(Super::Duplicate());
+
+    for (AActor* Actor : Actors)
+    {
+        AActor* DuplicatedActor = Actor->Duplicate();
+        Actors.Add(DuplicatedActor);
+    }
 }
 
 bool ULevel::DestroyActor(AActor* ThisActor)
