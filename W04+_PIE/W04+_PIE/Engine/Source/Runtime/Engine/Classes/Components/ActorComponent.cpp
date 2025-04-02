@@ -89,7 +89,7 @@ UActorComponent* UActorComponent::Duplicate()
     UActorComponent* NewObject = FObjectFactory::ConstructObject<UActorComponent>();
 
     UObject* SuperObject = Super::Duplicate();
-
+    
     NewObject->SetInternalIndex(SuperObject->GetInternalIndex());
     
     NewObject->Owner = Owner->Duplicate();

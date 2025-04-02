@@ -23,6 +23,10 @@ public:
 
         UPrimitiveComponent* Comp = Super::Duplicate();
 
+        NewObject->SetLocation(Comp->GetWorldLocation());
+        NewObject->SetRotation(Comp->GetWorldRotation());
+        NewObject->SetScale(Comp->GetWorldScale());
+        
         NewObject->AABB = Comp->AABB;
 
         NewObject->SetType(Comp->GetType());
@@ -32,14 +36,6 @@ public:
         return NewObject;
     }
 
-private:
-    UMeshComponent* PushValue(UPrimitiveComponent* Other) 
-    {
-        UMeshComponent* NewObject = new UMeshComponent();
-        NewObject->AABB = Other->AABB;
-
-        return NewObject;
-    }
 protected:
     TArray<UMaterial*> OverrideMaterials;
 #pragma endregion

@@ -56,20 +56,5 @@ public:
 private:
     class UTextUUID* uuidText = nullptr;
 
-    USceneComponent* PushValue(UActorComponent* Other) {
-        USceneComponent* NewObject = new USceneComponent();
-
-        NewObject->SetOwner(Other->GetOwner()->Duplicate());
-
-        NewObject->SetbHasBegunPlay(GetbHasBegunPlay());
-
-        NewObject->SetbIsBeingDestroyed(GetbIsBeingDestroyed());
-
-        NewObject->SetbIsActive(GetbIsActive());
-
-        NewObject->bAutoActive = Other->bAutoActive;
-        
-        return NewObject;
-    }
 public:
 };

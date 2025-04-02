@@ -97,6 +97,7 @@ public:
     bool SetActorRotation(const FVector& NewRotation);
     bool SetActorScale(const FVector& NewScale);
 
+    TSet<UActorComponent*> OwnedComponents;
 protected:
     USceneComponent* RootComponent = nullptr;
 
@@ -106,7 +107,6 @@ private:
     AActor* Owner = nullptr;
 
     /** 본인이 소유하고 있는 컴포넌트들의 정보 */
-    TSet<UActorComponent*> OwnedComponents;
 
 
     /** 현재 Actor가 삭제 처리중인지 여부 */
