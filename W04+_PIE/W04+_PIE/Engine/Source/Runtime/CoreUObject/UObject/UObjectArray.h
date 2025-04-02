@@ -25,4 +25,3 @@ private:
 };
 
 extern FUObjectArray GUObjectArray;
-extern FUObjectArray SubObjects;

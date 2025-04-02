@@ -1,5 +1,6 @@
 #pragma once
 #include "Define.h"
+#include "Actors/Player.h"
 #include "Container/Set.h"
 #include "UObject/ObjectFactory.h"
 #include "UObject/ObjectMacros.h"
@@ -16,11 +17,9 @@ class UTransformGizmo;
 
 class UWorld : public UObject
 {
-    DECLARE_CLASS(UWorld, UObject)
-
 public:
-    UWorld() = default;
-
+    DECLARE_CLASS(UWorld, UObject)
+    
     void Initialize();
     void InitializePIE();
     void CreateBaseObject();
@@ -29,6 +28,14 @@ public:
     void PIETick(float DeltaTime);
     void Release();
 
+    UWorld(const UWorld& Other)
+    {
+        ActorsArray = TSet<AActor*>(Other.ActorsArray); // 깊은 복사가 필요할 경우 처리 추가
+        camera = Other.camera;               // 얕은 복사 (포인터)
+        EditorPlayer = Other.EditorPlayer;   // 얕은 복사 (포인터)
+        PlayerController = Other.PlayerController;
+    }
+    
     /**
      * World에 Actor를 Spawn합니다.
      * @tparam T AActor를 상속받은 클래스
@@ -40,8 +47,8 @@ public:
 
     /** World에 존재하는 Actor를 제거합니다. */
     bool DestroyActor(AActor* ThisActor);
-
-private:
+    
+private: 
     const FString defaultMapName = "Default";
 
     /** World에서 관리되는 모든 Actor의 목록 */
@@ -55,6 +62,7 @@ private:
     USceneComponent* pickingGizmo = nullptr;
     UCameraComponent* camera = nullptr;
     AEditorController* EditorPlayer = nullptr;
+    APlayerController* PlayerController = nullptr;
 
 public:
     UObject* worldGizmo = nullptr;

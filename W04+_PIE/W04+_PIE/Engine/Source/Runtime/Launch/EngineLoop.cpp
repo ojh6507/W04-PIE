@@ -290,7 +290,7 @@ void FEngineLoop::StartPIE(){
     PlayWorldType = EPlayWorldType::Play;
 
      //DuplicateForPIE 아마 필요한 정보만..? 내생각엔 Tick을 진행하면서 생긴 정보는 날리고 최초의 초기정보만 가져와야하는듯, 그리고 깊은복사
-    if (UWorld* PIEWorld = EditWorld->Duplicate<UWorld>())
+    if (UWorld* PIEWorld = dynamic_cast<UWorld*>(EditWorld->Duplicate()))
     {
         GWorld = PIEWorld;
 

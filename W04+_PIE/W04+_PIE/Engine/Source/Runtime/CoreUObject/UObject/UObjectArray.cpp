@@ -26,4 +26,3 @@ void FUObjectArray::ProcessPendingDestroyObjects()
 }
 
 FUObjectArray GUObjectArray;
-FUObjectArray SubObjects;

@@ -29,7 +29,7 @@ private:
 public:
     UObject();
     virtual ~UObject() = default;
-
+    
     UWorld* GetWorld()
     {
         return GEngineLoop.GetWorld();
@@ -39,36 +39,20 @@ public:
     {
         return GEngineLoop;
     }
-    
-    template<typename T>
-        requires std::derived_from<T, UObject>
-    void DuplicateSubObjects()
-    {
-        for (auto& SubObject : SubObjects.GetObjectItemArrayUnsafe())
-        {
-             SubObject = SubObject->Duplicate<T>();
-        }
-    }
-    
-    template<typename T>
-        requires std::derived_from<T, UObject>
-    T* Duplicate()
+
+    virtual UObject* Duplicate()
     {
         // 현재 객체가 T 타입인지 확인
-        if (T* ThisAsT = dynamic_cast<T*>(this)) {
-            T* NewObject = new T(); // 안전하게 복사 생성자 호출
-            NewObject->CopyFrom(*ThisAsT); // 사용자 정의 메서드로 데이터 복사
-            NewObject->DuplicateSubObjects<T>();
-            return NewObject;
-        }
+        UObject* NewObject = new UObject(); // 안전하게 복사 생성자 호출
+
+        NewObject->UUID = this->UUID;
+        NewObject->InternalIndex = this->InternalIndex;
+        NewObject->NamePrivate = this->NamePrivate;
+        NewObject->ClassPrivate = this->ClassPrivate;
         
-        return nullptr;
+        return NewObject;
     }
 
-    virtual void CopyFrom(const UObject& Other) {
-        *this = Other;
-    }
-    
     FName GetFName() const { return NamePrivate; }
     FString GetName() const { return NamePrivate.ToString(); }
 
