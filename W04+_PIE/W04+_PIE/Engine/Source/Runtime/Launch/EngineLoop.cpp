@@ -124,7 +124,7 @@ int32 FEngineLoop::Init(HINSTANCE hInstance)
     LevelEditor = new SLevelEditor();
     LevelEditor->Initialize();
 
-    GWorld = new UWorld;
+    GWorld = new UWorld();
     GWorld->Initialize();
 
     return 0;

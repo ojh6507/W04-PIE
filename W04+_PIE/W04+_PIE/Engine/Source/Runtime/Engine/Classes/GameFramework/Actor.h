@@ -17,20 +17,13 @@ class AActor : public UObject
 public:
     AActor() = default;
 
-    AActor(const AActor& Other)
+    virtual AActor* Duplicate() override
     {
-        RootComponent = Other.RootComponent;  // 얕은 복사 (포인터)
-        Owner = Other.Owner;                  // 얕은 복사 (포인터)
-        bActorIsBeingDestroyed = Other.bActorIsBeingDestroyed;
+        AActor* NewObject = dynamic_cast<AActor*>(Super::Duplicate());
 
-        // OwnedComponents는 깊은 복사가 필요할 수 있음
-        OwnedComponents.Empty();  // 기존 데이터 제거
-        for (UActorComponent* Component : Other.OwnedComponents) {
-            if (Component) {
-                UActorComponent* NewComponent = Component->Duplicate();  // 가정: Duplicate()는 깊은 복사를 수행
-                OwnedComponents.Add(NewComponent);
-            }
-        }
+        
+        
+        return NewObject;
     }
     
     /** Actor가 게임에 배치되거나 스폰될 때 호출됩니다. */

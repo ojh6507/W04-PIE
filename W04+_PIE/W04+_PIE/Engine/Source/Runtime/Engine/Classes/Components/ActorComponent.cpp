@@ -69,14 +69,6 @@ void UActorComponent::DestroyComponent()
 
     OnComponentDestroyed();
 
-    // 나중에 ProcessPendingDestroyObjects에서 실제로 제거됨
-    if (!this->IsA(UStaticMeshComponent::StaticClass()))
-    {
-        if (UStaticMesh* RemoveStaticMesh = dynamic_cast<UStaticMeshComponent*>(this)->GetStaticMesh())
-        {
-            SubObjects.MarkRemoveObject(RemoveStaticMesh);
-        }
-    }
     GUObjectArray.MarkRemoveObject(this);
 }
 

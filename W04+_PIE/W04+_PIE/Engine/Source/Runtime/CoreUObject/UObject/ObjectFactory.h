@@ -20,12 +20,6 @@ public:
         Obj->NamePrivate = Name;
         Obj->UUID = id;
 
-        //Object가 UStaticMesh가 아니면 SubObject에 추가하기
-        if (T::StaticClass() != UStaticMesh::StaticClass())
-        {
-            SubObjects.AddObject(Obj);
-        }
-
         GUObjectArray.AddObject(Obj);
 
         UE_LOG(LogLevel::Display, "Created New Object : %s", *Name);

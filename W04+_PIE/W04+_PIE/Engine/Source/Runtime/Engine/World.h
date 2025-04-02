@@ -19,6 +19,8 @@ class UWorld : public UObject
 {
 public:
     DECLARE_CLASS(UWorld, UObject)
+
+    UWorld() = default;
     
     void Initialize();
     void InitializePIE();
@@ -27,14 +29,6 @@ public:
     void Tick(float DeltaTime);
     void PIETick(float DeltaTime);
     void Release();
-
-    UWorld(const UWorld& Other)
-    {
-        ActorsArray = TSet<AActor*>(Other.ActorsArray); // 깊은 복사가 필요할 경우 처리 추가
-        camera = Other.camera;               // 얕은 복사 (포인터)
-        EditorPlayer = Other.EditorPlayer;   // 얕은 복사 (포인터)
-        PlayerController = Other.PlayerController;
-    }
     
     /**
      * World에 Actor를 Spawn합니다.
