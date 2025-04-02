@@ -43,18 +43,10 @@ UBillboardComponent* UBillboardComponent::Duplicate()
     newComponent->SetRotation(PriComp->GetWorldRotation());
     
     newComponent->Sprite = Sprite;
-    newComponent->vertexTextureBuffer = vertexTextureBuffer;
-    newComponent->indexTextureBuffer = indexTextureBuffer;
-    newComponent->numVertices = numVertices;
-
-    newComponent->numIndices = numIndices;
     newComponent->finalIndexU = finalIndexU;
     newComponent->finalIndexV = finalIndexV;
 
-    newComponent->vertexTextureBuffer = vertexTextureBuffer;
-    newComponent->indexTextureBuffer = indexTextureBuffer;
-    newComponent->numVertices = numVertices;
-    newComponent->numIndices = numIndices;
+    newComponent->CreateQuadTextureVertexBuffer();
     
     return newComponent;
 }
