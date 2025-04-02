@@ -21,15 +21,7 @@ public:
 
     virtual UStaticMeshComponent* Duplicate() override;
 private:
-    UStaticMeshComponent* PushValue(UMeshComponent* meshComp) {
 
-        UStaticMeshComponent* NewObj = new UStaticMeshComponent();
-
-        NewObj->OverrideMaterials = meshComp->GetOverrideMaterials();
-
-
-        return NewObj;
-    }
 public:
     UStaticMesh* GetStaticMesh() const { return staticMesh; }
     void SetStaticMesh(UStaticMesh* value)
