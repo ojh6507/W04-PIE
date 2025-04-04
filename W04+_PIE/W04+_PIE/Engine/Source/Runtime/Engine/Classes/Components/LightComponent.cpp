@@ -16,10 +16,20 @@ ULightComponentBase::~ULightComponentBase()
 }
 ULightComponentBase* ULightComponentBase::Duplicate()
 {
+    ULightComponentBase* NewObject1 = new ULightComponentBase();
 
-   
-    ULightComponentBase* NewObject1 = FObjectFactory::ConstructObject<ULightComponentBase>();
-  
+    USceneComponent* SuperComponent = Super::Duplicate();
+
+    NewObject1->SetLocation(SuperComponent->GetLocalLocation());
+    NewObject1->SetRotation(SuperComponent->GetLocalLocation());
+    NewObject1->SetScale(SuperComponent->GetLocalScale());
+    NewObject1->SetRotation(SuperComponent->GetQuat());
+    NewObject1->SetAttachParent(SuperComponent->GetAttachParent());
+    
+    NewObject1->SetUUID(SuperComponent->GetUUID());
+    NewObject1->SetClass(StaticClass());
+    NewObject1->SetFName(GetFName());
+    
     NewObject1->color = color;
     NewObject1->radius = radius;
     NewObject1->AABB = AABB;

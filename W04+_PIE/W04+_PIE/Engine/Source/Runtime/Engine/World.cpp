@@ -150,6 +150,12 @@ void UWorld::Release()
 UWorld* UWorld::Duplicate()
 {
     UWorld* newWorld = new UWorld();
+
+    UObject* SuperObject = Super::Duplicate();
+    
+    newWorld->SetUUID(SuperObject->GetUUID());
+    newWorld->SetClass(StaticClass());
+    newWorld->SetFName(GetFName());
     
     for (auto Actor : ActorsArray) {
         

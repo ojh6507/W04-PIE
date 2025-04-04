@@ -54,7 +54,7 @@ void FEditorViewportClient::PIEInput()
     ImGuiIO& io = ImGui::GetIO();
     if (io.WantCaptureMouse) return;
     
-    ImGui::SetMouseCursor(ImGuiMouseCursor_None);
+    // ImGui::SetMouseCursor(ImGuiMouseCursor_None);
 
     // 마우스 이동량 계산
     POINT currentMousePos;
@@ -75,7 +75,7 @@ void FEditorViewportClient::PIEInput()
         PivotMoveUp(deltaY);
     }
 
-    SetCursorPos(lastMousePos.x, lastMousePos.y);
+    // SetCursorPos(lastMousePos.x, lastMousePos.y);
     GetCursorPos(&lastMousePos);
 
     if (GetAsyncKeyState('A') & 0x8000)

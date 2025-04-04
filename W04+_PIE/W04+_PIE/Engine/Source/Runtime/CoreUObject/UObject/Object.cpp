@@ -1,5 +1,6 @@
 #include "Engine/Source/Runtime/CoreUObject/UObject/Object.h"
 
+#include "ObjectFactory.h"
 #include "UClass.h"
 #include "UObjectHash.h"
 
@@ -21,7 +22,7 @@ UObject::UObject()
 UObject* UObject::Duplicate()
 {
     // 현재 객체가 T 타입인지 확인
-    UObject* NewObject = new UObject(); // 안전하게 복사 생성자 호출
+    UObject* NewObject = FObjectFactory::ConstructObject<UObject>(); // 안전하게 복사 생성자 호출
 
     NewObject->InternalIndex = this->InternalIndex;
 

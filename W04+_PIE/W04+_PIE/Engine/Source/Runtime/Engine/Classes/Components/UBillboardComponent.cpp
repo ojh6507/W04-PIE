@@ -32,9 +32,13 @@ UBillboardComponent::~UBillboardComponent()
 
 UBillboardComponent* UBillboardComponent::Duplicate()
 {
-    UBillboardComponent* newComponent = FObjectFactory::ConstructObject<UBillboardComponent>();
+    UBillboardComponent* newComponent =new UBillboardComponent();
 
     UPrimitiveComponent* PriComp = Super::Duplicate();
+
+    newComponent->SetUUID(PriComp->GetUUID());
+    newComponent->SetClass(StaticClass());
+    newComponent->SetFName(GetFName());
     
     newComponent->AABB = PriComp->AABB;
     newComponent->SetType(StaticClass()->GetName());

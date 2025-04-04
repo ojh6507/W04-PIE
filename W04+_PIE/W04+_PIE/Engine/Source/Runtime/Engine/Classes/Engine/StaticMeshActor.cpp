@@ -10,9 +10,13 @@ AStaticMeshActor::AStaticMeshActor()
 
 AStaticMeshActor* AStaticMeshActor::Duplicate()
 {
-    AStaticMeshActor* newActor = FObjectFactory::ConstructObject<AStaticMeshActor>();
+    AStaticMeshActor* newActor = new AStaticMeshActor();
     AActor* DuplicatedActor = Super::Duplicate();
 
+    newActor->SetUUID(DuplicatedActor->GetUUID());
+    newActor->SetClass(StaticClass());
+    newActor->SetFName(GetFName());
+    
     newActor->SetActorLocation(DuplicatedActor->GetActorLocation());
     newActor->SetActorRotation(DuplicatedActor->GetActorRotation());
     newActor->SetActorScale(DuplicatedActor->GetActorScale());

@@ -24,9 +24,13 @@ ULightBaseActor::ULightBaseActor()
 
 ULightBaseActor* ULightBaseActor::Duplicate()
 {
-    ULightBaseActor* newActor = FObjectFactory::ConstructObject<ULightBaseActor>();
+    ULightBaseActor* newActor = new ULightBaseActor();
 
     AActor* SActor = Super::Duplicate();
+
+    newActor->SetUUID(SActor->GetUUID());
+    newActor->SetClass(StaticClass());
+    newActor->SetFName(GetFName());
     
     newActor->RootComponent = SActor->GetRootComponent()->Duplicate();
     /** 현재 Actor가 삭제 처리중인지 여부 */

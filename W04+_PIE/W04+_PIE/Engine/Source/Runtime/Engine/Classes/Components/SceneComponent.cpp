@@ -7,10 +7,24 @@
 
 USceneComponent* USceneComponent::Duplicate()
 {
+    USceneComponent* NewObject = new USceneComponent();
 
-   
-    USceneComponent* NewObject = FObjectFactory::ConstructObject<USceneComponent>();
+    UActorComponent* SuperComponent = Super::Duplicate();
 
+    NewObject->SetUUID(SuperComponent->GetUUID());
+    NewObject->SetClass(StaticClass());
+    NewObject->SetFName(GetFName());
+        
+    NewObject->SetOwner(SuperComponent->GetOwner());
+
+    NewObject->SetbIsActive(GetbIsActive());
+
+    NewObject->bAutoActive = bAutoActive;
+    
+    NewObject->SetUUID(SuperComponent->GetUUID());
+    NewObject->SetClass(StaticClass());
+    NewObject->SetFName(GetFName());
+    
     NewObject->RelativeLocation = RelativeLocation;
     NewObject->RelativeRotation = RelativeRotation;
     NewObject->RelativeScale3D = RelativeScale3D;

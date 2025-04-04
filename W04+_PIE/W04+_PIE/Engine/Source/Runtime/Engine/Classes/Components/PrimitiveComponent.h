@@ -23,8 +23,12 @@ public:
 
         USceneComponent* SuperComp = Super::Duplicate();
 
-        UPrimitiveComponent* NewObject = FObjectFactory::ConstructObject<UPrimitiveComponent>();
+        UPrimitiveComponent* NewObject = new UPrimitiveComponent();
 
+        NewObject->SetUUID(SuperComp->GetUUID());
+        NewObject->SetClass(StaticClass());
+        NewObject->SetFName(GetFName());
+        
         NewObject->SetLocation(SuperComp->GetWorldLocation());
         NewObject->SetScale(SuperComp->GetWorldScale());
         NewObject->SetRotation(SuperComp->GetWorldRotation());

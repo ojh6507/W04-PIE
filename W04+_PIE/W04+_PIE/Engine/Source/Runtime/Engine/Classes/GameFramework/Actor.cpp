@@ -5,10 +5,14 @@
 
 AActor* AActor::Duplicate()
 {
-    AActor* NewObject = FObjectFactory::ConstructObject<AActor>();
+    AActor* NewObject = new AActor();
 
     UObject* SuperObject = Super::Duplicate();
 
+    NewObject->SetUUID(SuperObject->GetUUID());
+    NewObject->SetClass(StaticClass());
+    NewObject->SetFName(GetFName());
+    
     NewObject->SetInternalIndex(SuperObject->GetInternalIndex());
     
     NewObject->RootComponent = RootComponent->Duplicate();

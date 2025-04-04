@@ -21,10 +21,14 @@ UTextRenderComponent::~UTextRenderComponent()
 
 UTextRenderComponent* UTextRenderComponent::Duplicate()
 {
-    UTextRenderComponent* newComponent = FObjectFactory::ConstructObject<UTextRenderComponent>();
+    UTextRenderComponent* newComponent = new UTextRenderComponent();
 
     UBillboardComponent* PriComp = Super::Duplicate();
 
+    newComponent->SetUUID(PriComp->GetUUID());
+    newComponent->SetClass(StaticClass());
+    newComponent->SetFName(GetFName());
+    
     newComponent->AABB = PriComp->AABB;
     newComponent->SetType(StaticClass()->GetName());
     newComponent->SetLocation(PriComp->GetWorldLocation());

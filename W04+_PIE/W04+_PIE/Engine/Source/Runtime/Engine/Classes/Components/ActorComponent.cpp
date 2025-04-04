@@ -86,17 +86,17 @@ void UActorComponent::Deactivate()
 
 UActorComponent* UActorComponent::Duplicate()
 {
-    UActorComponent* NewObject = FObjectFactory::ConstructObject<UActorComponent>();
+    UActorComponent* NewObject = new UActorComponent();
 
     UObject* SuperObject = Super::Duplicate();
-    
+
+    NewObject->SetUUID(SuperObject->GetUUID());
+    NewObject->SetClass(StaticClass());
+    NewObject->SetFName(GetFName());
+
     NewObject->SetInternalIndex(SuperObject->GetInternalIndex());
     
-    NewObject->Owner = Owner->Duplicate();
-
-    NewObject->bHasBegunPlay = bHasBegunPlay;
-
-    NewObject->bIsBeingDestroyed = bIsBeingDestroyed;
+    NewObject->Owner = Owner;
 
     NewObject->bIsActive = bIsActive;
 

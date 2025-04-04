@@ -115,10 +115,14 @@ int UStaticMeshComponent::CheckRayIntersection(FVector& rayOrigin, FVector& rayD
 
 UStaticMeshComponent* UStaticMeshComponent::Duplicate()
 {
-    UStaticMeshComponent* NewObject = FObjectFactory::ConstructObject<UStaticMeshComponent>();
+    UStaticMeshComponent* NewObject = new UStaticMeshComponent();
 
     UMeshComponent* NewComponent = Super::Duplicate();
 
+    NewObject->SetUUID(NewComponent->GetUUID());
+    NewObject->SetClass(StaticClass());
+    NewObject->SetFName(GetFName());
+    
     NewObject->OverrideMaterials = NewComponent->GetOverrideMaterials();
 
     NewObject->SetLocation(NewComponent->GetWorldLocation());

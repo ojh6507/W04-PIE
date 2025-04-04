@@ -35,9 +35,22 @@ protected:
     FVector RelativeScale3D;
 
     USceneComponent* AttachParent = nullptr;
+
+
+
+protected:
     TArray<USceneComponent*> AttachChildren;
 
 public:
+    void SetAttachParent(USceneComponent* attach_parent)
+    {
+        AttachParent = attach_parent;
+    }
+
+    [[nodiscard]] USceneComponent* GetAttachParent() const
+    {
+        return AttachParent;
+    }
     virtual FVector GetWorldRotation();
     FVector GetWorldScale();
     FVector GetWorldLocation();

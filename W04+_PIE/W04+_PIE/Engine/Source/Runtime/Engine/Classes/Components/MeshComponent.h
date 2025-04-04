@@ -19,10 +19,14 @@ public:
     virtual void GetUsedMaterials(TArray<UMaterial*>& Out) const;
     virtual UMeshComponent* Duplicate() override
     {
-        UMeshComponent* NewObject = FObjectFactory::ConstructObject<UMeshComponent>();
+        UMeshComponent* NewObject = new UMeshComponent();
 
         UPrimitiveComponent* Comp = Super::Duplicate();
 
+        NewObject->SetUUID(Comp->GetUUID());
+        NewObject->SetClass(StaticClass());
+        NewObject->SetFName(GetFName());
+        
         NewObject->SetLocation(Comp->GetWorldLocation());
         NewObject->SetRotation(Comp->GetWorldRotation());
         NewObject->SetScale(Comp->GetWorldScale());
